@@ -216,7 +216,7 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 
     id _centerOrder = settingsForItem(self)[@"order"];
     
-    if (alignment != 3)
+    if (alignment != 2)
         return %orig;
 
     int centerOrder = _centerOrder == nil ? %orig : [_centerOrder intValue];

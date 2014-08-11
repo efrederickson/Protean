@@ -15,6 +15,10 @@
 -(NSArray*) customSpecifiers
 {
     return @[
+             
+             @{ @"cell": @"PSGroupCell",
+                @"footerText": @"Note: A respring may be required to fully apply changes."
+                },
              @{
                  @"cell": @"PSSwitchCell",
                  @"default": @YES,
@@ -23,8 +27,10 @@
                  @"label": @"Enabled",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"cellClass": @"SKTintedSwitchCell",
-                 @"icon": @"enabled.png"
+                 @"icon": @"enabled.png",
                  },
+             
+             @{ @"cell": @"PSGroupCell" },
              @{
                  @"cell": @"PSSwitchCell",
                  @"default": @YES,

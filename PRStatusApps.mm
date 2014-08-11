@@ -86,9 +86,16 @@ int totalBadgeCount = 0;
 
 +(void) reloadAllImages
 {
-    CHECK_ENABLED();
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
         return;
+    
+    id _enabled = [Protean getOrLoadSettings][@"enabled"];
+    if ((_enabled ? [_enabled boolValue] : YES) == NO)
+    {
+        for (id key in icons.allKeys)
+            [PRStatusApps hideIconFor:key];
+        return;
+    }
     
     // Status Apps
     totalBadgeCount = 0;
