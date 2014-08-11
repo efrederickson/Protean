@@ -404,7 +404,11 @@ BOOL o = NO;
 
     if (ret.origin.x == 0 && ret.origin.y == 0)
     {
-        ret = (CGRect) { { [storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(self.item, "_type")]] floatValue], 0}, ret.size };
+        id overlap_ = [Protean getOrLoadSettings][@"allowOverlap"];
+        if (!overlap_ || [overlap_ boolValue])
+        {
+            ret = (CGRect) { { [storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(self.item, "_type")]] floatValue], 0}, ret.size };
+        }
     }
 
     int type = MSHookIvar<int>(self.item, "_type");
@@ -423,12 +427,33 @@ BOOL o = NO;
     return ret;
 }
 
-//-(BOOL) isVisible { return YES; }
-//- (void)setVisible:(BOOL)arg1 frame:(CGRect)arg2 duration:(double)arg3 { %orig(YES, arg2, arg3); }
 - (void)setVisible:(BOOL)arg1 
 {
-    BOOL b = [self isKindOfClass:[%c(UIStatusBarCustomItemView) class]];
-    %orig(b?YES:arg1);
+    BOOL force = NO;
+    
+    id overlap_ = [Protean getOrLoadSettings][@"allowOverlap"];
+    if ((!overlap_ || [overlap_ boolValue]) == NO)
+    {
+        %orig;
+        return;
+    }
+
+    int type = MSHookIvar<int>(self.item, "_type");
+    if (type >= 33)
+    {
+        NSString *name = [Protean mappedIdentifierForItem:type];
+        NSDictionary *d = [[%c(LSStatusBarClient) sharedInstance] currentMessage][name];
+        if (d)
+        {
+            id visible = d[@"visible"];
+            if (!visible || [visible boolValue])
+                force = YES;
+        }
+        else
+            [[%c(LSStatusBarClient) sharedInstance] retrieveCurrentMessage];
+    }
+
+    %orig(force ? YES : arg1);
 }
 
 %end
@@ -443,8 +468,24 @@ BOOL o = NO;
     {
         if (storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]])
         {
-            if ([storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]] floatValue] < r.origin.x / 2)
+            if (o)
             {
+                if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
+                {
+                    // hmmm
+                    // layout gets screwey here
+                    
+                    if ([arg1.item appearsOnRight])
+                    {
+                    
+                    }
+                    else
+                    {
+                        if ([storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]] floatValue] > r.origin.x / 2)
+                            return r;
+                    }
+                }
+
                 storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]] = [NSNumber numberWithFloat:r.origin.x];
             }
         }
@@ -466,6 +507,18 @@ BOOL o = NO;
     return r;
 }
 %end
+%hook UIStatusBarForegroundView
+- (id)_computeVisibleItemsPreservingHistory:(_Bool)arg1
+{
+    CHECK_ENABLED(%orig);
+
+    o = YES;
+    id r = %orig;
+    o = NO;
+    return r;
+}
+%end
+
 
 %hook SBApplication
 - (void)setBadge:(id)arg1
