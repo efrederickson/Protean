@@ -449,8 +449,7 @@ BOOL o = NO;
             if (!visible || [visible boolValue])
                 force = YES;
         }
-        else
-            [[%c(LSStatusBarClient) sharedInstance] retrieveCurrentMessage];
+        NSLog(@"[Protean] force: %@; %@", force?@"YES":@"NO", [Protean mappedIdentifierForItem:type]);
     }
 
     %orig(force ? YES : arg1);
