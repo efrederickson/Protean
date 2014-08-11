@@ -7,7 +7,7 @@ TWEAK_NAME = Protean
 
 Protean_FILES = Tweak.xm Protean.mm \
                 PRStatusApps.mm UIStatusBarItemView.xm \
-                ZZ_FlipswitchHooks.xm Bluetooth.xm \
+                FlipswitchHooks.xm Bluetooth.xm \
                 LockscreenStatusBar.xm LSStatusTime.xm \
   	        BatteryPercent.xm
 
