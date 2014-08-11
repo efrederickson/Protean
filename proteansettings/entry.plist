@@ -1,0 +1,10 @@
+{
+	entry = {
+		bundle = ProteanSettings;
+		cell = PSLinkCell;
+		detail = "ProteanSettingsListController";
+		icon = "ProteanSettings.png";
+		isController = 1;
+		label = Protean;
+	};
+}

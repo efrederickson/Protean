@@ -1,0 +1,11 @@
+Package: com.efrederickson.protean
+Name: Protean
+Depends: firmware (>=7.0), mobilesubstrate, libstatusbar (>= 0.9.7.0), applist, cc.tweak.libobjcipc, com.a3tweaks.flipswitch, libactivator, preferenceloader
+Provides: com.n00neimp0rtant.opennotifier
+Conflicts: com.n00neimp0rtant.opennotifier, net.tateu.opennotifierbeta
+Version: 1
+Architecture: iphoneos-arm
+Description: Your status bar, your way.
+Maintainer: Elijah Frederickson
+Author: Elijah Frederickson
+Section: Tweaks
