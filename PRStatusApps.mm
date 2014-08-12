@@ -11,6 +11,12 @@
 +(void) updateTimer;
 @end
 
+@interface UIImage (Protean)
++ (UIImage*)imageNamed:(NSString *)imageName inBundle:(NSBundle*)bundle;
+- (UIImage*) _flatImageWithColor: (UIColor*) color;
++(UIImage*)kitImageNamed:(NSString*)name;
+@end
+
 
 NSMutableDictionary *icons = [[NSMutableDictionary dictionary] retain];
 NSMutableDictionary *cachedBadgeCounts = [[NSMutableDictionary dictionary] retain];
