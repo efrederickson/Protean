@@ -35,12 +35,16 @@ int totalBadgeCount = 0;
     if (identifier == nil)
         return;
     
-    if ([Protean imageNameForIdentifier:identifier withBadgeCount:count] == nil || [[Protean imageNameForIdentifier:identifier withBadgeCount:count] isEqual:@""])
+    NSString *imageName = [Protean imageNameForIdentifier:identifier withBadgeCount:count];
+    if (imageName == nil || [imageName isEqual:@""])
+        return;
+    
+    if ([UIImage kitImageNamed:imageName] == nil && [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_%@",imageName]] == nil)
         return;
     
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
     item.visible = YES;
-    item.imageName = [Protean imageNameForIdentifier:identifier withBadgeCount:count];
+    item.imageName = imageName;
     cachedBadgeCounts[identifier] = [NSNumber numberWithInt:count];
 }
 
