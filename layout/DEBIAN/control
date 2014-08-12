@@ -6,6 +6,7 @@ Conflicts: com.n00neimp0rtant.opennotifier, net.tateu.opennotifierbeta
 Version: 1
 Architecture: iphoneos-arm
 Description: Your status bar, your way.
+Depiction: http://proteantweak.com/repo/depictions/protean.html
 Maintainer: Elijah Frederickson
 Author: Elijah Frederickson
 Section: Tweaks

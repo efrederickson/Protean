@@ -393,7 +393,6 @@ BOOL o = NO;
 
 -(CGRect) frame
 {
-
     CGRect ret = %orig;
 
     CHECK_ENABLED(ret);
@@ -429,7 +428,7 @@ BOOL o = NO;
 
 - (void)setVisible:(BOOL)arg1 
 {
-    BOOL force = NO;
+    BOOL force = o;
     
     id overlap_ = [Protean getOrLoadSettings][@"allowOverlap"];
     if ((!overlap_ || [overlap_ boolValue]) == NO)
@@ -449,7 +448,6 @@ BOOL o = NO;
             if (!visible || [visible boolValue])
                 force = YES;
         }
-        NSLog(@"[Protean] force: %@; %@", force?@"YES":@"NO", [Protean mappedIdentifierForItem:type]);
     }
 
     %orig(force ? YES : arg1);
@@ -472,7 +470,7 @@ BOOL o = NO;
                 if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
                 {
                     // hmmm
-                    // layout gets screwey here
+                    // layout gets screwey here, in SpringBoard...
                     
                     if ([arg1.item appearsOnRight])
                     {
@@ -480,7 +478,9 @@ BOOL o = NO;
                     }
                     else
                     {
-                        if ([storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]] floatValue] > r.origin.x / 2)
+                        if ([storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]] floatValue] < r.origin.x / 2)
+                            ;
+                        else
                             return r;
                     }
                 }

@@ -196,6 +196,8 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         return;
     LSBitems[[NSNumber numberWithInt:LSBitems_index++]] = [identifier retain];
     [mappedIdentifiers addObject:identifier];
+    
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("com.efrederickson.protean/updateItems"), nil, nil, YES);
 }
 
 +(void) mapIdentifierToItem:(NSString*)identifier item:(int)type
@@ -317,6 +319,17 @@ void reloadSettings(CFNotificationCenterRef center,
         first = NO;
 }
 
+void updateLSBItems(CFNotificationCenterRef center,
+                    void *observer,
+                    CFStringRef name,
+                    const void *object,
+                    CFDictionaryRef userInfo)
+{
+    [OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/requestUpdate" dictionary:nil replyHandler:^(NSDictionary *response) {
+        LSBitems = [response mutableCopy];
+    }];
+}
+
 static __attribute__((constructor)) void __protean_init()
 {
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
@@ -324,28 +337,14 @@ static __attribute__((constructor)) void __protean_init()
         [OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/requestUpdate" dictionary:nil replyHandler:^(NSDictionary *response) {
             LSBitems = [response mutableCopy];
         }];
+        
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &updateLSBItems, CFSTR("com.efrederickson.protean/updateItems"), NULL, 0);
     }
     else
     {
         [OBJCIPC registerIncomingMessageFromAppHandlerForMessageName:@"com.efrederickson.protean/requestUpdate"  handler:^NSDictionary *(NSDictionary *message) {
             return LSBitems;
         }];
-        
-        
-        [OBJCIPC registerIncomingMessageFromAppHandlerForMessageName:@"com.efrederickson.protean/refreshStatusBar"  handler:^NSDictionary *(NSDictionary *message) {
-            UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
-            [statusBar setShowsOnlyCenterItems:YES];
-            [statusBar setShowsOnlyCenterItems:NO];
-            
-            CGFloat animationDuration = 0.6;
-            [statusBar crossfadeTime:NO duration:animationDuration];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, animationDuration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                [statusBar crossfadeTime:YES duration:animationDuration];
-            });
-            
-            return @{};
-        }];
-        
         
         [OBJCIPC registerIncomingMessageFromAppHandlerForMessageName:@"com.efrederickson.protean/launchQR"  handler:^NSDictionary *(NSDictionary *message) {
             NSString *app = message[@"appId"];

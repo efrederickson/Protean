@@ -183,9 +183,8 @@ void updateStatusBar()
     
 	[statusBar.superview addSubview:fakeStatusBar];
     
-    [OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/refreshStatusBar" dictionary:@{}];
-    [statusBar setShowsOnlyCenterItems:YES];
-    [statusBar setShowsOnlyCenterItems:NO];
+    //[statusBar setShowsOnlyCenterItems:YES];
+    //[statusBar setShowsOnlyCenterItems:NO];
 
 	CGRect upwards = statusBar.frame;
 	upwards.origin.y -= upwards.size.height;
