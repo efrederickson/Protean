@@ -382,6 +382,7 @@ BOOL o = NO;
         %orig;
 }
 
+/*
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *) event
 {
 	%orig;
@@ -390,6 +391,7 @@ BOOL o = NO;
     
     [Protean HandlerForTapOnItem:self.item];
 }
+*/
 
 -(CGRect) frame
 {

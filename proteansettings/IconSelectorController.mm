@@ -6,6 +6,7 @@
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
+NSString* const ONIconPath = @"/System/Library/Frameworks/UIKit.framework";
 static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
@@ -37,9 +38,9 @@ UIImage *imageFromName(NSString *name)
         imageBundle = [NSBundle bundleWithPath:iconPath];
     
     UIImage *icon = [UIImage imageNamed:[NSString stringWithFormat:@"PR_%@", name] inBundle:imageBundle];
-    if (!icon)
+    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"Black_ON_%@",name]])
         icon = [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",name]];
-    if (!icon)
+    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"Black_ON_Count1_%@",name]])
         icon = [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_Count1_%@",name]];
     
     BOOL wasDefault = NO;
