@@ -382,16 +382,26 @@ BOOL o = NO;
         %orig;
 }
 
-/*
--(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *) event
+- (id)initWithItem:(id)arg1 data:(id)arg2 actions:(int)arg3 style:(id)arg4
 {
-	%orig;
-    CHECK_ENABLED();
-
-    
-    [Protean HandlerForTapOnItem:self.item];
+    id _self = %orig;
+    if ([Protean canHandleTapForItem:self.item])
+    {
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(prTap:)];
+        [self addGestureRecognizer:tap];
+    }
+    return _self;
 }
-*/
+
+%new
+- (void)prTap:(UITapGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateEnded)
+    {
+        // handling code
+        [Protean HandlerForTapOnItem:self.item];
+    }
+}
 
 -(CGRect) frame
 {
