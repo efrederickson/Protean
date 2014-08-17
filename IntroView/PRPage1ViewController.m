@@ -18,7 +18,7 @@
         mainLabel = [[UILabel alloc] init];
         mainLabel.text = @"Protean";
         mainLabel.textColor = [UIColor darkGrayColor];
-        mainLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:70];
+        mainLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:70];
         mainLabel.frame = CGRectMake(0, 10, [UIScreen mainScreen].bounds.size.width, 100);
         mainLabel.textAlignment = NSTextAlignmentCenter;
         mainLabel.alpha = 0;
@@ -27,7 +27,7 @@
         subLabel = [[UILabel alloc] init];
         subLabel.text = @"Your status bar, your way.";
         subLabel.textColor = [UIColor darkGrayColor];
-        subLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:25];
+        subLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:25];
         subLabel.frame = CGRectMake(0, 55, [UIScreen mainScreen].bounds.size.width, 100);
         subLabel.textAlignment = NSTextAlignmentCenter;
         subLabel.alpha = 0;

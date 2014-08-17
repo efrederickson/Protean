@@ -17,7 +17,7 @@
         mainLabel = [[UILabel alloc] init];
         mainLabel.text = @"Add Notifications";
         mainLabel.textColor = [UIColor darkGrayColor];
-        mainLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:40];
+        mainLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:40];
         mainLabel.frame = CGRectMake(0, 10, [UIScreen mainScreen].bounds.size.width, 100);
         mainLabel.textAlignment = NSTextAlignmentCenter;
         mainLabel.alpha = 0;
@@ -26,7 +26,7 @@
         subLabel1 = [[UILabel alloc] init];
         subLabel1.text = @"to your status bar";
         subLabel1.textColor = [UIColor darkGrayColor];
-        subLabel1.font = [UIFont fontWithName:@"Helvetica Neue" size:25];
+        subLabel1.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:25];
         subLabel1.frame = CGRectMake(0, 40, [UIScreen mainScreen].bounds.size.width, 100);
         subLabel1.textAlignment = NSTextAlignmentCenter;
         subLabel1.alpha = 0;
@@ -35,7 +35,7 @@
         subLabel = [[UILabel alloc] init];
         subLabel.text = @"As well as Flipswitches,\nBluetooth devices,\nand more.";
         subLabel.textColor = [UIColor darkGrayColor];
-        subLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:25];
+        subLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:25];
         subLabel.frame = CGRectMake(0, 110, [UIScreen mainScreen].bounds.size.width, 100);
         subLabel.textAlignment = NSTextAlignmentCenter;
         subLabel.alpha = 0;

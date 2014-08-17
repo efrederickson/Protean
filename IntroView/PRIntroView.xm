@@ -21,8 +21,8 @@ UIWindow *window;
     if ([self hasAnyLockState])
         return;
         
-    if ([[Protean getOrLoadSettings][@"hasShownIntro"] boolValue] == YES)
-        return;
+    //if ([[Protean getOrLoadSettings][@"hasShownIntro"] boolValue] == YES)
+    //    return;
         
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME];
     dict[@"hasShownIntro"] = @YES;

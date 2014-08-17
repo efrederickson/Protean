@@ -20,7 +20,7 @@
         mainLabel = [[UILabel alloc] init];
         mainLabel.text = @"Protean";
         mainLabel.textColor = [UIColor darkGrayColor];
-        mainLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:75];
+        mainLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:75];
         mainLabel.frame = CGRectMake(0, 10, [UIScreen mainScreen].bounds.size.width, 100);
         mainLabel.textAlignment = NSTextAlignmentCenter;
         mainLabel.alpha = 0;
@@ -29,7 +29,7 @@
         subLabel = [[UILabel alloc] init];
         subLabel.text = @"You are now ready to use Protean";
         subLabel.textColor = [UIColor darkGrayColor];
-        subLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:20];
+        subLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:20];
         subLabel.frame = CGRectMake(0, 55, [UIScreen mainScreen].bounds.size.width, 100);
         subLabel.textAlignment = NSTextAlignmentCenter;
         subLabel.alpha = 0;
@@ -37,9 +37,10 @@
         
         closeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [closeButton setTitle:@"Get started!" forState:UIControlStateNormal];
-        closeButton.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width-100)/2, 150, 100, 20);
+        closeButton.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width-200)/2, 150, 200, 20);
         [closeButton addTarget:self action:@selector(closeMe) forControlEvents:UIControlEventTouchUpInside];
         closeButton.alpha = 0;
+        closeButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:25];
         [self.view addSubview:closeButton];
     }
     return self;
