@@ -32,12 +32,6 @@
 @property(retain) UIImage * shadowImage;
 @end
 
-@interface SBUserAgent
-+(id)sharedUserAgent;
--(id)localizedDisplayNameForDisplayID:(id)displayID;-(void)setBadgeNumberOrString:(id)string forApplicationWithID:(id)anId;
--(id)foregroundDisplayID;
--(id)foregroundApplicationDisplayID;
-@end
 
 NSMutableDictionary *cache = [NSMutableDictionary dictionary];
 

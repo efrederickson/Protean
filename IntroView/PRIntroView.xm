@@ -21,8 +21,8 @@ UIWindow *window;
     if ([self hasAnyLockState])
         return;
         
-    if ([[Protean getOrLoadSettings][@"hasShownIntro"] boolValue] == YES)
-        return;
+    //if ([[Protean getOrLoadSettings][@"hasShownIntro"] boolValue] == YES)
+    //    return;
         
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME];
     dict[@"hasShownIntro"] = @YES;
@@ -40,7 +40,7 @@ UIWindow *window;
 %new
 -(void) PR_HideIntro
 {
-    [UIView animateWithDuration:1 animations:^{
+    [UIView animateWithDuration:.5 animations:^{
         //window.alpha = 0.1;
         window.frame = CGRectMake(window.frame.origin.x, [UIScreen mainScreen].bounds.size.height,
                                       window.frame.size.width, window.frame.size.height);
