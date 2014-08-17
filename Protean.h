@@ -15,4 +15,6 @@
 +(NSDictionary*) getOrLoadSettings;
 
 +(void) addBulletin:(BBBulletin*)bulletin forApp:(NSString*)appId;
+
++(void) reloadSettings;
 @end

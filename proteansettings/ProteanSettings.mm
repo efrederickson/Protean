@@ -52,6 +52,22 @@
                  @"icon": @"showLSTime.png"
                  },
              @{
+                 @"cell": @"PSLinkListCell",
+                 @"default": @0,
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"batteryStyle",
+                 @"label": @"Battery Percentage Style",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 @"detail": @"SKTintedListItemsController",
+                 @"icon": @"batteryStyle.png",
+                 @"validTitles": @[ @"Default", @"Hide '%' sign", @"Textual" ],
+                 @"validValues": @[ @0,         @1,               @2         ]
+                 },
+             
+             @{ @"cell": @"PSGroupCell",
+                @"footerText": @"Note: this may cause minor spacing or overlap issues if items extend pass the midline of the status bar. It is, of course, libstatusbar's fault ;P."
+                },
+             @{
                  @"cell": @"PSSwitchCell",
                  @"default": @YES,
                  @"defaults": @"com.efrederickson.protean.settings",
@@ -61,19 +77,6 @@
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"allowOverlap.png"
                  },
-             @{
-                 @"cell": @"PSLinkListCell",
-                 @"default": @0,
-                 @"defaults": @"com.efrederickson.protean.settings",
-                 @"key": @"batteryStyle",
-                 @"label": @"Battery Percentage Style",
-                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"detail": @"PSListItemsController",
-                 @"icon": @"batteryStyle.png",
-                 @"validTitles": @[ @"Default", @"Hide '%' sign", @"Textual" ],
-                 @"validValues": @[ @0,         @1,               @2         ]
-                 },
-
              
              
              @{ @"cell": @"PSGroupCell",
@@ -88,7 +91,7 @@
              
              
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Select applications and glyphs to show in the status bar (similar to OpenNotifier)"
+                @"footerText": @"Select applications, flipswitches, etc and glyphs to show in the status bar (similar to OpenNotifier)"
                 },
              @{
                  @"cell": @"PSLinkListCell",

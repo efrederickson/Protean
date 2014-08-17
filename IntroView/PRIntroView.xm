@@ -27,6 +27,7 @@ UIWindow *window;
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME];
     dict[@"hasShownIntro"] = @YES;
     [dict writeToFile:PLIST_NAME atomically:YES];
+    [Protean reloadSettings];
 
     window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     UIViewController *viewController = [[PRViewController alloc] init];

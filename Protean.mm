@@ -300,15 +300,11 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 {
     storedBulletins[appId] = [NSMutableArray array];
 }
-@end
 
-BOOL first = YES;
-void reloadSettings(CFNotificationCenterRef center,
-                    void *observer,
-                    CFStringRef name,
-                    const void *object,
-                    CFDictionaryRef userInfo)
++(void) reloadSettings
 {
+    static BOOL first = YES;
+    
     if (prefs)
         [prefs release];
     prefs = nil;
@@ -317,6 +313,16 @@ void reloadSettings(CFNotificationCenterRef center,
         [PRStatusApps reloadAllImages];
     else
         first = NO;
+}
+@end
+
+void reloadSettings(CFNotificationCenterRef center,
+                    void *observer,
+                    CFStringRef name,
+                    const void *object,
+                    CFDictionaryRef userInfo)
+{
+    [Protean reloadSettings];
 }
 
 void updateLSBItems(CFNotificationCenterRef center,
