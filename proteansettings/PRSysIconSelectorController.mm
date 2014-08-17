@@ -222,4 +222,26 @@ UIImage *resizeImage(UIImage *icon)
     [_tableView reloadData];
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0, 5, [UIScreen mainScreen].bounds.size.width, 80)];
+    footer.backgroundColor = [UIColor clearColor];
+    
+    UILabel *lbl = [[UILabel alloc] initWithFrame:footer.frame];
+    lbl.backgroundColor = [UIColor clearColor];
+    lbl.text = @"Most system icons can be\nthemed via Winterboard.\nTry ayeris for a great example.";
+    lbl.textAlignment = NSTextAlignmentCenter;
+    lbl.numberOfLines = 3;
+    lbl.font = [UIFont fontWithName:@"HelveticaNueue-UltraLight" size:5];
+    lbl.textColor = [UIColor darkGrayColor];
+    lbl.lineBreakMode = NSLineBreakByWordWrapping;
+    [footer addSubview:lbl];
+    
+    return footer;
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 80.0;
+}
+
 @end

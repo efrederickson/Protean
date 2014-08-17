@@ -4,7 +4,7 @@
 #import <objc/runtime.h>
 #import "IconSelectorController.h"
 
-@interface ProteanSettingsListController: SKTintedListController<SKListControllerProtocol>
+@interface ProteanSettingsListController : SKTintedListController<SKListControllerProtocol>
 @end
 
 @implementation ProteanSettingsListController
@@ -12,12 +12,16 @@
 -(NSString*) headerSubText { return @"Your status bar, your way"; }
 -(NSString*) customTitle { return @"Protean"; }
 
+-(UIColor*) navigationTintColor { return [UIColor colorWithRed:11/255.0f green:234/255.0f blue:241/255.0f alpha:1.0f]; }
+-(UIColor*) switchOnTintColor { return self.navigationTintColor; }
+-(UIColor*) headerColor { return self.navigationTintColor; }
+
 -(NSArray*) customSpecifiers
 {
     return @[
              
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Note: A respring may be required to fully apply changes."
+                @"footerText": @"A respring may be required to fully apply changes."
                 },
              @{
                  @"cell": @"PSSwitchCell",
@@ -41,6 +45,10 @@
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"normalizeLS.png"
                  },
+             
+             @{ @"cell": @"PSGroupCell",
+                @"footerText": @"Enabled by default if time is not aligned in the center. Unlike many other tweaks, it is compatible with LockInfo7 and Forecast."
+                },
              @{
                  @"cell": @"PSSwitchCell",
                  @"default": @YES,
@@ -51,6 +59,10 @@
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"showLSTime.png"
                  },
+             
+             @{ @"cell": @"PSGroupCell",
+                @"footerText": @"Change the battery percentage display to custom string types."
+                },
              @{
                  @"cell": @"PSLinkListCell",
                  @"default": @0,
@@ -58,14 +70,14 @@
                  @"key": @"batteryStyle",
                  @"label": @"Battery Percentage Style",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"detail": @"SKTintedListItemsController",
+                 @"detail": @"SKListItemsController",
                  @"icon": @"batteryStyle.png",
                  @"validTitles": @[ @"Default", @"Hide '%' sign", @"Textual" ],
                  @"validValues": @[ @0,         @1,               @2         ]
                  },
              
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Note: this may cause minor spacing or overlap issues if items extend pass the midline of the status bar. It is, of course, libstatusbar's fault ;P."
+                @"footerText": @"This may cause minor spacing or overlap issues if items extend pass the midline of the status bar. It is, of course, libstatusbar's fault ;P."
                 },
              @{
                  @"cell": @"PSSwitchCell",
@@ -80,7 +92,7 @@
              
              
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Note: Items do not show up until they have appeared in your status bar. Also, due to the way iOS works, if there are multiple items in the Center, they will not all show up. If you change an item that is from libstatusbar and not a stock item, you will need to respring to apply changes (that is a libstatusbar limitation); another libstatusbar limitation is that libstatusbar items cannot be in the center."
+                @"footerText": @"Items do not show up until they have appeared in your status bar. Also, due to the way iOS works, if there are multiple items in the Center, they will not all show up. If you change an item that is from libstatusbar and not a stock item, you will need to respring to apply changes (that is a libstatusbar limitation); another libstatusbar limitation is that libstatusbar items cannot be in the center."
                 },
              @{
                  @"cell": @"PSLinkListCell",
