@@ -37,6 +37,7 @@ void updateItem(int key, NSString *identifier)
 
 void updateItem2(int key, NSString *identifier)
 {
+    //NSLog(@"[Protean] %@", identifier);
     if (identifier == nil)
         return;
 

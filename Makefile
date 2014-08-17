@@ -9,7 +9,12 @@ Protean_FILES = Tweak.xm Protean.mm \
                 PRStatusApps.mm UIStatusBarItemView.xm \
                 FlipswitchHooks.xm Bluetooth.xm \
                 LockscreenStatusBar.xm LSStatusTime.xm \
-  	        BatteryPercent.xm
+  	        BatteryPercent.xm \
+		IntroView/PRIntroView.xm \
+		IntroView/PRViewController.m \
+		IntroView/PRPage1ViewController.m \
+		IntroView/PRPage2ViewController.m \
+		IntroView/PRFinalViewController.m
 
 Protean_FRAMEWORKS = UIKit
 Protean_LIBRARIES = activator objcipc flipswitch applist
