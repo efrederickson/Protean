@@ -2,6 +2,11 @@
 #import <AppList/AppList.h>
 #import <UIKit/UISearchBar2.h>
 #import "IconSelectorController.h"
+#import <substrate.h>
+
+@interface ALApplicationTableDataSource (Private)
+- (void)sectionRequestedSectionReload:(id)section animated:(BOOL)animated;
+@end
 
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
@@ -23,13 +28,16 @@
 - (void)viewDidAppear:(BOOL)animated;
 @end
 
-@interface ProteanAppsController : PSViewController <UITableViewDelegate, UISearchBarDelegate>
+@interface ProteanAppsController : PSViewController <UITableViewDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
 {
 	UITableView* _tableView;
 	ALApplicationTableDataSource* _dataSource;
 	UISearchBar* _searchBar;
+    BOOL isSearching;
+    UISearchDisplayController *searchDisplayController;
 }
 @end
+
 
 @implementation ProteanAppsController
 
@@ -78,8 +86,10 @@
     
 	if (filter)
 	{
+        //_dataSource.loadsAsynchronously = NO;
 		_dataSource.sectionDescriptors = [NSArray arrayWithObjects:
                                           [NSDictionary dictionaryWithObjectsAndKeys:
+                                           @"Search Results", ALSectionDescriptorTitleKey,
                                            @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
                                            iconSize, ALSectionDescriptorIconSizeKey,
                                            (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
@@ -89,6 +99,7 @@
 	}
 	else
 	{
+        //_dataSource.loadsAsynchronously = YES;
 		_dataSource.sectionDescriptors = [NSArray arrayWithObjects:
                                           [NSDictionary dictionaryWithObjectsAndKeys:
                                            @"Enabled Applications", ALSectionDescriptorTitleKey,
@@ -124,7 +135,7 @@
                                            , nil],
                                           nil];
 	}
-	[_tableView reloadData];
+    [_tableView reloadData];
 }
 
 -(id)init
@@ -134,6 +145,7 @@
 	CGRect bounds = [[UIScreen mainScreen] bounds];
 	
 	_dataSource = [[ALApplicationTableDataSource alloc] init];
+    
 	_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, bounds.size.width, bounds.size.height) style:UITableViewStyleGrouped];
 	_tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	_tableView.delegate = self;
@@ -141,17 +153,24 @@
 	_dataSource.tableView = _tableView;
 	[self updateDataSource:nil];
 	
-	// Search Bar
-	_searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
-	_searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    _searchBar.delegate = self;
+    _searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	if ([_searchBar respondsToSelector:@selector(setUsesEmbeddedAppearance:)])
 		[_searchBar setUsesEmbeddedAppearance:true];
-	_searchBar.delegate = self;
-	
-	NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(keyboardWillShowWithNotification:) name:UIKeyboardWillShowNotification object:nil];
-	[nc addObserver:self selector:@selector(keyboardWillHideWithNotification:) name:UIKeyboardWillHideNotification object:nil];
-	
+
+    
+    searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:_searchBar contentsController:(UIViewController*)self];
+    searchDisplayController.delegate = self;
+    searchDisplayController.searchResultsDataSource = _dataSource;
+    searchDisplayController.searchResultsDelegate = self;
+    
+    UIView *tableHeaderView = [[UIView alloc] initWithFrame:searchDisplayController.searchBar.frame];
+    [tableHeaderView addSubview:searchDisplayController.searchBar];
+    [_tableView setTableHeaderView:tableHeaderView];
+    
+    isSearching = NO;
+    
 	return self;
 }
 
@@ -159,15 +178,8 @@
 {
 	((UIViewController *)self).title = @"Applications";
 	
-	UIEdgeInsets insets = UIEdgeInsetsMake(44.0f, 0, 0, 0);
-	_tableView.contentInset = insets;
-	_tableView.contentOffset = CGPointMake(0, 12.0f);
-	insets.top = 0;
-	_tableView.scrollIndicatorInsets = insets;
-	_searchBar.frame = CGRectMake(0, -44.0f, _tableView.bounds.size.width, 44.0f);
-	
-	[_tableView addSubview:_searchBar];
 	[self.view addSubview:_tableView];
+    
 	[super viewDidLoad];
 }
 
@@ -180,64 +192,37 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
 	[super viewWillDisappear:animated];
-	[_searchBar resignFirstResponder];
-}
-
--(void)keyboardWillShowWithNotification:(NSNotification*)notification
-{
-	[UIView beginAnimations:nil context:nil];
-	NSDictionary* userInfo = notification.userInfo;
-	[UIView setAnimationDuration:[[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
-	[UIView setAnimationCurve:(UIViewAnimationCurve)[[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue]];
-	CGRect keyboardFrame = CGRectZero;
-	[[userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardFrame];
-	UIEdgeInsets insets = UIEdgeInsetsMake(110.0f, 0, keyboardFrame.size.height, 0);
-	_tableView.contentInset = insets;
-	insets.top = 0;
-	_tableView.scrollIndicatorInsets = insets;
-	[UIView commitAnimations];
-}
-
-- (void)keyboardWillHideWithNotification:(NSNotification *)notification
-{
-	[UIView beginAnimations:nil context:nil];
-	NSDictionary* userInfo = notification.userInfo;
-	[UIView setAnimationDuration:[[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
-	[UIView setAnimationCurve:(UIViewAnimationCurve)[[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue]];
-    UIEdgeInsets insets = UIEdgeInsetsMake(110.0f, 0, 0, 0);
-	_tableView.contentInset = insets;
-    insets.top = 0.0f;
-    _tableView.scrollIndicatorInsets = insets;
-	[UIView commitAnimations];
-}
-
--(void)searchBarTextDidBeginEditing:(UISearchBar*)searchBar
-{
-	[_searchBar setShowsCancelButton:true animated:true];
-}
-
--(void)searchBarTextDidEndEditing:(UISearchBar*)searchBar
-{
-	[_searchBar setShowsCancelButton:false animated:true];
-}
-
--(void)searchBarSearchButtonClicked:(UISearchBar*)searchBar
-{
-	[_searchBar resignFirstResponder];
-}
-
--(void)searchBarCancelButtonClicked:(UISearchBar*)searchBar
-{
-	_searchBar.text = nil;
-	[self updateDataSource:nil];	
-	[_searchBar resignFirstResponder];
-	_tableView.contentOffset = CGPointMake(0, -44.0f);
 }
 
 -(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)searchText
 {
 	[self updateDataSource:searchText];
-    //	_tableView.contentOffset = CGPointMake(0, -44.0f);
+    [_tableView reloadData];
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    UISearchBar *searchBar = searchDisplayController.searchBar;
+    CGRect searchBarFrame = searchBar.frame;
+    
+    if (isSearching) {
+        searchBarFrame.origin.y = 0;
+    } else {
+        searchBarFrame.origin.y = MAX(0, scrollView.contentOffset.y + scrollView.contentInset.top);
+    }
+    
+    searchDisplayController.searchBar.frame = searchBarFrame;
+}
+
+- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+    isSearching = YES;
+    _dataSource.tableView = searchDisplayController.searchResultsTableView;
+}
+
+-(void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
+    isSearching = NO;
+	[self updateDataSource:nil];
+    _dataSource.tableView = _tableView;
 }
 
 -(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath

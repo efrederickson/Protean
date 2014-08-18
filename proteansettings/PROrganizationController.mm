@@ -50,7 +50,9 @@ NSString *nameForDescription(NSString *desc)
                 @"NotCharging": @"Not Charging (iPad)",
                 @"Activity": @"Loading Indicator",
                 @"com.rabih96.macvolume": @"Volume Status",
-                @"TOTAL_NOTIFICATION_COUNT": @"Total Notification Count"
+                @"TOTAL_NOTIFICATION_COUNT": @"Total Notification Count",
+                @"CallForward": @"Call Forwarding",
+                @"Service": @"Carrier"
                 };
     }
     
