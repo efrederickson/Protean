@@ -12,14 +12,10 @@
 -(NSString*) headerSubText { return @"Your status bar, your way"; }
 -(NSString*) customTitle { return @"Protean"; }
 
--(UIColor*) navigationTintColor { return [UIColor colorWithRed:11/255.0f green:234/255.0f blue:241/255.0f alpha:1.0f]; }
--(UIColor*) switchOnTintColor { return self.navigationTintColor; }
--(UIColor*) headerColor { return self.navigationTintColor; }
-
--(UIColor*) iconColor
-{
-    return self.navigationTintColor;
-}
+//-(UIColor*) navigationTintColor { return [UIColor colorWithRed:11/255.0f green:234/255.0f blue:241/255.0f alpha:1.0f]; }
+//-(UIColor*) switchOnTintColor { return self.navigationTintColor; }
+//-(UIColor*) headerColor { return self.navigationTintColor; }
+//-(UIColor*) iconColor { return self.navigationTintColor; }
 
 -(NSArray*) customSpecifiers
 {
