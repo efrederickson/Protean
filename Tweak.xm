@@ -33,6 +33,7 @@ void updateItem(int key, NSString *identifier)
     [prefs setObject:properties forKey:nKey];
 
     [prefs writeToFile:PLIST_NAME atomically:YES];
+    [Protean reloadSettings];
 }
 
 void updateItem2(int key, NSString *identifier)
@@ -77,6 +78,7 @@ void updateItem2(int key, NSString *identifier)
             [prefs setObject:tmp forKey:nKey];
 
             [prefs writeToFile:PLIST_NAME atomically:YES];
+            [Protean reloadSettings];
             return;
         }
         else if ([prefs[key2][@"identifier"] isEqual:identifier] && key == [key2 intValue])
@@ -104,6 +106,7 @@ void updateItem2(int key, NSString *identifier)
     prefs[nKey] = properties;
 
     [prefs writeToFile:PLIST_NAME atomically:YES];
+    [Protean reloadSettings];
 }
 
 NSString *nameFromItem(UIStatusBarItem *item)
