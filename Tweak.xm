@@ -38,7 +38,7 @@ void updateItem(int key, NSString *identifier)
 void updateItem2(int key, NSString *identifier)
 {
     //NSLog(@"[Protean] %@", identifier);
-    if (identifier == nil)
+    if (identifier == nil || key < 33)
         return;
 
     NSString *nKey = [NSString stringWithFormat:@"%d",key];

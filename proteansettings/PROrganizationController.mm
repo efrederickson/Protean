@@ -183,14 +183,9 @@ void updateStatusBar()
     
 	[statusBar.superview addSubview:fakeStatusBar];
     
-    //[statusBar setShowsOnlyCenterItems:YES];
-    //[statusBar setShowsOnlyCenterItems:NO];
-
 	CGRect upwards = statusBar.frame;
 	upwards.origin.y -= upwards.size.height;
 	statusBar.frame = upwards;
-    
-    //statusBar.alpha = 0;
     
 	CGFloat shrinkAmount = 5.0;
 	[UIView animateWithDuration:0.6 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void){

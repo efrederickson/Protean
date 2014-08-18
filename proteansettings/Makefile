@@ -10,7 +10,8 @@ ProteanSettings_FILES = ProteanSettings.mm \
   PROrganizationController.mm AppsController.mm \
   IconSelectorController.mm PRFlipswitchController.mm \
   PRFSSelector.mm PRBluetoothController.mm PRSystemIconsController.mm \
-  PRSysIconSelectorController.mm PRBTIconSelectorController.mm
+  PRSysIconSelectorController.mm PRBTIconSelectorController.mm \
+  PRMakersController.mm
 ProteanSettings_INSTALL_PATH = /Library/PreferenceBundles
 ProteanSettings_FRAMEWORKS = UIKit MessageUI Social QuartzCore CoreGraphics CoreBluetooth
 ProteanSettings_PRIVATE_FRAMEWORKS = Preferences BluetoothManager
@@ -19,5 +20,6 @@ ProteanSettings_LIBRARIES = applist activator objcipc flipswitch
 include $(THEOS_MAKE_PATH)/bundle.mk
 
 internal-stage::
+	$(ECHO_NOTHING)cp $(THEOS)/include/SettingsKit/Resources/*.png $(THEOS_STAGING_DIR)/Library/PreferenceBundles/ProteanSettings.bundle/$(ECHO_END)
 	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences$(ECHO_END)
 	$(ECHO_NOTHING)cp entry.plist $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences/ProteanSettings.plist$(ECHO_END)

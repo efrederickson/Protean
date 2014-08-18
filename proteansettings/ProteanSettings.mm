@@ -16,6 +16,11 @@
 -(UIColor*) switchOnTintColor { return self.navigationTintColor; }
 -(UIColor*) headerColor { return self.navigationTintColor; }
 
+-(UIColor*) iconColor
+{
+    return self.navigationTintColor;
+}
+
 -(NSArray*) customSpecifiers
 {
     return @[
@@ -77,7 +82,7 @@
                  },
              
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"This may cause minor spacing or overlap issues if items extend pass the midline of the status bar. It is, of course, libstatusbar's fault ;P."
+                @"footerText": @"This may cause minor spacing or overlap issues if items extend pass the midline of the status bar. It is, of course, libstatusbar's fault ;P. Requires a respring to fully apply."
                 },
              @{
                  @"cell": @"PSSwitchCell",
@@ -131,7 +136,29 @@
                  @"label": @"Bluetooth Devices"
                  },
              
+             @{ @"cell": @"PSGroupCell" },
+             @{
+                 @"cell": @"PSLinkCell",
+                 @"detail": @"PRMakersListController",
+                 @"label": @"Makers",
+                 @"icon": @"makers.png",
+                 @"cellClass": @"SKTintedCell",
+                 },
+             
+             @{ @"cell": @"PSGroupCell",
+                @"footerText": @"Copyright (C) 2014 Elijah Frederickson & Andrew Abosh"},
+             @{
+                 @"cell": @"PSButtonCell",
+                 @"action": @"respring",
+                 @"label": @"Respring"
+                 },
+             
              ];
+}
+
+-(void)respring
+{
+    system("killall -9 SpringBoard");
 }
 
 -(void) pushTotalNotificationCountController
