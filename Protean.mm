@@ -19,6 +19,7 @@
 - (void)_crossfadeToNewForegroundViewWithAlpha:(float)arg1;
 - (void)crossfadeTime:(BOOL)arg1 duration:(double)arg2;
 - (void)setShowsOnlyCenterItems:(BOOL)arg1;
+- (void)forceUpdateData:(BOOL)arg1;
 
 - (UIView *)snapshotViewAfterScreenUpdates:(BOOL)afterUpdates;
 -(id) superview;
@@ -310,11 +311,61 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     prefs = nil;
     [Protean getOrLoadSettings];
     if (!first)
+    {
         [PRStatusApps reloadAllImages];
+        
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+    }
     else
         first = NO;
 }
 @end
+
+BOOL isRefreshing = NO;
+void refreshStatusBar(CFNotificationCenterRef center,
+                      void *observer,
+                      CFStringRef name,
+                      const void *object,
+                      CFDictionaryRef userInfo)
+{
+    if (isRefreshing)
+        return;
+    isRefreshing = YES;
+    
+    UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
+	UIView *fakeStatusBar;
+    
+    fakeStatusBar = [statusBar snapshotViewAfterScreenUpdates:NO];
+	[statusBar.superview addSubview:fakeStatusBar];
+    
+    [statusBar setShowsOnlyCenterItems:YES];
+    [statusBar setShowsOnlyCenterItems:NO];
+    [statusBar crossfadeTime:NO duration:0.01];
+    [statusBar crossfadeTime:YES duration:0.01];
+    [statusBar forceUpdateData:YES];
+    
+	CGRect upwards = statusBar.frame;
+	upwards.origin.y -= upwards.size.height;
+	statusBar.frame = upwards;
+    
+	CGFloat shrinkAmount = 5.0;
+	[UIView animateWithDuration:0.6 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void){
+		CGRect shrinkFrame = fakeStatusBar.frame;
+		shrinkFrame.origin.x += shrinkAmount;
+		shrinkFrame.origin.y += shrinkAmount;
+		shrinkFrame.size.width -= shrinkAmount;
+		shrinkFrame.size.height -= shrinkAmount;
+		fakeStatusBar.frame = shrinkFrame;
+		fakeStatusBar.alpha = 0.0;
+        
+		CGRect downwards = statusBar.frame;
+		downwards.origin.y += downwards.size.height;
+		statusBar.frame = downwards;
+	} completion: ^(BOOL finished) {
+		[fakeStatusBar removeFromSuperview];
+        isRefreshing = NO;
+	}];
+}
 
 void reloadSettings(CFNotificationCenterRef center,
                     void *observer,
@@ -345,6 +396,9 @@ static __attribute__((constructor)) void __protean_init()
         }];
         
         CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &updateLSBItems, CFSTR("com.efrederickson.protean/updateItems"), NULL, 0);
+        
+        
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &refreshStatusBar, CFSTR("com.efrederickson.protean/refreshStatusBar"), NULL, 0);
     }
     else
     {
@@ -353,6 +407,8 @@ static __attribute__((constructor)) void __protean_init()
         }];
         
         [OBJCIPC registerIncomingMessageFromAppHandlerForMessageName:@"com.efrederickson.protean/launchQR"  handler:^NSDictionary *(NSDictionary *message) {
+            if (!message)
+                return nil;
             NSString *app = message[@"appId"];
             if (app)
                 [Protean launchQR:app];
@@ -361,6 +417,7 @@ static __attribute__((constructor)) void __protean_init()
         
     }
     
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &reloadSettings, CFSTR("com.efrederickson.protean/reloadSettings"), NULL, 0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &reloadSettings, CFSTR("com.efrederickson.protean/reloadSettings"), NULL, 0);
+    
     reloadSettings(NULL, NULL, NULL, NULL, NULL);
 }

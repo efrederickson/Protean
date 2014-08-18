@@ -175,39 +175,6 @@ UIImage *iconForDescription(NSString *desc)
     return [UIImage imageNamed:desc inBundle:imageBundle] ?: [UIImage imageNamed:@"Unknown" inBundle:imageBundle];
 }
 
-void updateStatusBar()
-{
-    UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
-    
-	UIView *fakeStatusBar;
-    
-    fakeStatusBar = [statusBar snapshotViewAfterScreenUpdates:NO];
-    
-	[statusBar.superview addSubview:fakeStatusBar];
-    
-	CGRect upwards = statusBar.frame;
-	upwards.origin.y -= upwards.size.height;
-	statusBar.frame = upwards;
-    
-	CGFloat shrinkAmount = 5.0;
-	[UIView animateWithDuration:0.6 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void){
-		CGRect shrinkFrame = fakeStatusBar.frame;
-		shrinkFrame.origin.x += shrinkAmount;
-		shrinkFrame.origin.y += shrinkAmount;
-		shrinkFrame.size.width -= shrinkAmount;
-		shrinkFrame.size.height -= shrinkAmount;
-		fakeStatusBar.frame = shrinkFrame;
-		fakeStatusBar.alpha = 0.0;
-        //statusBar.alpha = 1;
-        
-		CGRect downwards = statusBar.frame;
-		downwards.origin.y += downwards.size.height;
-		statusBar.frame = downwards;
-	} completion: ^(BOOL finished) {
-		[fakeStatusBar removeFromSuperview];
-	}];
-}
-
 NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
 
 NSDictionary *mapSettings()
@@ -349,11 +316,7 @@ NSDictionary *mapSettings()
     prefs[dict[@"key"]][@"order"] = [NSNumber numberWithInt:destinationIndexPath.row];
     
     [prefs writeToFile:PLIST_NAME atomically:YES];
-    [tableView deselectRowAtIndexPath:sourceIndexPath animated:YES];
-    [tableView reloadData];
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
-    if ([dict[@"key"] intValue] < 33 && sourceIndexPath != destinationIndexPath)
-        updateStatusBar();
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
 }
 
 - (id)initForContentSize:(CGSize)size

@@ -14,7 +14,8 @@ Protean_FILES = Tweak.xm Protean.mm \
 		IntroView/PRViewController.m \
 		IntroView/PRPage1ViewController.m \
 		IntroView/PRPage2ViewController.m \
-		IntroView/PRFinalViewController.m
+		IntroView/PRFinalViewController.m \
+		SignalRSSI.xm
 
 Protean_FRAMEWORKS = UIKit
 Protean_LIBRARIES = activator objcipc flipswitch applist

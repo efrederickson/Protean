@@ -48,6 +48,16 @@
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"normalizeLS.png"
                  },
+             @{
+                 @"cell": @"PSSwitchCell",
+                 @"default": @NO,
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"showSignalRSSI",
+                 @"label": @"Show Signal RSSI",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 @"cellClass": @"SKTintedSwitchCell",
+                 @"icon": @"normalizeLS.png"
+                 },
              
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Enabled by default if time is not aligned in the center. Unlike many other tweaks, it is compatible with LockInfo7 and Forecast."

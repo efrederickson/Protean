@@ -19,6 +19,11 @@
 #import "Auki.h"
 #import "Couria.h"
 
+@interface SBStatusBarStateAggregator
++ (id) sharedInstance;
+- (_Bool)_setItem:(int)arg1 enabled:(_Bool)arg2;
+@end
+
 @interface SBApplicationIcon (Protean2)
 -(void) noteBadgeDidChange;
 @end
