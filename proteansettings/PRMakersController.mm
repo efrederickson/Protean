@@ -109,7 +109,7 @@ hodhr\n\
     {
         if (buttonIndex == 1)
         {
-            [[UIPasteboard generalPasteboard] setValue:@"rcrepo.com" forType:kUTTypePlainText];
+            [[UIPasteboard generalPasteboard] setString:@"rcrepo.com"];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"RCRepo.com" message:@"The source link has been copied to the clipboard.\nPaste it into Cydia's \"Add Sources\" Dialog." delegate:self cancelButtonTitle:@"Launch Cydia" otherButtonTitles:nil];
             [alert setTag:34];
             [alert show];
@@ -123,7 +123,7 @@ hodhr\n\
     }
     else if (alertView.tag == 34)
     {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://sources/add"]];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://sources"]];
     }
 }
 
