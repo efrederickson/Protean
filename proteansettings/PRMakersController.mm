@@ -58,11 +58,16 @@
                 @"label": @"Recommended Themes" },
              @{
                  @"cell": @"PSLinkCell",
-                 @"label": @"OpenNotifier iOS 7 Pack",
+                 @"label": @"OpenNotifier iOS7 IconPack",
                  @"action": @"openRCRepoPack",
                  @"icon": @"rcrepopack.png"
                  },
-             
+             @{
+                 @"cell": @"PSLinkCell",
+                 @"label": @"Habesha OpenNotifier Icons",
+                 @"action": @"openHabeshaPack",
+                 @"icon": @"rhabeshapack.png"
+                 },
              
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Acknowledgments: \n\
@@ -82,6 +87,31 @@ hodhr\n\
 /u/binders_of_women_",
                 },
              ];
+}
+
+-(void) openRCRepoPack
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"3rd Party Source" message:@"This icon pack is from the Reddit community repo!\nMake sure you have rcrepo.com added as a Cydia source!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert setTag:3];
+    [alert show];
+}
+
+-(void) openHabeshaPack
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"3rd Party Package" message:@"This icon pack is from the DeviantArt.\nYou will need to download & install following the instructions on that page." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert setTag:33];
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == 3)
+    {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://package/com.md.on7"]];
+    }
+    else if (alertView.tag == 33)
+    {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://nienque.deviantart.com/art/iOS7-OpenNotifier-icons-for-Habesha-440794317"]];
+    }
 }
 
 -(void) openGithub

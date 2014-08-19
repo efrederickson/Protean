@@ -146,7 +146,7 @@
              @{
                  @"cell": @"PSLinkCell",
                  @"detail": @"PRMakersListController",
-                 @"label": @"Makers",
+                 @"label": @"Credits & Recommendations",
                  @"icon": @"makers.png",
                  @"cellClass": @"SKTintedCell",
                  },
