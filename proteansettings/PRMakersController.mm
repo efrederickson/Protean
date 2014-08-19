@@ -91,7 +91,8 @@ hodhr\n\
 
 -(void) openRCRepoPack
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"3rd Party Source" message:@"This icon pack is from the Reddit community repo!\nMake sure you have rcrepo.com added as a Cydia source!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"3rd Party Source" message:@"This icon pack is from the Reddit community repo!\nMake sure you have rcrepo.com added as a Cydia source!" delegate:self cancelButtonTitle:@"Have it" otherButtonTitles:nil];
+    [alert addButtonWithTitle:@"Add Repo"];
     [alert setTag:3];
     [alert show];
 }
@@ -106,11 +107,23 @@ hodhr\n\
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView.tag == 3)
     {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://package/com.md.on7"]];
+        if (buttonIndex == 1)
+        {
+            [[UIPasteboard generalPasteboard] setValue:@"rcrepo.com" forType:kUTTypePlainText];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"RCRepo.com" message:@"The source link has been copied to the clipboard.\nPaste it into Cydia's \"Add Sources\" Dialog." delegate:self cancelButtonTitle:@"Launch Cydia" otherButtonTitles:nil];
+            [alert setTag:34];
+            [alert show];
+        }
+        else
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://package/com.md.on7"]];
     }
     else if (alertView.tag == 33)
     {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://nienque.deviantart.com/art/iOS7-OpenNotifier-icons-for-Habesha-440794317"]];
+    }
+    else if (alertView.tag == 34)
+    {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://sources/add"]];
     }
 }
 
