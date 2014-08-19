@@ -323,7 +323,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     {
         [PRStatusApps reloadAllImages];
         
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+        //CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
     }
     else
         first = NO;
@@ -331,7 +331,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 @end
 
 BOOL isRefreshing = NO;
-int ignoreRefresh = 9;
 void refreshStatusBar(CFNotificationCenterRef center,
                       void *observer,
                       CFStringRef name,
@@ -341,14 +340,7 @@ void refreshStatusBar(CFNotificationCenterRef center,
     if (isRefreshing)
         return;
     
-    if (ignoreRefresh > 0)
-    {
-        ignoreRefresh--;
-        return;
-    }
-    
     isRefreshing = YES;
-    
     
     UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
 	UIView *fakeStatusBar;

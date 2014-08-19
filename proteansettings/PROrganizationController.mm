@@ -320,6 +320,8 @@ NSDictionary *mapSettings()
     
     [prefs writeToFile:PLIST_NAME atomically:YES];
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+    
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
 }
 
 - (id)initForContentSize:(CGSize)size
