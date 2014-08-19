@@ -23,8 +23,7 @@
 {
     return @[
              
-             @{ @"cell": @"PSGroupCell",
-                @"footerText": @"A respring may be required to fully apply changes."
+             @{ @"cell": @"PSGroupCell"
                 },
              @{
                  @"cell": @"PSSwitchCell",
@@ -37,7 +36,6 @@
                  @"icon": @"enabled.png",
                  },
              
-             @{ @"cell": @"PSGroupCell" },
              @{
                  @"cell": @"PSSwitchCell",
                  @"default": @YES,

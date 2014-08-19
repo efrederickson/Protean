@@ -3,6 +3,7 @@
 #import <UIKit/UIKit.h>
 #import <libactivator/libactivator.h>
 #import <objcipc/objcipc.h>
+#import <notify.h>
 #import "PRStatusApps.h"
 
 @interface UIApplication (Protean)
@@ -294,6 +295,14 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     if (couria)
     {
         [[couria sharedInstance] handleBulletin:bulletin];
+        return;
+    }
+    
+    id hermes = objc_getClass("GarbClass");
+    if (hermes)
+    {
+        notify_post("com.phillipt.hermes.recieved");
+        return;
     }
 }
 
@@ -322,6 +331,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 @end
 
 BOOL isRefreshing = NO;
+int ignoreRefresh = 9;
 void refreshStatusBar(CFNotificationCenterRef center,
                       void *observer,
                       CFStringRef name,
@@ -330,7 +340,15 @@ void refreshStatusBar(CFNotificationCenterRef center,
 {
     if (isRefreshing)
         return;
+    
+    if (ignoreRefresh > 0)
+    {
+        ignoreRefresh--;
+        return;
+    }
+    
     isRefreshing = YES;
+    
     
     UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
 	UIView *fakeStatusBar;
@@ -338,11 +356,12 @@ void refreshStatusBar(CFNotificationCenterRef center,
     fakeStatusBar = [statusBar snapshotViewAfterScreenUpdates:NO];
 	[statusBar.superview addSubview:fakeStatusBar];
     
+    // LOLWUT
     [statusBar setShowsOnlyCenterItems:YES];
     [statusBar setShowsOnlyCenterItems:NO];
-    [statusBar crossfadeTime:NO duration:0.01];
-    [statusBar crossfadeTime:YES duration:0.01];
-    [statusBar forceUpdateData:YES];
+    //[statusBar crossfadeTime:NO duration:0.01];
+    //[statusBar crossfadeTime:YES duration:0.01];
+    //[statusBar forceUpdateData:YES];
     
 	CGRect upwards = statusBar.frame;
 	upwards.origin.y -= upwards.size.height;

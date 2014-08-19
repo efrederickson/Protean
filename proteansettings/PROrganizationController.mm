@@ -52,7 +52,8 @@ NSString *nameForDescription(NSString *desc)
                 @"com.rabih96.macvolume": @"Volume Status",
                 @"TOTAL_NOTIFICATION_COUNT": @"Total Notification Count",
                 @"CallForward": @"Call Forwarding",
-                @"Service": @"Carrier"
+                @"Service": @"Carrier",
+                @"jzplusplus.OkSiri": @"OkSiri"
                 };
     }
     
@@ -167,6 +168,8 @@ UIImage *iconForDescription(NSString *desc)
     
     if ([desc isEqual:@"com.rabih96.macvolume"])
         desc = @"Volume Status";
+    else if ([desc isEqual:@"jzplusplus.OkSiri"])
+        desc = @"Siri";
     
     static __strong NSBundle *imageBundle = nil;
     if (imageBundle == nil)
