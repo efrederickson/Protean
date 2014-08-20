@@ -43,6 +43,14 @@
 - (UIImage*) _flatImageWithColor: (UIColor*) color;
 +(UIImage*)kitImageNamed:(NSString*)name;
 @end
+@interface IBMessageHeadsWindow : UIWindow
++ (id)sharedInstance;
+- (void)showAnimated;
+- (void)hideAnimated;
+- (void)show;
+- (void)hide;
+- (void)setShowingConversation:(_Bool)arg1;
+@end
 
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 
@@ -274,6 +282,14 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     
     if ([app isEqual:@"com.apple.MobileSMS"])
     {
+        /* DOESN'T WORK
+        id messageHeads = objc_getClass("IBMessageHeadsWindow");
+        if (messageHeads)
+        {
+            [[messageHeads sharedInstance] showAnimated];
+        }
+        */
+        
         // Auki
         id auki = objc_getClass("KJUARR");
         if (auki)
@@ -322,8 +338,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     if (!first)
     {
         [PRStatusApps reloadAllImages];
-        
-        //CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
     }
     else
         first = NO;
@@ -343,6 +357,8 @@ void refreshStatusBar(CFNotificationCenterRef center,
     isRefreshing = YES;
     
     UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
+    if (!statusBar)
+        return;
 	UIView *fakeStatusBar;
     
     fakeStatusBar = [statusBar snapshotViewAfterScreenUpdates:NO];
@@ -351,9 +367,6 @@ void refreshStatusBar(CFNotificationCenterRef center,
     // LOLWUT
     [statusBar setShowsOnlyCenterItems:YES];
     [statusBar setShowsOnlyCenterItems:NO];
-    //[statusBar crossfadeTime:NO duration:0.01];
-    //[statusBar crossfadeTime:YES duration:0.01];
-    //[statusBar forceUpdateData:YES];
     
 	CGRect upwards = statusBar.frame;
 	upwards.origin.y -= upwards.size.height;
@@ -394,7 +407,7 @@ void updateLSBItems(CFNotificationCenterRef center,
                     CFDictionaryRef userInfo)
 {
     [OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/requestUpdate" dictionary:nil replyHandler:^(NSDictionary *response) {
-        LSBitems = [response mutableCopy];
+        LSBitems = response ? [response mutableCopy] : @{ };
     }];
 }
 
@@ -403,7 +416,7 @@ static __attribute__((constructor)) void __protean_init()
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
     {
         [OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/requestUpdate" dictionary:nil replyHandler:^(NSDictionary *response) {
-            LSBitems = [response mutableCopy];
+            LSBitems = response ? [response mutableCopy] : @{ };
         }];
         
         CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &updateLSBItems, CFSTR("com.efrederickson.protean/updateItems"), NULL, 0);

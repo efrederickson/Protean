@@ -31,6 +31,9 @@ int totalBadgeCount = 0;
     
     LSStatusBarItem *item = [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",identifier] alignment:StatusBarAlignmentLeft];
     
+    if (!item)
+        return nil;
+    
     icons[identifier] = item;
     return icons[identifier];
 }
@@ -49,6 +52,8 @@ int totalBadgeCount = 0;
         return;
     
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
+    if (!item)
+        return;
     item.visible = YES;
     item.imageName = imageName;
     cachedBadgeCounts[identifier] = [NSNumber numberWithInt:count];
@@ -76,6 +81,8 @@ int totalBadgeCount = 0;
         return;
     
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
+    if (!item)
+        return;
     item.visible = YES;
     item.imageName = identifier;
 }
@@ -90,6 +97,8 @@ int totalBadgeCount = 0;
         return;
     
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
+    if (!item)
+        return;
     item.visible = YES;
     item.imageName = [Protean imageNameForIdentifier:identifier];
 }
@@ -148,7 +157,8 @@ int totalBadgeCount = 0;
     [objc_getClass("PRFSTimer") updateTimer];
     
     // Bluetooth
-    [[objc_getClass("BluetoothManager") sharedInstance] _connectedStatusChanged];
+    id bt = objc_getClass("BluetoothManager");
+    [[bt sharedInstance] _connectedStatusChanged];
 }
 
 +(void) updateTotalNotificationCountIcon

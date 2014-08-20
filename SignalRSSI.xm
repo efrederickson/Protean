@@ -16,7 +16,7 @@
 @end
 
 %hook UIStatusBarSignalStrengthItemView
-- (_UILegibilityImageSet *)contentsImage 
+- (_UILegibilityImageSet *)contentsImage
 {
     CHECK_ENABLED(%orig);
 	
