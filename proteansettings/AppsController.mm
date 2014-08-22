@@ -28,6 +28,12 @@
 - (void)viewDidAppear:(BOOL)animated;
 @end
 
+BOOL reload = NO;
+void PR_AppsControllerNeedsToReload()
+{
+    reload = YES;
+}
+
 @interface ProteanAppsController : PSViewController <UITableViewDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
 {
 	UITableView* _tableView;
@@ -37,7 +43,6 @@
     UISearchDisplayController *searchDisplayController;
 }
 @end
-
 
 @implementation ProteanAppsController
 
@@ -185,7 +190,11 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [self updateDataSource:nil];
+    if (reload)
+    {
+        [self updateDataSource:nil];
+        reload = NO;
+    }
     [super viewDidAppear:animated];
 }
 

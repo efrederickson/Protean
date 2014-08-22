@@ -138,11 +138,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     
     if (type <= 32) // System item
     {
-        /*if (type == 5)
-        {
-            LASendEventToListener(@"com.pigigaldi.vestigo");
-        }*/
-        
         NSString *ident = [NSString stringWithFormat:@"%d", type];
         
         id mode1 = [Protean getOrLoadSettings][@"tapActions"][ident];

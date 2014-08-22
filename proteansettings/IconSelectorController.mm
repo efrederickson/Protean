@@ -27,6 +27,7 @@ NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d\\d?\\d?)?
 
 NSString *checkedIcon = @"";
 int tapAction = 0;
+extern void PR_AppsControllerNeedsToReload();
 
 UIImage *imageFromName(NSString *name)
 {
@@ -266,6 +267,7 @@ UIImage *imageFromName(NSString *name)
     cell.accessoryType = UITableViewCellAccessoryCheckmark;
     [self updateSavedData];
     [tableView reloadData];
+    PR_AppsControllerNeedsToReload();
 }
 
 @end

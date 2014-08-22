@@ -65,6 +65,8 @@ int totalBadgeCount = 0;
         return;
     
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
+    if (!item)
+        return;
     item.visible = NO;
     item.imageName = @"";
     [item release];
