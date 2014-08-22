@@ -3,7 +3,7 @@
 #import <objcipc/objcipc.h>
 #import "PRSysIconSelectorController.h"
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
-extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
+
 
 @interface PSViewController ()
 -(void) setView:(id)view;

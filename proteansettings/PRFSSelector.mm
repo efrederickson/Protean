@@ -3,8 +3,6 @@
 #import <libactivator/libactivator.h>
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
-extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
-
 @interface PSViewController (Protean)
 -(void) viewDidLoad;
 -(void) viewWillDisappear:(BOOL)animated;
@@ -45,7 +43,7 @@ extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void
     prefs[@"flipswitches"][_identifier] = enabled ? @YES : @NO;
     
     [prefs writeToFile:PLIST_NAME atomically:YES];
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
 }
 
 -(id)init

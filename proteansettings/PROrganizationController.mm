@@ -7,7 +7,6 @@
 #define iPhoneTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle"
 #define iPadTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle"
 #define TemplatePath (isPad() ? iPadTemplatePath : iPhoneTemplatePath)
-extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 
 @interface PSViewController ()
 -(void) setView:(id)view;

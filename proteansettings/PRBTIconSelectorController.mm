@@ -3,8 +3,6 @@
 #import <libactivator/libactivator.h>
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
-extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
-
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
@@ -51,7 +49,7 @@ extern UIImage *imageFromName(NSString *name);
     prefs[@"tapActions"][_identifier] = [NSNumber numberWithInt:tapAction==1?2:0] ?: @0;
     
     [prefs writeToFile:PLIST_NAME atomically:YES];
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
 }
 
 -(id)init
