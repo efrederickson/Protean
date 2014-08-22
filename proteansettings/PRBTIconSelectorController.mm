@@ -115,6 +115,19 @@ extern UIImage *imageFromName(NSString *name);
     
     [self setTitle:_appName];
     
+    [statusIcons sortUsingComparator: ^(NSString* a, NSString* b) {
+        bool e1 = [checkedIcon isEqual:a];
+        bool e2 = [checkedIcon isEqual:b];
+        if (e1 && e2) {
+            return [a caseInsensitiveCompare:b];
+        } else if (e1) {
+            return (NSComparisonResult)NSOrderedAscending;
+        } else if (e2) {
+            return (NSComparisonResult)NSOrderedDescending;
+        }
+        return [a caseInsensitiveCompare:b];
+    }];
+    
 	return self;
 }
 
