@@ -52,7 +52,7 @@ static BOOL oldShowRSSI;
     if (_acceptEvent)
     {
         [self showRSSI];
-        [self performSelector:@selector(hideRSSI) withObject:nil afterDelay:1.5];
+        [self performSelector:@selector(hideRSSI) withObject:nil afterDelay:/*1.5*/2.5];
     }
     [event setHandled:YES];
 }

@@ -155,8 +155,10 @@ UIImage *imageFromName(NSString *name)
             if ([match2 rangeAtIndex:2].length != 0)
                 name = [name substringWithRange:[match2 rangeAtIndex:2]];
             
-			if (![statusIcons containsObject:name]) [statusIcons addObject:name];
+			if (![statusIcons containsObject:name])
+                [statusIcons addObject:name];
 		}
+        
 	}
     
     
@@ -180,6 +182,21 @@ UIImage *imageFromName(NSString *name)
     [self setView:_tableView];
     
     [self setTitle:_appName];
+    
+    //[statusIcons sort];
+    [statusIcons sortUsingComparator: ^(NSString* a, NSString* b) {
+        bool e1 = [checkedIcon isEqual:a];
+        bool e2 = [checkedIcon isEqual:b];
+        if (e1 && e2) {
+            return [a caseInsensitiveCompare:b];
+        } else if (e1) {
+            return (NSComparisonResult)NSOrderedAscending;
+        } else if (e2) {
+            return (NSComparisonResult)NSOrderedDescending;
+        }
+        return [a caseInsensitiveCompare:b];
+    }];
+
     
 	return self;
 }

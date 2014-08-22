@@ -140,7 +140,7 @@
         
         if (tapAction == 1) // Activator
         {
-            LAEventSettingsController *vc = [[LAEventSettingsController alloc] initWithModes:@[LAEventModeSpringBoard,LAEventModeApplication, LAEventModeLockScreen] eventName:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",_identifier]];
+            LAEventSettingsController *vc = [[LAEventSettingsController alloc] initWithModes:@[LAEventModeSpringBoard,LAEventModeApplication, LAEventModeLockScreen] eventName:[NSString stringWithFormat:@"com.efrederickson.protean-%@", _identifier]];
             [self.rootController pushViewController:vc animated:YES];
         }
     }

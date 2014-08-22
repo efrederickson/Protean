@@ -178,6 +178,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         {
             // Activator
             LASendEventWithName([NSString stringWithFormat:@"com.efrederickson.protean-%@",ident]);
+            NSLog(@"[Protean] sending activator event %@", [NSString stringWithFormat:@"com.efrederickson.protean-%@",ident]);
         }
         else if (mode == 3)
         {
@@ -202,7 +203,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     LSBitems[[NSNumber numberWithInt:LSBitems_index++]] = [identifier retain];
     [mappedIdentifiers addObject:identifier];
     
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("com.efrederickson.protean/updateItems"), nil, nil, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/updateItems"), nil, nil, YES);
 }
 
 +(void) mapIdentifierToItem:(NSString*)identifier item:(int)type
@@ -414,8 +415,7 @@ static __attribute__((constructor)) void __protean_init()
             LSBitems = response ? [response mutableCopy] : @{ };
         }];
         
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &updateLSBItems, CFSTR("com.efrederickson.protean/updateItems"), NULL, 0);
-        
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &updateLSBItems, CFSTR("com.efrederickson.protean/updateItems"), NULL, 0);
         
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &refreshStatusBar, CFSTR("com.efrederickson.protean/refreshStatusBar"), NULL, 0);
     }
