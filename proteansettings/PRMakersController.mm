@@ -70,6 +70,21 @@
                  },
              
              @{ @"cell": @"PSGroupCell",
+                @"label": @"Recommended StatusBar Tweaks" },
+             @{
+                 @"cell": @"PSLinkCell",
+                 @"label": @"Circlet (by @insanj)",
+                 @"action": @"openCirclet",
+                 @"icon": @"circlet.png"
+                 },
+             @{
+                 @"cell": @"PSLinkCell",
+                 @"label": @"NowPlayingIndicator",
+                 @"action": @"openNowPlaying",
+                 @"icon": @"circlet.png"
+                 },
+             
+             @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Acknowledgments: \n\
 \n\
 Julian Weiss - StatusBar refresh animation\n\
@@ -125,6 +140,16 @@ hodhr\n\
     {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://sources"]];
     }
+}
+
+-(void) openCirclet
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://package/com.insanj.circlet"]];
+}
+
+-(void) openNowPlaying
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://package/de.schwalzik-marvin.nowplayingstat"]];
 }
 
 -(void) openGithub
