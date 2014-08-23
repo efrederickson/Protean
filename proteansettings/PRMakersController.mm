@@ -83,6 +83,18 @@
                  @"action": @"openNowPlaying",
                  @"icon": @"circlet.png"
                  },
+             @{
+                 @"cell": @"PSLinkCell",
+                 @"label": @"Alkaline",
+                 @"action": @"openAlkaline",
+                 @"icon": @"alkaline.png"
+                 },
+             @{
+                 @"cell": @"PSLinkCell",
+                 @"label": @"Zeppelin",
+                 @"action": @"openZeppelin",
+                 @"icon": @"zeppelin.png"
+                 },
              
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Acknowledgments: \n\
@@ -102,6 +114,16 @@ hodhr\n\
 /u/binders_of_women_",
                 },
              ];
+}
+
+-(void) openZeppelin
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://package/com.alexzielenski.zeppelin"]];
+}
+
+-(void) openAlkaline
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://package/com.fortysixandtwo.alkaline"]];
 }
 
 -(void) openRCRepoPack
