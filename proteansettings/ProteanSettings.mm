@@ -124,7 +124,7 @@
              @{
                  @"cell": @"PSLinkListCell",
                  @"detail": @"ProteanAppsController",
-                 @"label": @"Status Apps"
+                 @"label": @"Applications"
                  },
              @{
                  @"cell": @"PSLinkListCell",
