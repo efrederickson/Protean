@@ -38,7 +38,8 @@ UIImage *imageFromName(NSString *name)
     
     UIImage *icon = nil;
     if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/PR_%@@2x.png",iconPath,name]])
-        icon = [UIImage imageNamed:[NSString stringWithFormat:@"PR_%@", name] inBundle:imageBundle];
+        //icon = [UIImage imageNamed:[NSString stringWithFormat:@"PR_%@", name] inBundle:imageBundle];
+        icon =  [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/PR_%@.png", iconPath, name]];
     if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_%@@2x.png",ONIconPath,name]])
         icon = [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",name]];
     if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@@2x.png",ONIconPath,name]])

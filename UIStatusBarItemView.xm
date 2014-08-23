@@ -110,12 +110,14 @@ UIImage *resizeImage(UIImage *icon)
         return cache[name];
     }
 
-    static NSBundle *imageBundle = nil;
-    if (imageBundle == nil)
-        imageBundle = [[NSBundle bundleWithPath:@"/Library/Protean/Images.bundle"] retain];
+    //static NSBundle *imageBundle = nil;
+    //if (imageBundle == nil)
+    //    imageBundle = [[NSBundle bundleWithPath:@"/Library/Protean/Images.bundle"] retain];
 
-    UIImage *image = [UIImage imageNamed:patchedName inBundle:imageBundle];
+    //UIImage *image = [UIImage imageNamed:patchedName inBundle:imageBundle];
     
+    UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", @"/Library/Protean/Images.bundle", patchedName]];
+
     if (image)
         cache[name] = image;
 
@@ -125,7 +127,7 @@ UIImage *resizeImage(UIImage *icon)
 
 /*
 %hook UIStatusBarItemView
--(id) contentsImage
+-(_UILegibilityImageSet*) contentsImage
 {
 
 }

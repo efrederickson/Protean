@@ -217,7 +217,7 @@ void PR_AppsControllerNeedsToReload()
     if (isSearching) {
         searchBarFrame.origin.y = 0;
     } else {
-        searchBarFrame.origin.y = MAX(0, scrollView.contentOffset.y + scrollView.contentInset.top);
+        searchBarFrame.origin.y = 0; //MAX(0, scrollView.contentOffset.y + scrollView.contentInset.top);
     }
     
     searchDisplayController.searchBar.frame = searchBarFrame;
