@@ -122,3 +122,13 @@ UIImage *resizeImage(UIImage *icon)
     return image;
 }
 %end
+
+/*
+%hook UIStatusBarItemView
+-(id) contentsImage
+{
+
+}
+%end
+*/
+

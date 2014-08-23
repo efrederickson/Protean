@@ -391,6 +391,7 @@ BOOL o = NO;
     id _self = %orig;
     if ([Protean canHandleTapForItem:self.item])
     {
+        CHECK_ENABLED(_self);
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(prTap:)];
         [self addGestureRecognizer:tap];
     }

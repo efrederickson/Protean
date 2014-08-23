@@ -28,9 +28,11 @@ static BOOL oldShowRSSI;
     NSMutableDictionary *prefs = [[Protean getOrLoadSettings] mutableCopy];
     prefs[@"showSignalRSSI"] = @YES;
     [prefs writeToFile:PLIST_NAME atomically:YES];
-    [Protean reloadSettings];
+    //[Protean reloadSettings];
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
     [[objc_getClass("SBStatusBarStateAggregator") sharedInstance] _setItem:3 enabled:NO];
-    [[objc_getClass("SBStatusBarStateAggregator") sharedInstance] _setItem:3 enabled:YES];
+    [[objc_getClass("SBStatusBarStateAggregator") sharedInstance] _updateSignalStrengthItem];
+    //[[objc_getClass("SBStatusBarStateAggregator") sharedInstance] _setItem:3 enabled:YES];
     
     _acceptEvent = NO;
 }
@@ -40,9 +42,9 @@ static BOOL oldShowRSSI;
     NSMutableDictionary *prefs = [[Protean getOrLoadSettings] mutableCopy];
     prefs[@"showSignalRSSI"] = oldShowRSSI ? @YES : @NO;
     [prefs writeToFile:PLIST_NAME atomically:YES];
-    [Protean reloadSettings];
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
     [[objc_getClass("SBStatusBarStateAggregator") sharedInstance] _setItem:3 enabled:NO];
-    [[objc_getClass("SBStatusBarStateAggregator") sharedInstance] _setItem:3 enabled:YES];
+    [[objc_getClass("SBStatusBarStateAggregator") sharedInstance] _updateSignalStrengthItem];
     
     _acceptEvent = YES;
 }
@@ -52,7 +54,7 @@ static BOOL oldShowRSSI;
     if (_acceptEvent)
     {
         [self showRSSI];
-        [self performSelector:@selector(hideRSSI) withObject:nil afterDelay:/*1.5*/2.5];
+        [self performSelector:@selector(hideRSSI) withObject:nil afterDelay:/*1.5*/2];
     }
     [event setHandled:YES];
 }

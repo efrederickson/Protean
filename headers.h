@@ -23,6 +23,7 @@
 + (id) sharedInstance;
 - (_Bool)_setItem:(int)arg1 enabled:(_Bool)arg2;
 - (void)_updateServiceItem;
+- (void)_updateSignalStrengthItem;
 @end
 
 @interface SBApplicationIcon (Protean2)
