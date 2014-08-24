@@ -278,8 +278,10 @@ UIImage *imageFromName(NSString *name)
         }
     }
     else
+    {
         checkedIcon = cell.textLabel.text;
-    
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+    }
     cell.accessoryType = UITableViewCellAccessoryCheckmark;
     [self updateSavedData];
     [tableView reloadData];
