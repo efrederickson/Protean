@@ -316,6 +316,13 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         notify_post("com.phillipt.hermes.recieved");
         return;
     }
+    
+    id messageHeads = objc_getClass("IBMessageHeadsWindow");
+    if (messageHeads)
+    {
+        CFNotificationCenterPostNotification (CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.ianb821.messageheads.quickCompose"), nil, nil, YES);
+        return;
+    }
 }
 
 +(void) clearBulletinsForApp:(NSString*)appId
