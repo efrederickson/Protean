@@ -178,6 +178,14 @@
 	
 	[self pushController:controller];
 }
+
+-(void)setPreferenceValue:(id)value specifier:(PSSpecifier*)specifier
+{
+	//NSLog(@"[Protean] setPreferenceValue:specifier:");
+    [super setPreferenceValue:value specifier:specifier];
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+}
+
 @end
 
 #define WBSAddMethod(_class, _sel, _imp, _type) \
