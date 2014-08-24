@@ -64,7 +64,7 @@ NSString *nameForDescription(NSString *desc)
             return @"Total Notification Count";
         
         if ([[FSSwitchPanel sharedPanel].switchIdentifiers containsObject:identifier])
-            return [[FSSwitchPanel sharedPanel] titleForSwitchIdentifier:identifier];
+            return [NSString stringWithFormat:@"%@ (Flipswitch)",[[FSSwitchPanel sharedPanel] titleForSwitchIdentifier:identifier]];
         
         ALApplicationList *al = [ALApplicationList sharedApplicationList];
         return [al.applications objectForKey:identifier] ?: identifier;
