@@ -12,7 +12,7 @@
 +(NSString*)imageNameForIdentifier:(NSString*)identifier;
 +(NSString*)imageNameForIdentifier:(NSString*)identifier withBadgeCount:(int)count;
 
-+(NSDictionary*) getOrLoadSettings;
++(NSMutableDictionary*) getOrLoadSettings;
 
 +(void) addBulletin:(BBBulletin*)bulletin forApp:(NSString*)appId;
 

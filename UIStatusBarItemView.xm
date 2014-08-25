@@ -110,13 +110,12 @@ UIImage *resizeImage(UIImage *icon)
         return cache[name];
     }
 
-    //static NSBundle *imageBundle = nil;
-    //if (imageBundle == nil)
-    //    imageBundle = [[NSBundle bundleWithPath:@"/Library/Protean/Images.bundle"] retain];
-
-    //UIImage *image = [UIImage imageNamed:patchedName inBundle:imageBundle];
-    
     UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", @"/Library/Protean/Images.bundle", patchedName]];
+
+    if (!image)
+    {
+        image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/%@.png",name]];
+    }
 
     if (image)
         cache[name] = image;
