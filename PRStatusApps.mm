@@ -48,8 +48,8 @@ int totalBadgeCount = 0;
     if (imageName == nil || [imageName isEqual:@""])
         return;
     
-    if ([UIImage kitImageNamed:imageName] == nil && [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_%@",imageName]] == nil)
-        return;
+    //if ([UIImage kitImageNamed:imageName] == nil && [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_%@",imageName]] == nil)
+    //    return;
     
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
     if (!item)

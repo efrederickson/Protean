@@ -72,17 +72,17 @@ NSMutableDictionary *LSBitems = [NSMutableDictionary dictionary];
 NSMutableArray *mappedIdentifiers = [NSMutableArray array];
 int LSBitems_index = 33;
 
-NSDictionary *prefs = nil;
+NSMutableDictionary *prefs = nil;
 
 NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
 @implementation Protean
 
-+(NSDictionary*) getOrLoadSettings
++(NSMutableDictionary*) getOrLoadSettings
 {
     if (!prefs)
     {
-        prefs = [[NSDictionary dictionaryWithContentsOfFile:PLIST_NAME] retain];
+        prefs = [[NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME] retain];
         if (prefs == nil)
             prefs = [[NSMutableDictionary dictionary] retain];
     }
@@ -178,7 +178,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         {
             // Activator
             LASendEventWithName([NSString stringWithFormat:@"com.efrederickson.protean-%@",ident]);
-            NSLog(@"[Protean] sending activator event %@", [NSString stringWithFormat:@"com.efrederickson.protean-%@",ident]);
         }
         else if (mode == 3)
         {
@@ -221,16 +220,19 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
 +(NSString*)imageNameForIdentifier:(NSString*)identifier
 {
-    static NSBundle *imageBundle;
-    if (!imageBundle) imageBundle = [[NSBundle bundleWithPath:@"/Library/Protean/Images.bundle"] retain];
+    //static NSBundle *imageBundle;
+    //if (!imageBundle) imageBundle = [[NSBundle bundleWithPath:@"/Library/Protean/Images.bundle"] retain];
+    //NSString *imageBundle = @"/Library/Protean/Images.bundle";
+    
     
     NSDictionary *dict = [Protean getOrLoadSettings];
     NSString *ret = dict[@"images"][identifier];
     if (ret == nil) return nil;
     
-    if ([UIImage imageNamed:[NSString stringWithFormat:@"PR_%@",ret] inBundle:imageBundle])
+    if ([UIImage kitImageNamed:[NSString stringWithFormat:@"PR_%@",ret]])
         return [NSString stringWithFormat:@"PR_%@",ret];
-    if ([UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",ret]])
+    //if ([UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",ret]])
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/Black_ON_%@@2x.png",ret]])
         return [NSString stringWithFormat:@"ON_%@",ret];
         
     return ret;
@@ -270,8 +272,8 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     if (!storedBulletins[app] || [storedBulletins[app] count] == 0)
         return;
     
-    __strong BBBulletin* bulletin = [[storedBulletins[app] objectAtIndex:0] copy];
-    [storedBulletins[app] removeObjectAtIndex:0];
+    __strong BBBulletin* bulletin = [[storedBulletins[app] objectAtIndex:[storedBulletins[app] count] - 1] copy];
+    //[storedBulletins[app] removeObjectAtIndex:0];
     
     if (!bulletin)
         return;
@@ -310,14 +312,15 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         return;
     }
     
-    id hermes = objc_getClass("GarbClass");
+    BOOL hermes = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/Hermes.dylib"];
     if (hermes)
     {
-        notify_post("com.phillipt.hermes.recieved");
+        notify_post("com.phillipt.hermes.responding");
+        notify_post("com.phillipt.hermes.received");
         return;
     }
     
-    id messageHeads = objc_getClass("IBMessageHeadsWindow");
+    BOOL messageHeads = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/MessageHeads.dylib"];
     if (messageHeads)
     {
         CFNotificationCenterPostNotification (CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.ianb821.messageheads.quickCompose"), nil, nil, YES);

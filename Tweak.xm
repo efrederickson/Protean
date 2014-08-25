@@ -389,6 +389,7 @@ BOOL o = NO;
 - (id)initWithItem:(id)arg1 data:(id)arg2 actions:(int)arg3 style:(id)arg4
 {
     id _self = %orig;
+
     if ([Protean canHandleTapForItem:self.item])
     {
         CHECK_ENABLED(_self);
@@ -495,8 +496,7 @@ BOOL o = NO;
                     }
                     else
                     {
-                        if ([storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]] floatValue] < r.origin.x / 2)
-                            ;
+                        if ([storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]] floatValue] < r.origin.x / 2);
                         else
                             return r;
                     }
