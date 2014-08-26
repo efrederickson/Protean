@@ -10,7 +10,7 @@ static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
 //NSString* const SilverIconRegexPattern = @"PR_(.*?)(?:@.*|)(?:~.*|).png";
 NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d\\d?\\d?)?(?:@.*|)(?:~.*|).png";
-NSMutableArray* searchedIcons;
+static NSMutableArray* searchedIcons;
 
 @interface PSViewController (Protean)
 -(void) viewDidLoad;
@@ -278,8 +278,7 @@ UIImage *imageFromName(NSString *name)
             cell.imageView.image = imageFromName(searchedIcons[indexPath.row]);
             cell.accessoryType = [cell.textLabel.text isEqual:checkedIcon] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
         }
-        else
-        if (indexPath.row == 0)
+        else if (indexPath.row == 0)
         {
             cell.textLabel.text = @"None";
             cell.imageView.image = imageFromName(@"None");
@@ -299,7 +298,7 @@ UIImage *imageFromName(NSString *name)
 {
 	UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
     
-    if (indexPath.section == 0)
+    if (indexPath.section == 0 && !isSearching)
     {
         tapAction = indexPath.row;
         
@@ -329,7 +328,6 @@ UIImage *imageFromName(NSString *name)
         if ([name rangeOfString:searchText options:NSCaseInsensitiveSearch].location != NSNotFound)
             [searchedIcons addObject:name];
     }
-    //searchedIcons = [statusIcons selectUsingSearchText:searchText];
 
     [_tableView reloadData];
 }

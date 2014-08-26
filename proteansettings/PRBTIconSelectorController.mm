@@ -8,6 +8,7 @@ static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
 NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d\\d?)?(?:@.*|)(?:~.*|).png";
+NSMutableArray *searchedIcons;
 
 @interface PSViewController (Protean)
 -(void) viewDidLoad;
@@ -127,17 +128,38 @@ extern UIImage *imageFromName(NSString *name);
         }
         return [a caseInsensitiveCompare:b];
     }];
+
+        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    _searchBar.delegate = self;
+    _searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    //if ([_searchBar respondsToSelector:@selector(setUsesEmbeddedAppearance:)])
+    //    [_searchBar setUsesEmbeddedAppearance:true];
+    
+    searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:_searchBar contentsController:(UIViewController*)self];
+    searchDisplayController.delegate = self;
+    searchDisplayController.searchResultsDataSource = self;
+    searchDisplayController.searchResultsDelegate = self;
+    
+    UIView *tableHeaderView = [[UIView alloc] initWithFrame:searchDisplayController.searchBar.frame];
+    [tableHeaderView addSubview:searchDisplayController.searchBar];
+    [_tableView setTableHeaderView:tableHeaderView];
+
+    searchedIcons = [NSMutableArray array];    
+    isSearching = NO;
     
 	return self;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return isSearching ? 1 : 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if (isSearching)
+        return searchedIcons.count;
+
     if (section == 0)
         return 2;
     else
@@ -146,6 +168,9 @@ extern UIImage *imageFromName(NSString *name);
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
+    if (isSearching)
+        return @"Icons";
+
     if (section == 0)
         return @"Icon Tap";
     else
@@ -158,7 +183,7 @@ extern UIImage *imageFromName(NSString *name);
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     
-    if (indexPath.section == 0)
+    if (indexPath.section == 0 && !isSearching)
     {
         NSString *alignmentText = @"";
         if (indexPath.row == 0)
@@ -171,7 +196,13 @@ extern UIImage *imageFromName(NSString *name);
     }
     else
     {
-        if (indexPath.row == 0)
+        if (isSearching)
+        {
+            cell.textLabel.text = searchedIcons[indexPath.row];
+            cell.imageView.image = imageFromName(searchedIcons[indexPath.row]);
+            cell.accessoryType = [cell.textLabel.text isEqual:checkedIcon] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+        }
+        else if (indexPath.row == 0)
         {
             cell.textLabel.text = @"None";
             cell.imageView.image = imageFromName(@"None");
@@ -191,7 +222,7 @@ extern UIImage *imageFromName(NSString *name);
 {
 	UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
     
-    if (indexPath.section == 0)
+    if (indexPath.section == 0 && !isSearching)
     {
         tapAction = indexPath.row;
         
@@ -211,5 +242,37 @@ extern UIImage *imageFromName(NSString *name);
     [self updateSavedData];
     [tableView reloadData];
 }
+
+-(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)searchText
+{
+    searchedIcons = [NSMutableArray array];
+
+    for (NSString* name in statusIcons)
+    {
+        if ([name rangeOfString:searchText options:NSCaseInsensitiveSearch].location != NSNotFound)
+            [searchedIcons addObject:name];
+    }
+
+    [_tableView reloadData];
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    UISearchBar *searchBar = searchDisplayController.searchBar;
+    CGRect searchBarFrame = searchBar.frame;
+    
+    searchBarFrame.origin.y = 0;
+    searchDisplayController.searchBar.frame = searchBarFrame;
+}
+
+- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+    isSearching = YES;
+}
+
+-(void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
+    isSearching = NO;
+    [_tableView reloadData];
+}
+
 
 @end
