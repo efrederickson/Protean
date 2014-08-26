@@ -16,8 +16,19 @@
 #import <SpringBoard/SBIconLabel.h>
 #import <SpringBoard/SBApplication.h>
 #import <QuartzCore/QuartzCore.h>
-#import "Auki.h"
-#import "Couria.h"
+
+@interface KJUARR : NSObject /* AUIKI */
++(BOOL)doUrThing:(BBBulletin *)bulletin;
++(BOOL)doUrThing:(BBBulletin *)bulletin withImages:(NSArray *)images;
++(BOOL)doUrThing:(BBBulletin *)bulletin withRecipients:(NSArray *)recipients;
++(BOOL)doUrThing:(BBBulletin *)bulletin withImages:(NSArray *)images recipients:(NSArray *)recipients;
+@end
+
+@interface Couria : NSObject /* COURIA */
++ (Couria *)sharedInstance; // You should always use this shared instance when needed.
+- (void)presentControllerForApplication:(NSString *)applicationIdentifier user:(NSString *)userIdentifier; // Manually present a quick compose view controller. If applicationIdentifier has not been registered, nothing will happen. If userIdentifier is nil and getContacts: has been implemented in the data source, contacts search view will be showed.
+- (void)handleBulletin:(BBBulletin *)bulletin; // Manually activate action of a bulletin. You may find useful if you are making some notifications tweaks.
+@end
 
 @interface SBStatusBarStateAggregator
 + (id) sharedInstance;
