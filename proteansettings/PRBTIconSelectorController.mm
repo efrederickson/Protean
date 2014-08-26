@@ -8,7 +8,7 @@ static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
 NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d\\d?)?(?:@.*|)(?:~.*|).png";
-NSMutableArray *searchedIcons;
+static NSMutableArray *searchedIcons;
 
 @interface PSViewController (Protean)
 -(void) viewDidLoad;
