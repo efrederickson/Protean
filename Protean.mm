@@ -262,6 +262,8 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     // We are obviously SpringBoard
     
     storedBulletins[appId] = storedBulletins[appId] ?: [NSMutableArray array];
+    if ([storedBulletins containsObject:bulletin])
+        return;
     [(NSMutableArray*)storedBulletins[appId] insertObject:bulletin atIndex:0];
 }
 
@@ -272,8 +274,8 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     if (!storedBulletins[app] || [storedBulletins[app] count] == 0)
         return;
     
-    __strong BBBulletin* bulletin = [[storedBulletins[app] objectAtIndex:[storedBulletins[app] count] - 1] copy];
-    //[storedBulletins[app] removeObjectAtIndex:0];
+    __strong BBBulletin* bulletin = [[storedBulletins[app] objectAtIndex:0] copy];
+    [storedBulletins[app] removeObjectAtIndex:0];
     
     if (!bulletin)
         return;

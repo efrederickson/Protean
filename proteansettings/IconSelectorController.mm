@@ -229,7 +229,7 @@ UIImage *imageFromName(NSString *name)
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (isSearching)
-        return searchedIcons.count;
+        return searchedIcons ? searchedIcons.count : 0;
 
     if (section == 0)
         return 4;
@@ -275,7 +275,7 @@ UIImage *imageFromName(NSString *name)
         if (isSearching)
         {
             cell.textLabel.text = searchedIcons[indexPath.row];
-            cell.imageView.image = imageFromName(searchedIcons[indexPath.row]);
+            cell.imageView.image = imageFromName(searchedIcons[indexPath.row] ?: @"");
             cell.accessoryType = [cell.textLabel.text isEqual:checkedIcon] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
         }
         else if (indexPath.row == 0)
@@ -325,7 +325,8 @@ UIImage *imageFromName(NSString *name)
 
     for (NSString* name in statusIcons)
     {
-        if ([name rangeOfString:searchText options:NSCaseInsensitiveSearch].location != NSNotFound)
+        NSRange range = [name rangeOfString:searchText options:NSCaseInsensitiveSearch];
+        if (range && range.location != NSNotFound)
             [searchedIcons addObject:name];
     }
 
