@@ -297,7 +297,6 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 - (id) initWithIdentifier: (NSString*) identifier alignment: (StatusBarAlignment) orig_alignment
 {
     CHECK_ENABLED(%orig);
-
     int alignment = (int)orig_alignment;
 
     NSDictionary *prefs = [Protean getOrLoadSettings];
@@ -589,7 +588,7 @@ void launchApp(CFNotificationCenterRef center,
 
 %ctor
 {
-    dlopen("/Library/MobileSubstrate/libstatusbar.dylib", RTLD_NOW | RTLD_GLOBAL);
+    dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar.dylib", RTLD_NOW | RTLD_GLOBAL);
 
     %init;
     

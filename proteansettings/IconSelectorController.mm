@@ -326,7 +326,7 @@ UIImage *imageFromName(NSString *name)
     for (NSString* name in statusIcons)
     {
         NSRange range = [name rangeOfString:searchText options:NSCaseInsensitiveSearch];
-        if (range && range.location != NSNotFound)
+        if (range.location != NSNotFound)
             [searchedIcons addObject:name];
     }
 

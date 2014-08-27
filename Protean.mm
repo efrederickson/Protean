@@ -124,7 +124,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         
         id mode1 = [Protean getOrLoadSettings][@"tapActions"][ident];
         int mode = mode1 ? [mode1 intValue] : 0;
-        
+
         if (mode == 1 || mode == 2 || mode == 3)
             return YES;
     }
@@ -162,7 +162,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         
         id mode1 = [Protean getOrLoadSettings][@"tapActions"][ident];
         int mode = mode1 ? [mode1 intValue] : 0;
-        
+
         if (mode == 0)
         {
             return nil;
@@ -199,6 +199,9 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 {
     if ([mappedIdentifiers containsObject:identifier])
         return;
+
+    NSLog(@"[Protean] mapIdentifierToItem %@ %d", identifier, LSBitems_index);
+
     LSBitems[[NSNumber numberWithInt:LSBitems_index++]] = [identifier retain];
     [mappedIdentifiers addObject:identifier];
     
@@ -262,7 +265,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     // We are obviously SpringBoard
     
     storedBulletins[appId] = storedBulletins[appId] ?: [NSMutableArray array];
-    if ([storedBulletins containsObject:bulletin])
+    if ([storedBulletins[appId] containsObject:bulletin])
         return;
     [(NSMutableArray*)storedBulletins[appId] insertObject:bulletin atIndex:0];
 }
