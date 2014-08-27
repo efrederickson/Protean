@@ -200,8 +200,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     if ([mappedIdentifiers containsObject:identifier])
         return;
 
-    NSLog(@"[Protean] mapIdentifierToItem %@ %d", identifier, LSBitems_index);
-
     LSBitems[[NSNumber numberWithInt:LSBitems_index++]] = [identifier retain];
     [mappedIdentifiers addObject:identifier];
     
