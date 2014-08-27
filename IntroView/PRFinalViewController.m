@@ -17,6 +17,8 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        self.view.backgroundColor = [UIColor whiteColor];
+
         mainLabel = [[UILabel alloc] init];
         mainLabel.text = @"Protean";
         mainLabel.textColor = [UIColor darkGrayColor];
@@ -27,17 +29,19 @@
         [self.view addSubview:mainLabel];
         
         subLabel = [[UILabel alloc] init];
-        subLabel.text = @"You are now ready to use Protean";
+        subLabel.text = @"Your status bar, your way.\n\nAdd Applications, Flipswitches, Bluetooth devices, and more to your status bar.\n\nCustomize organization, visibility, and layout.\n\nCustomize the battery percentage string!\nAnd much more.";
         subLabel.textColor = [UIColor darkGrayColor];
         subLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:20];
-        subLabel.frame = CGRectMake(0, 55, [UIScreen mainScreen].bounds.size.width, 100);
+        subLabel.frame = CGRectMake(0, 55, [UIScreen mainScreen].bounds.size.width, 400);
         subLabel.textAlignment = NSTextAlignmentCenter;
         subLabel.alpha = 0;
+        subLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        subLabel.numberOfLines = 12;
         [self.view addSubview:subLabel];
         
         closeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [closeButton setTitle:@"Get started!" forState:UIControlStateNormal];
-        closeButton.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width-200)/2, 150, 200, 20);
+        closeButton.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width-200)/2, 450, 200, 20);
         [closeButton addTarget:self action:@selector(closeMe) forControlEvents:UIControlEventTouchUpInside];
         closeButton.alpha = 0;
         closeButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:25];

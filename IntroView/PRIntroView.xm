@@ -1,5 +1,6 @@
 #import "PRViewController.h"
 #import "../Protean.h"
+#import "PRFinalViewController.h"
 
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
@@ -21,8 +22,8 @@ UIWindow *window;
     if ([self hasAnyLockState])
         return;
         
-    if ([[Protean getOrLoadSettings][@"hasShownIntro"] boolValue] == YES)
-        return;
+    //if ([[Protean getOrLoadSettings][@"hasShownIntro"] boolValue] == YES)
+    //    return;
         
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME];
     dict[@"hasShownIntro"] = @YES;
@@ -30,7 +31,7 @@ UIWindow *window;
     [Protean reloadSettings];
 
     window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    UIViewController *viewController = [[PRViewController alloc] init];
+    UIViewController *viewController = [[/*PRViewController*/PRFinalViewController alloc] init];
     window.rootViewController = viewController;
 
     [window makeKeyAndVisible];
