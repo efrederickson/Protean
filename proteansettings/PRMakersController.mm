@@ -73,7 +73,13 @@
                 @"label": @"Recommended StatusBar Tweaks" },
              @{
                  @"cell": @"PSLinkCell",
-                 @"label": @"Circlet (by @insanj)",
+                 @"label": @"RSSIPeek",
+                 @"action": @"openRSSIPeek",
+                 @"icon": @"rssipeek.png"
+                 },
+             @{
+                 @"cell": @"PSLinkCell",
+                 @"label": @"Circlet",
                  @"action": @"openCirclet",
                  @"icon": @"circlet.png"
                  },
@@ -114,6 +120,11 @@ hodhr\n\
 /u/binders_of_women_",
                 },
              ];
+}
+
+-(void) openRSSIPeek
+{
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://package/com.efrederickson.rssipeek"]];
 }
 
 -(void) openZeppelin

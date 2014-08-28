@@ -220,12 +220,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 }
 
 +(NSString*)imageNameForIdentifier:(NSString*)identifier
-{
-    //static NSBundle *imageBundle;
-    //if (!imageBundle) imageBundle = [[NSBundle bundleWithPath:@"/Library/Protean/Images.bundle"] retain];
-    //NSString *imageBundle = @"/Library/Protean/Images.bundle";
-    
-    
+{    
     NSDictionary *dict = [Protean getOrLoadSettings];
     NSString *ret = dict[@"images"][identifier];
     if (ret == nil) return nil;
