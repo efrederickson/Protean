@@ -229,7 +229,9 @@ UIImage *imageFromName(NSString *name)
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (isSearching)
-        return searchedIcons ? searchedIcons.count : 0;
+    {
+        return searchedIcons.count;
+    }
 
     if (section == 0)
         return 4;
@@ -254,7 +256,7 @@ UIImage *imageFromName(NSString *name)
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     
-    if (indexPath.section == 0 && !isSearching)
+    if (indexPath.section == 0 && isSearching == NO)
     {
         NSString *alignmentText = @"";
         if (indexPath.row == 0)
@@ -274,9 +276,10 @@ UIImage *imageFromName(NSString *name)
     {
         if (isSearching)
         {
-            cell.textLabel.text = searchedIcons[indexPath.row];
-            cell.imageView.image = imageFromName(searchedIcons[indexPath.row] ?: @"");
-            cell.accessoryType = [cell.textLabel.text isEqual:checkedIcon] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+            NSString *name = searchedIcons.count < indexPath.row ? @"" : searchedIcons[indexPath.row];
+            cell.textLabel.text = name;
+            cell.imageView.image = imageFromName(name);
+            cell.accessoryType = [name isEqual:checkedIcon] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
         }
         else if (indexPath.row == 0)
         {

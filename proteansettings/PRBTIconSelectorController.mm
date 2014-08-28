@@ -198,9 +198,10 @@ extern UIImage *imageFromName(NSString *name);
     {
         if (isSearching)
         {
-            cell.textLabel.text = searchedIcons[indexPath.row];
-            cell.imageView.image = imageFromName(searchedIcons[indexPath.row]);
-            cell.accessoryType = [cell.textLabel.text isEqual:checkedIcon] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+            NSString *name = searchedIcons.count < indexPath.row ? @"" : searchedIcons[indexPath.row];
+            cell.textLabel.text = name;
+            cell.imageView.image = imageFromName(name);
+            cell.accessoryType = [name isEqual:checkedIcon] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
         }
         else if (indexPath.row == 0)
         {
