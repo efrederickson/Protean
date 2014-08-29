@@ -54,7 +54,8 @@ NSString *nameForDescription(NSString *desc)
                 @"Service": @"Carrier",
                 @"jzplusplus.OkSiri": @"OkSiri",
                 @"phantom.coke": @"Phantom",
-                @"com.lablabla.muteicon": @"MuteIcon"
+                @"com.lablabla.muteicon": @"MuteIcon",
+                @"ws.hbang.typestatus.icon": @"TypeStatus"
                 };
     }
     
