@@ -52,7 +52,9 @@ NSString *nameForDescription(NSString *desc)
                 @"TOTAL_NOTIFICATION_COUNT": @"Total Notification Count",
                 @"CallForward": @"Call Forwarding",
                 @"Service": @"Carrier",
-                @"jzplusplus.OkSiri": @"OkSiri"
+                @"jzplusplus.OkSiri": @"OkSiri",
+                @"phantom.coke": @"Phantom",
+                @"com.lablabla.muteicon": @"MuteIcon"
                 };
     }
     
@@ -169,6 +171,10 @@ UIImage *iconForDescription(NSString *desc)
         desc = @"Volume Status";
     else if ([desc isEqual:@"jzplusplus.OkSiri"])
         desc = @"Siri";
+    else if ([desc isEqual:@"phantom.coke"])
+        desc = @"Phantom";
+    else if ([desc isEqual:@"com.lablabla.muteicon"])
+        desc = @"MuteIcon";
     
     static __strong NSBundle *imageBundle = nil;
     if (imageBundle == nil)
