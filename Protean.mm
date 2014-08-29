@@ -94,7 +94,15 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 +(BOOL) canHandleTapForItem:(UIStatusBarItem*)item
 {
     int type = MSHookIvar<int>(item, "_type");
-    
+
+    if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
+        return [[OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/canHandleTap" dictionary:@{ @"type":[NSNumber numberWithInt:type]}][@"canHandleTap"] boolValue];
+    else 
+        return [Protean _canHandleTapForItem:type];
+}
+
++(BOOL) _canHandleTapForItem:(int)type
+{
     if (type <= 32) // System item
     {
         if (type == 5)
@@ -134,7 +142,19 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
 +(id) HandlerForTapOnItem:(UIStatusBarItem*)item
 {
+
     int type = MSHookIvar<int>(item, "_type");
+
+    if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
+        [OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/handleTap" dictionary:@{ @"type":[NSNumber numberWithInt:type]}];
+    else 
+        [Protean HandlerForTapOnItemWithType:type];
+
+    return nil;
+}
+
++(void) HandlerForTapOnItemWithType:(int)type
+{
     
     if (type <= 32) // System item
     {
@@ -144,7 +164,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         int mode = mode1 ? [mode1 intValue] : 0;
         
         if (mode == 0)
-            return nil;
+            return;
         else if (mode == 2)
         {
             // Activator
@@ -165,7 +185,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
         if (mode == 0)
         {
-            return nil;
+            return;
         }
         else if (mode == 1)
         {
@@ -192,7 +212,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
             NSLog(@"[Protean] invalid IconTap action: %d", mode);
     }
     
-    return nil;
+    return;
 }
 
 +(void) mapIdentifierToItem:(NSString*)identifier
@@ -442,6 +462,20 @@ static __attribute__((constructor)) void __protean_init()
             return nil;
         }];
         
+        [OBJCIPC registerIncomingMessageFromAppHandlerForMessageName:@"com.efrederickson.protean/handleTap" handler:^NSDictionary *(NSDictionary *message) {
+            if (!message) return nil;
+            NSNumber *type = message[@"type"];
+            if (!type) return nil;
+            [Protean HandlerForTapOnItemWithType:[type intValue]];
+            return nil;
+        }];
+
+        [OBJCIPC registerIncomingMessageFromAppHandlerForMessageName:@"com.efrederickson.protean/canHandleTap" handler:^NSDictionary *(NSDictionary *message) {
+            if (!message) return @{@"canHandleTap": @NO};
+            NSNumber *type = message[@"type"];
+            if (!type) return @{@"canHandleTap": @NO};
+            return @{ @"canHandleTap": [Protean _canHandleTapForItem:[type intValue]]?@YES:@NO };
+        }];
     }
     
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &reloadSettings, CFSTR("com.efrederickson.protean/reloadSettings"), NULL, 0);
