@@ -324,7 +324,11 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         return;
     }
 
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Protean" message:[NSString stringWithFormat:@"No associated Quick-Reply for app %@",app] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    NSString *messagesText = @"";
+    if ([app isEqual:@"com.apple.MobileSMS"])
+        messagesText = @". A recommended QuickReply for Messages is BiteSMS.";
+
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Protean" message:[NSString stringWithFormat:@"No associated Quick-Reply for app %@%@",app,messagesText] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [alert show];
 }
 
