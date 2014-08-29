@@ -207,7 +207,6 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
         [itemTypes addObject:[NSNumber numberWithInt:arg1]];
         if (name != nil)
             updateItem(arg1, name);
-
     }
 
     return item;
@@ -394,7 +393,7 @@ BOOL o = NO;
 
 
 %hook UIStatusBarItemView
-/*-(void)setUserInteractionEnabled:(BOOL)enabled
+-(void)setUserInteractionEnabled:(BOOL)enabled
 { 
     CHECK_ENABLED2(%orig);
 
@@ -402,7 +401,7 @@ BOOL o = NO;
         %orig(YES); 
     else
         %orig;
-}*/
+}
 
 - (id)initWithItem:(id)arg1 data:(id)arg2 actions:(int)arg3 style:(id)arg4
 {
@@ -414,6 +413,7 @@ BOOL o = NO;
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(prTap:)];
         [self addGestureRecognizer:tap];
     }
+
     return _self;
 }
 

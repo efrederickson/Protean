@@ -94,15 +94,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 +(BOOL) canHandleTapForItem:(UIStatusBarItem*)item
 {
     int type = MSHookIvar<int>(item, "_type");
-
-    if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
-        return [[OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/canHandleTap" dictionary:@{ @"type":[NSNumber numberWithInt:type]}][@"canHandleTap"] boolValue];
-    else 
-        return [Protean _canHandleTapForItem:type];
-}
-
-+(BOOL) _canHandleTapForItem:(int)type
-{
+    
     if (type <= 32) // System item
     {
         if (type == 5)
@@ -126,7 +118,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     }
     else
     {
-        NSString *ident = [Protean mappedIdentifierForItem:type];
+        NSString *ident = [Protean getOrLoadSettings][[NSString stringWithFormat:@"%d",type]][@"identifier"]; //[Protean mappedIdentifierForItem:type];
         if ([ident hasPrefix:@"com.efrederickson.protean-"])
             ident = [ident substringFromIndex:26];
         
@@ -142,19 +134,8 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
 +(id) HandlerForTapOnItem:(UIStatusBarItem*)item
 {
-
+    NSLog(@"[Protean] HandlerForTapOnItem");
     int type = MSHookIvar<int>(item, "_type");
-
-    if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
-        [OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/handleTap" dictionary:@{ @"type":[NSNumber numberWithInt:type]}];
-    else 
-        [Protean HandlerForTapOnItemWithType:type];
-
-    return nil;
-}
-
-+(void) HandlerForTapOnItemWithType:(int)type
-{
     
     if (type <= 32) // System item
     {
@@ -164,7 +145,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         int mode = mode1 ? [mode1 intValue] : 0;
         
         if (mode == 0)
-            return;
+            return nil;
         else if (mode == 2)
         {
             // Activator
@@ -176,7 +157,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     }
     else
     {
-        NSString *ident = [Protean mappedIdentifierForItem:type];
+        NSString *ident = [Protean getOrLoadSettings][[NSString stringWithFormat:@"%d",type]][@"identifier"]; //[Protean mappedIdentifierForItem:type];
         if ([ident hasPrefix:@"com.efrederickson.protean-"])
             ident = [ident substringFromIndex:26];
         
@@ -185,7 +166,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
         if (mode == 0)
         {
-            return;
+            return nil;
         }
         else if (mode == 1)
         {
@@ -212,8 +193,9 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
             NSLog(@"[Protean] invalid IconTap action: %d", mode);
     }
     
-    return;
+    return nil;
 }
+
 
 +(void) mapIdentifierToItem:(NSString*)identifier
 {
@@ -288,7 +270,12 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     // Launch QR here
     
     if (!storedBulletins[app] || [storedBulletins[app] count] == 0)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Protean" message:[NSString stringWithFormat:@"No bulletins found for app %@",app] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+
         return;
+    }
     
     __strong BBBulletin* bulletin = [[storedBulletins[app] objectAtIndex:0] copy];
     [storedBulletins[app] removeObjectAtIndex:0];
@@ -298,14 +285,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     
     if ([app isEqual:@"com.apple.MobileSMS"])
     {
-        /* DOESN'T WORK
-        id messageHeads = objc_getClass("IBMessageHeadsWindow");
-        if (messageHeads)
-        {
-            [[messageHeads sharedInstance] showAnimated];
-        }
-        */
-        
         // Auki
         id auki = objc_getClass("KJUARR");
         if (auki)
@@ -344,6 +323,9 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         CFNotificationCenterPostNotification (CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.ianb821.messageheads.quickCompose"), nil, nil, YES);
         return;
     }
+
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Protean" message:[NSString stringWithFormat:@"No associated Quick-Reply for app %@",app] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
 }
 
 +(void) clearBulletinsForApp:(NSString*)appId
@@ -460,21 +442,6 @@ static __attribute__((constructor)) void __protean_init()
             if (app)
                 [Protean launchQR:app];
             return nil;
-        }];
-        
-        [OBJCIPC registerIncomingMessageFromAppHandlerForMessageName:@"com.efrederickson.protean/handleTap" handler:^NSDictionary *(NSDictionary *message) {
-            if (!message) return nil;
-            NSNumber *type = message[@"type"];
-            if (!type) return nil;
-            [Protean HandlerForTapOnItemWithType:[type intValue]];
-            return nil;
-        }];
-
-        [OBJCIPC registerIncomingMessageFromAppHandlerForMessageName:@"com.efrederickson.protean/canHandleTap" handler:^NSDictionary *(NSDictionary *message) {
-            if (!message) return @{@"canHandleTap": @NO};
-            NSNumber *type = message[@"type"];
-            if (!type) return @{@"canHandleTap": @NO};
-            return @{ @"canHandleTap": [Protean _canHandleTapForItem:[type intValue]]?@YES:@NO };
         }];
     }
     
