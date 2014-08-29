@@ -7,6 +7,7 @@ if ((_enabled ? [_enabled boolValue] : YES) == NO) \
 
 #define CHECK_ENABLED2(x) \
 id _enabled = [Protean getOrLoadSettings][@"enabled"]; \
-if ((_enabled ? [_enabled boolValue] : YES) == NO) \
+if ((_enabled ? [_enabled boolValue] : YES) == NO) { \
 x; \
-return;
+return;\
+}

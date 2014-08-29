@@ -394,7 +394,7 @@ BOOL o = NO;
 
 
 %hook UIStatusBarItemView
--(void)setUserInteractionEnabled:(BOOL)enabled
+/*-(void)setUserInteractionEnabled:(BOOL)enabled
 { 
     CHECK_ENABLED2(%orig);
 
@@ -402,7 +402,7 @@ BOOL o = NO;
         %orig(YES); 
     else
         %orig;
-}
+}*/
 
 - (id)initWithItem:(id)arg1 data:(id)arg2 actions:(int)arg3 style:(id)arg4
 {

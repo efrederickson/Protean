@@ -65,6 +65,25 @@
 }
 %end
 
+%hook SBLockScreenView
+- (void)setTopGrabberHidden:(_Bool)arg1 forRequester:(id)arg2
+{
+    CHECK_ENABLED2(%orig);
+
+    id item = [Protean getOrLoadSettings][@"showLSTime"];
+    id time = [Protean getOrLoadSettings][@"0"];
+    int alignment = time && time[@"alignment"] ? [time[@"alignment"] intValue] : 4;
+    if ((item ? [item boolValue] : YES) || (alignment == 0 || alignment == 1))
+    {
+        %orig(YES, arg2);
+        return;
+    }
+    
+    %orig;
+}
+//- (_Bool)isTopGrabberHidden;
+%end
+
 /*
 %ctor
 {
