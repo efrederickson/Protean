@@ -2,6 +2,7 @@
 #import "Protean.h"
 #import "PRStatusApps.h"
 #import <flipswitch/Flipswitch.h>
+#import "PlistValidation.h"
 
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 
@@ -32,7 +33,13 @@ void updateItem(int key, NSString *identifier)
     [properties setObject:nKey forKey:@"key"];
     [prefs setObject:properties forKey:nKey];
 
-    [prefs writeToFile:PLIST_NAME atomically:YES];
+    if (![prefs isValidPList])
+    {
+        NSLog(@"[Protean] invalid plist!");
+        [NSDictionary validatePList:prefs withDepth:0 verbose:YES];
+    }
+    else
+        [prefs writeToFile:PLIST_NAME atomically:YES];
     [Protean reloadSettings];
 }
 
@@ -77,7 +84,13 @@ void updateItem2(int key, NSString *identifier)
 
             [prefs setObject:tmp forKey:nKey];
 
-            [prefs writeToFile:PLIST_NAME atomically:YES];
+            if (![prefs isValidPList])
+            {
+                NSLog(@"[Protean] invalid plist!");
+                [NSDictionary validatePList:prefs withDepth:0 verbose:YES];
+            }
+            else
+                [prefs writeToFile:PLIST_NAME atomically:YES];
             [Protean reloadSettings];
             return;
         }
@@ -105,7 +118,13 @@ void updateItem2(int key, NSString *identifier)
     properties[@"key"] = nKey;
     prefs[nKey] = properties;
 
-    [prefs writeToFile:PLIST_NAME atomically:YES];
+    if (![prefs isValidPList])
+    {
+        NSLog(@"[Protean] invalid plist!");
+        [NSDictionary validatePList:prefs withDepth:0 verbose:YES];
+    }
+    else
+        [prefs writeToFile:PLIST_NAME atomically:YES];
     [Protean reloadSettings];
 }
 
