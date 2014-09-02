@@ -55,7 +55,8 @@ NSString *nameForDescription(NSString *desc)
                 @"jzplusplus.OkSiri": @"OkSiri",
                 @"phantom.coke": @"Phantom",
                 @"com.lablabla.muteicon": @"MuteIcon",
-                @"ws.hbang.typestatus.icon": @"TypeStatus"
+                @"ws.hbang.typestatus.icon": @"TypeStatus",
+                @"com.sassoty.bulb": @"Bulb"
                 };
     }
     
@@ -176,6 +177,8 @@ UIImage *iconForDescription(NSString *desc)
         desc = @"Phantom";
     else if ([desc isEqual:@"com.lablabla.muteicon"])
         desc = @"MuteIcon";
+    else if ([desc isEqual:@"com.sassoty.bulb"])
+        desc = @"Bulb";
     
     static __strong NSBundle *imageBundle = nil;
     if (imageBundle == nil)

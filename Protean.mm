@@ -282,6 +282,8 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     
     if (!bulletin)
         return;
+
+    BOOL success = NO;
     
     if ([app isEqual:@"com.apple.MobileSMS"])
     {
@@ -297,7 +299,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         id bitesms = objc_getClass("BSQRController");
         if (bitesms)
         {
-            [bitesms maybeLaunchQRFromBulletin:bulletin];
+            success = [bitesms maybeLaunchQRFromBulletin:bulletin];
             return;
         }
     }
@@ -320,7 +322,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     BOOL messageHeads = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/MessageHeads.dylib"];
     if (messageHeads)
     {
-        CFNotificationCenterPostNotification (CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.ianb821.messageheads.quickCompose"), nil, nil, YES);
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.ianb821.messageheads.quickCompose"), nil, nil, YES);
         return;
     }
 
@@ -450,6 +452,5 @@ static __attribute__((constructor)) void __protean_init()
     }
     
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &reloadSettings, CFSTR("com.efrederickson.protean/reloadSettings"), NULL, 0);
-    
     reloadSettings(NULL, NULL, NULL, NULL, NULL);
 }

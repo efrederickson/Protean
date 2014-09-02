@@ -3,13 +3,31 @@
 #import <SettingsKit/SKTintedListController.h>
 #import <objc/runtime.h>
 #import "IconSelectorController.h"
+#import <MessageUI/MFMailComposeViewController.h>
 
-@interface ProteanSettingsListController : SKTintedListController<SKListControllerProtocol>
+@interface PSListController (SettingsKit)
+-(UIView*)view;
+-(UINavigationController*)navigationController;
+-(void)viewWillAppear:(BOOL)animated;
+-(void)viewWillDisappear:(BOOL)animated;
+-(void)viewDidDisappear:(BOOL)animated;
+
+- (void)presentViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion;
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion;
+-(UINavigationController*)navigationController;
+
+-(void)loadView;
+@end
+
+@interface ProteanSettingsListController : SKTintedListController<SKListControllerProtocol, MFMailComposeViewControllerDelegate>
+@end
+
+@interface PRAdvancedSettingsListController : SKTintedListController<SKListControllerProtocol>
 @end
 
 @implementation ProteanSettingsListController
 -(NSString*) headerText { return @"Protean"; }
--(NSString*) headerSubText { return @"Your status bar, your way"; }
+-(NSString*) headerSubText { return NO ? @"Your status bar, your way" : @"By Elijah and Andrew"; }
 -(NSString*) customTitle { return @"Protean"; }
 
 -(NSString*) shareMessage { return @"I'm using #Protean by @daementor and @drewplex: your status bar, your way."; }
@@ -18,6 +36,7 @@
 //-(UIColor*) switchOnTintColor { return self.navigationTintColor; }
 //-(UIColor*) headerColor { return self.navigationTintColor; }
 -(UIColor*) iconColor { return [UIColor colorWithRed:11/255.0f green:234/255.0f blue:241/255.0f alpha:1.0f]; }
+-(UIColor*) headerColor { return [UIColor colorWithRed:74/255.0f green:74/255.0f blue:74/255.0f alpha:1.0f]; }
 
 -(NSArray*) customSpecifiers
 {
@@ -35,8 +54,126 @@
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"enabled.png",
                  },
-             
+
+             @{ @"cell": @"PSGroupCell",
+                @"footerText": @"Items do not show up until they have appeared in your status bar. Also, due to the way iOS works, if there are multiple items in the Center, they will not all show up. If you change an item that is from libstatusbar and not a stock item, you will need to respring to apply changes (that is a libstatusbar limitation); another libstatusbar limitation is that libstatusbar items cannot be in the center."
+                },
              @{
+                 @"cell": @"PSLinkListCell",
+                 @"detail": @"PROrganizationController",
+                 @"label": @"Organization"
+                 },
+             
+             @{ @"cell": @"PSGroupCell",
+                @"footerText": @"Select applications, flipswitches, etc and glyphs to show in the status bar (similar to OpenNotifier)"
+                },
+             @{
+                 @"cell": @"PSLinkListCell",
+                 @"action": @"pushTotalNotificationCountController",
+                 @"label": @"Total Notification Count"
+                 },
+             @{
+                 @"cell": @"PSLinkListCell",
+                 @"detail": @"ProteanAppsController",
+                 @"label": @"Applications"
+                 },
+             @{
+                 @"cell": @"PSLinkListCell",
+                 @"detail": @"PRSystemIconsController",
+                 @"label": @"System Icons"
+                 },
+             @{
+               @"cell": @"PSLinkListCell",
+               @"detail": @"PRFlipswitchController",
+               @"label": @"Flipswitches"
+               },
+             @{
+                 @"cell": @"PSLinkListCell",
+                 @"detail": @"PRBluetoothController",
+                 @"label": @"Bluetooth Devices"
+                 },
+            @{ },
+            @{
+                @"cell": @"PSLinkListCell",
+                @"detail": @"PRAdvancedSettingsListController",
+                @"label": @"Advanced Settings"
+            },
+             
+             @{ @"cell": @"PSGroupCell" },
+             @{
+                 @"cell": @"PSLinkCell",
+                 @"detail": @"PRMakersListController",
+                 @"label": @"Credits & Recommendations",
+                 @"icon": @"makers.png",
+                 @"cellClass": @"SKTintedCell",
+                 },
+             
+             @{ @"cell": @"PSGroupCell",
+                @"footerText": @"© Elijah Frederickson & Andrew Abosh" },
+             @{
+                 @"cell": @"PSLinkCell",
+                 @"action": @"showSupportDialog",
+                 @"label": @"Support",
+                 @"icon": @"support.png",
+                 @"cellClass": @"SKTintedCell",
+                 },
+             @{
+                 @"cell": @"PSButtonCell",
+                 @"action": @"respring",
+                 @"label": @"Respring"
+                 },
+             ];
+}
+
+-(void) showSupportDialog
+{
+    MFMailComposeViewController *mailViewController;
+    if ([MFMailComposeViewController canSendMail])
+    {
+        mailViewController = [[MFMailComposeViewController alloc] init];
+        mailViewController.mailComposeDelegate = self;
+        [mailViewController setSubject:@"Protean"];
+        [mailViewController setMessageBody:@"" isHTML:NO];
+        [mailViewController setToRecipients:@[@"elijah.frederickson@gmail.com", @"andrewaboshartworks@gmail.com"]];
+            
+        [self.rootController presentViewController:mailViewController animated:YES completion:nil];
+    }
+
+}
+
+-(void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error{
+    [self dismissViewControllerAnimated:YES completion:NULL];
+}
+
+-(void)respring
+{
+    system("killall -9 SpringBoard");
+}
+
+-(void) pushTotalNotificationCountController
+{
+	PRIconSelectorController* controller = [[PRIconSelectorController alloc]
+                                            initWithAppName:@"Total Notification Count"
+                                            identifier:@"TOTAL_NOTIFICATION_COUNT"
+                                            ];
+	controller.rootController = self.rootController;
+	controller.parentController = self;
+	
+	[self pushController:controller];
+}
+
+-(void)setPreferenceValue:(id)value specifier:(PSSpecifier*)specifier
+{
+    [super setPreferenceValue:value specifier:specifier];
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+}
+
+@end
+
+@implementation PRAdvancedSettingsListController
+-(NSArray*) customSpecifiers {
+             return @[
+                @{
                  @"cell": @"PSSwitchCell",
                  @"default": @YES,
                  @"defaults": @"com.efrederickson.protean.settings",
@@ -99,93 +236,8 @@
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"allowOverlap.png"
-                 },
-             
-             
-             @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Items do not show up until they have appeared in your status bar. Also, due to the way iOS works, if there are multiple items in the Center, they will not all show up. If you change an item that is from libstatusbar and not a stock item, you will need to respring to apply changes (that is a libstatusbar limitation); another libstatusbar limitation is that libstatusbar items cannot be in the center."
-                },
-             @{
-                 @"cell": @"PSLinkListCell",
-                 @"detail": @"PROrganizationController",
-                 @"label": @"Organization"
-                 },
-             
-             
-             
-             @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Select applications, flipswitches, etc and glyphs to show in the status bar (similar to OpenNotifier)"
-                },
-             @{
-                 @"cell": @"PSLinkListCell",
-                 @"action": @"pushTotalNotificationCountController",
-                 @"label": @"Total Notification Count"
-                 },
-             @{
-                 @"cell": @"PSLinkListCell",
-                 @"detail": @"ProteanAppsController",
-                 @"label": @"Applications"
-                 },
-             @{
-                 @"cell": @"PSLinkListCell",
-                 @"detail": @"PRSystemIconsController",
-                 @"label": @"System Icons"
-                 },
-             @{
-               @"cell": @"PSLinkListCell",
-               @"detail": @"PRFlipswitchController",
-               @"label": @"Flipswitches"
-               },
-             @{
-                 @"cell": @"PSLinkListCell",
-                 @"detail": @"PRBluetoothController",
-                 @"label": @"Bluetooth Devices"
-                 },
-             
-             @{ @"cell": @"PSGroupCell" },
-             @{
-                 @"cell": @"PSLinkCell",
-                 @"detail": @"PRMakersListController",
-                 @"label": @"Credits & Recommendations",
-                 @"icon": @"makers.png",
-                 @"cellClass": @"SKTintedCell",
-                 },
-             
-             @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Copyright (C) 2014 Elijah Frederickson & Andrew Abosh"},
-             @{
-                 @"cell": @"PSButtonCell",
-                 @"action": @"respring",
-                 @"label": @"Respring"
-                 },
-             
-             ];
-}
-
--(void)respring
-{
-    system("killall -9 SpringBoard");
-}
-
--(void) pushTotalNotificationCountController
-{
-	PRIconSelectorController* controller = [[PRIconSelectorController alloc]
-                                            initWithAppName:@"Total Notification Count"
-                                            identifier:@"TOTAL_NOTIFICATION_COUNT"
-                                            ];
-	controller.rootController = self.rootController;
-	controller.parentController = self;
-	
-	[self pushController:controller];
-}
-
--(void)setPreferenceValue:(id)value specifier:(PSSpecifier*)specifier
-{
-	//NSLog(@"[Protean] setPreferenceValue:specifier:");
-    [super setPreferenceValue:value specifier:specifier];
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
-}
-
+                 }
+             ]; }
 @end
 
 #define WBSAddMethod(_class, _sel, _imp, _type) \
