@@ -91,4 +91,24 @@
     
     return cell;
 }
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+	if ([[BluetoothManager sharedInstance] pairedDevices].count > 0)
+		return nil;
+
+    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0, 5, [UIScreen mainScreen].bounds.size.width, 80)];
+    footer.backgroundColor = [UIColor clearColor];
+    
+    UILabel *lbl = [[UILabel alloc] initWithFrame:footer.frame];
+    lbl.backgroundColor = [UIColor clearColor];
+    lbl.text = @"Please connect to a Bluetooth device\n to use this feature.";
+    lbl.textAlignment = NSTextAlignmentCenter;
+    lbl.numberOfLines = 2;
+    lbl.font = [UIFont fontWithName:@"HelveticaNueue-UltraLight" size:5];
+    lbl.textColor = [UIColor darkGrayColor];
+    lbl.lineBreakMode = NSLineBreakByWordWrapping;
+    [footer addSubview:lbl];
+    
+    return footer;
+}
 @end

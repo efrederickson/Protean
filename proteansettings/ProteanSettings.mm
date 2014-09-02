@@ -28,15 +28,15 @@
 @implementation ProteanSettingsListController
 -(NSString*) headerText { return @"Protean"; }
 -(NSString*) headerSubText { return NO ? @"Your status bar, your way" : @"By Elijah and Andrew"; }
--(NSString*) customTitle { return @"Protean"; }
+-(NSString*) customTitle { return @""; }
 
 -(NSString*) shareMessage { return @"I'm using #Protean by @daementor and @drewplex: your status bar, your way."; }
 
-//-(UIColor*) navigationTintColor { return [UIColor colorWithRed:11/255.0f green:234/255.0f blue:241/255.0f alpha:1.0f]; }
-//-(UIColor*) switchOnTintColor { return self.navigationTintColor; }
-//-(UIColor*) headerColor { return self.navigationTintColor; }
--(UIColor*) iconColor { return [UIColor colorWithRed:11/255.0f green:234/255.0f blue:241/255.0f alpha:1.0f]; }
+-(UIColor*) navigationTintColor { return [UIColor colorWithRed:79/255.0f green:176/255.0f blue:136/255.0f alpha:1.0f]; }
+-(UIColor*) switchOnTintColor { return self.navigationTintColor; }
+-(UIColor*) iconColor { return self.navigationTintColor; }
 -(UIColor*) headerColor { return [UIColor colorWithRed:74/255.0f green:74/255.0f blue:74/255.0f alpha:1.0f]; }
+//-(UIColor*) tintColor { return self.navigationTintColor; }
 
 -(NSArray*) customSpecifiers
 {
@@ -56,12 +56,14 @@
                  },
 
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Items do not show up until they have appeared in your status bar. Also, due to the way iOS works, if there are multiple items in the Center, they will not all show up. If you change an item that is from libstatusbar and not a stock item, you will need to respring to apply changes (that is a libstatusbar limitation); another libstatusbar limitation is that libstatusbar items cannot be in the center."
+                @"footerText": @"Items do not show up until they have appeared in your status bar. Libstatusbar items cannot be in the center, and a respring will be needed to apply changes to them."
                 },
              @{
                  @"cell": @"PSLinkListCell",
+                 @"cellClass": @"SKTintedCell",
                  @"detail": @"PROrganizationController",
-                 @"label": @"Organization"
+                 @"label": @"Organization",
+                 @"icon": @"organization.png"
                  },
              
              @{ @"cell": @"PSGroupCell",
@@ -69,34 +71,46 @@
                 },
              @{
                  @"cell": @"PSLinkListCell",
+                 @"cellClass": @"SKTintedCell",
                  @"action": @"pushTotalNotificationCountController",
-                 @"label": @"Total Notification Count"
+                 @"label": @"Total Notification Count",
+                 @"icon": @"tnc.png"
                  },
              @{
                  @"cell": @"PSLinkListCell",
+                 @"cellClass": @"SKTintedCell",
                  @"detail": @"ProteanAppsController",
-                 @"label": @"Applications"
+                 @"label": @"Applications",
+                 @"icon": @"applications.png"
                  },
              @{
                  @"cell": @"PSLinkListCell",
+                 @"cellClass": @"SKTintedCell",
                  @"detail": @"PRSystemIconsController",
-                 @"label": @"System Icons"
+                 @"label": @"System Icons",
+                 @"icon": @"sysicons.png"
                  },
              @{
                @"cell": @"PSLinkListCell",
+                 @"cellClass": @"SKTintedCell",
                @"detail": @"PRFlipswitchController",
-               @"label": @"Flipswitches"
+               @"label": @"Flipswitches",
+               @"icon": @"flipswitches.png"
                },
              @{
                  @"cell": @"PSLinkListCell",
+                 @"cellClass": @"SKTintedCell",
                  @"detail": @"PRBluetoothController",
-                 @"label": @"Bluetooth Devices"
+                 @"label": @"Bluetooth Devices",
+                 @"icon": @"bluetooth.png"
                  },
             @{ },
             @{
                 @"cell": @"PSLinkListCell",
+                @"cellClass": @"SKTintedCell",
                 @"detail": @"PRAdvancedSettingsListController",
-                @"label": @"Advanced Settings"
+                @"label": @"Advanced Options",
+                @"icon": @"settings.png"
             },
              
              @{ @"cell": @"PSGroupCell" },
@@ -109,18 +123,13 @@
                  },
              
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"© Elijah Frederickson & Andrew Abosh" },
+                @"footerText": @"© 2014 Elijah Frederickson & Andrew Abosh" },
              @{
                  @"cell": @"PSLinkCell",
                  @"action": @"showSupportDialog",
                  @"label": @"Support",
                  @"icon": @"support.png",
                  @"cellClass": @"SKTintedCell",
-                 },
-             @{
-                 @"cell": @"PSButtonCell",
-                 @"action": @"respring",
-                 @"label": @"Respring"
                  },
              ];
 }
@@ -143,11 +152,6 @@
 
 -(void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error{
     [self dismissViewControllerAnimated:YES completion:NULL];
-}
-
--(void)respring
-{
-    system("killall -9 SpringBoard");
 }
 
 -(void) pushTotalNotificationCountController
@@ -209,7 +213,7 @@
                  },
              
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Change the battery percentage display to custom string types."
+                @"footerText": @"Change the battery percentage and carrier to custom string types. Space for carrier string hides it, empty is original carrier name."
                 },
              @{
                  @"cell": @"PSLinkListCell",
@@ -222,6 +226,15 @@
                  @"icon": @"batteryStyle.png",
                  @"validTitles": @[ @"Default", @"Hide '%' sign", @"Textual" ],
                  @"validValues": @[ @0,         @1,               @2         ]
+                 },
+             @{
+                 @"cell": @"PSEditTextCell",
+                 @"default": @"",
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"serviceString",
+                 @"label": @"Custom Carrier",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 @"icon": @"carrierName.png",
                  },
              
              @{ @"cell": @"PSGroupCell",
@@ -236,8 +249,22 @@
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"allowOverlap.png"
+                 },
+
+            @{ },
+             @{
+                 @"cell": @"PSButtonCell",
+                 @"action": @"respring",
+                 @"label": @"Respring",
+                 @"icon": @"respring.png"
                  }
+
              ]; }
+
+-(void)respring
+{
+    system("killall -9 SpringBoard");
+}
 @end
 
 #define WBSAddMethod(_class, _sel, _imp, _type) \
