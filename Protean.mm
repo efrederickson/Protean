@@ -339,10 +339,9 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     storedBulletins[appId] = [NSMutableArray array];
 }
 
+static BOOL first = YES;
 +(void) reloadSettings
 {
-    static BOOL first = YES;
-    
     if (prefs)
         [prefs release];
     prefs = nil;

@@ -1,10 +1,13 @@
 #import <Preferences/Preferences.h>
 
-@interface PRFSSelector : PSViewController <UITableViewDelegate, UITableViewDataSource>
+@interface PRFSSelector : PSViewController <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchDisplayDelegate>
 {
 	NSString* _appName;
 	NSString* _identifier;
 	UITableView* _tableView;
+	UISearchBar* _searchBar;
+    BOOL isSearching;
+    UISearchDisplayController *searchDisplayController;
 }
 -(id)initWithFSName:(NSString*)appName identifier:(NSString*)identifier;
 @end

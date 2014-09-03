@@ -97,10 +97,10 @@ NSString *nameForDescription(NSString *desc)
     return map[desc] ?: desc;
 }
 
-UIImage *resizeFSImage(UIImage *icon)
+UIImage *resizeFSImage(UIImage *icon, float max = 30.0f)
 {
-	float maxWidth = 30.0f;
-	float maxHeight = 30.0f;
+	float maxWidth = max;
+	float maxHeight = max;
     
 	CGSize size = CGSizeMake(maxWidth, maxHeight);
 	CGFloat scale = 1.0f;

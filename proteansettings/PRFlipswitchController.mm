@@ -5,10 +5,10 @@
 
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
-#define isPad() ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
+#define isPad ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
 #define iPhoneTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle"
 #define iPadTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle"
-#define TemplatePath (isPad() ? iPadTemplatePath : iPhoneTemplatePath)
+#define TemplatePath (isPad ? iPadTemplatePath : iPhoneTemplatePath)
 
 @interface PSViewController (Protean)
 -(void) viewDidLoad;

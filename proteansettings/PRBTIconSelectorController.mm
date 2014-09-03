@@ -129,7 +129,7 @@ extern UIImage *imageFromName(NSString *name);
         return [a caseInsensitiveCompare:b];
     }];
 
-        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     _searchBar.delegate = self;
     _searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     //if ([_searchBar respondsToSelector:@selector(setUsesEmbeddedAppearance:)])

@@ -27,6 +27,10 @@
 @implementation PRMakersListController
 //-(UIColor*) navigationTintColor { return [UIColor colorWithRed:11/255.0f green:234/255.0f blue:241/255.0f alpha:1.0f]; }
 -(BOOL) showHeartImage { return NO; }
+-(UIColor*) navigationTintColor { return [UIColor colorWithRed:79/255.0f green:176/255.0f blue:136/255.0f alpha:1.0f]; }
+-(UIColor*) switchOnTintColor { return self.navigationTintColor; }
+-(UIColor*) iconColor { return self.navigationTintColor; }
+
 -(NSString*) customTitle { return @"Credits"; }
 
 - (id)customSpecifiers {

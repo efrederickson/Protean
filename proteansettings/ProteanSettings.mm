@@ -56,7 +56,8 @@
                  },
 
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Items do not show up until they have appeared in your status bar. Libstatusbar items cannot be in the center, and a respring will be needed to apply changes to them."
+                //@"footerText": @"Items do not show up until they have appeared in your status bar. Libstatusbar items cannot be in the center, and a respring will be needed to apply changes to them."
+                @"footerText": @"Modify the arrangement of status bar items.",
                 },
              @{
                  @"cell": @"PSLinkListCell",
@@ -175,6 +176,12 @@
 @end
 
 @implementation PRAdvancedSettingsListController
+-(BOOL) showHeartImage { return NO; }
+-(UIColor*) navigationTintColor { return [UIColor colorWithRed:79/255.0f green:176/255.0f blue:136/255.0f alpha:1.0f]; }
+-(UIColor*) switchOnTintColor { return self.navigationTintColor; }
+-(UIColor*) iconColor { return self.navigationTintColor; }
+-(UIColor*) headerColor { return [UIColor colorWithRed:74/255.0f green:74/255.0f blue:74/255.0f alpha:1.0f]; }
+
 -(NSArray*) customSpecifiers {
              return @[
                 @{
@@ -264,6 +271,12 @@
 -(void)respring
 {
     system("killall -9 SpringBoard");
+}
+
+-(void)setPreferenceValue:(id)value specifier:(PSSpecifier*)specifier
+{
+    [super setPreferenceValue:value specifier:specifier];
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
 }
 @end
 

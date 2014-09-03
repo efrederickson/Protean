@@ -30,7 +30,8 @@ int totalBadgeCount = 0;
         return icons[identifier];
     
     LSStatusBarItem *item = [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",identifier] alignment:StatusBarAlignmentLeft];
-    
+    item = [item retain];
+
     if (!item)
         return nil;
     
@@ -86,7 +87,9 @@ int totalBadgeCount = 0;
     if (!item)
         return;
     item.visible = YES;
-    item.imageName = identifier;
+    NSString *imageName = [Protean imageNameForIdentifier:identifier];
+    
+    item.imageName = [imageName isEqual:@""] ? identifier : imageName;
 }
 
 +(void) showIconForBluetooth:(NSString*)identifier
