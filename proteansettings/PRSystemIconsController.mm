@@ -109,6 +109,9 @@ NSMutableArray *mapSettingsForSysIcons()
         
         [self setView:self.tableView];
     }
+
+    ((UIViewController *)self).title = @"System Icons";
+    
     return self;
 }
 

@@ -8,6 +8,8 @@ static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
 NSString* const SilverIconRegexPattern = @"PR_(.*?)(?:@.*|)(?:~.*|).png";
+static NSMutableArray *searchedIcons;
+NSArray *canHaveImages = @[ @1, @2, @11, @12, @13, @16, @17, @19, @20, @21, @22];
 
 @interface PSViewController (Protean)
 -(void) viewDidLoad;
@@ -23,6 +25,7 @@ NSString* const SilverIconRegexPattern = @"PR_(.*?)(?:@.*|)(?:~.*|).png";
 @interface PRSysIconSelectorController () {
     NSString *checkedIcon;
     int tapAction;
+    int _raw_id;
 }
 @end
 
@@ -64,7 +67,6 @@ UIImage *resizeImage(UIImage *icon)
 	return icon;
 }
 
-
 @implementation PRSysIconSelectorController
 
 -(id)initWithAppName:(NSString*)appName identifier:(NSString*)identifier id:(int)id_
@@ -72,6 +74,7 @@ UIImage *resizeImage(UIImage *icon)
 	_appName = appName;
 	_identifier = identifier;
     _id = [NSString stringWithFormat:@"%d",id_]; // amazing names, right?
+    _raw_id = id_;
 	return [self init];
 }
 
@@ -138,17 +141,54 @@ UIImage *resizeImage(UIImage *icon)
     [self setView:_tableView];
     
     [self setTitle:_appName];
+
+    if ([canHaveImages containsObject:[NSNumber numberWithInt:_raw_id]])
+    {
+        [statusIcons sortUsingComparator: ^(NSString* a, NSString* b) {
+            bool e1 = [checkedIcon isEqual:a];
+            bool e2 = [checkedIcon isEqual:b];
+            if (e1 && e2) {
+                return [a caseInsensitiveCompare:b];
+            } else if (e1) {
+                return (NSComparisonResult)NSOrderedAscending;
+            } else if (e2) {
+                return (NSComparisonResult)NSOrderedDescending;
+            }
+            return [a caseInsensitiveCompare:b];
+        }];
+
+        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        _searchBar.delegate = self;
+        _searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
+        searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:_searchBar contentsController:(UIViewController*)self];
+        searchDisplayController.delegate = self;
+        searchDisplayController.searchResultsDataSource = self;
+        searchDisplayController.searchResultsDelegate = self;
+    
+        UIView *tableHeaderView = [[UIView alloc] initWithFrame:searchDisplayController.searchBar.frame];
+        [tableHeaderView addSubview:searchDisplayController.searchBar];
+        [_tableView setTableHeaderView:tableHeaderView];
+
+    }
+    searchedIcons = [NSMutableArray array];    
+    isSearching = NO;
+
 	return self;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+    if ([canHaveImages containsObject:[NSNumber numberWithInt:_raw_id]])
+        return isSearching ? 1 : 2;
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if (isSearching)
+        return searchedIcons.count;
+
     if (section == 0)
         return 2;
     else
@@ -157,6 +197,9 @@ UIImage *resizeImage(UIImage *icon)
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
+    if (isSearching)
+        return @"Icons";
+
     if (section == 0)
         return @"Icon Tap";
     else
@@ -169,7 +212,7 @@ UIImage *resizeImage(UIImage *icon)
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     
-    if (indexPath.section == 0)
+    if (indexPath.section == 0 && isSearching == NO)
     {
         NSString *alignmentText = @"";
         if (indexPath.row == 0)
@@ -182,7 +225,14 @@ UIImage *resizeImage(UIImage *icon)
     }
     else
     {
-        if (indexPath.row == 0)
+        if (isSearching)
+        {
+            NSString *name = searchedIcons.count < indexPath.row ? @"" : searchedIcons[indexPath.row];
+            cell.textLabel.text = name;
+            cell.imageView.image = imageFromName(name);
+            cell.accessoryType = [name isEqual:checkedIcon] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+        }
+        else if (indexPath.row == 0)
         {
             cell.textLabel.text = @"Default";
             cell.imageView.image = resizeImage(iconForDescription(_identifier));
@@ -202,7 +252,7 @@ UIImage *resizeImage(UIImage *icon)
 {
 	UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
     
-    if (indexPath.section == 0)
+    if (indexPath.section == 0 && !isSearching)
     {
         tapAction = indexPath.row;
         
@@ -221,12 +271,18 @@ UIImage *resizeImage(UIImage *icon)
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    if ([canHaveImages containsObject:[NSNumber numberWithInt:_raw_id]])
+    {
+        if (section == 0)
+            return nil;
+    }
+
     UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0, 5, [UIScreen mainScreen].bounds.size.width, 80)];
     footer.backgroundColor = [UIColor clearColor];
     
     UILabel *lbl = [[UILabel alloc] initWithFrame:footer.frame];
     lbl.backgroundColor = [UIColor clearColor];
-    lbl.text = @"Most system icons can be\nthemed via Winterboard.\nTry ayeris for a great example.";
+    lbl.text = section == 1 ? @"\nRespring to apply changes\nto System Icons." : @"This icon cannot be themed\nwith Protean. Winterboard may\nbe able to theme it.";
     lbl.textAlignment = NSTextAlignmentCenter;
     lbl.numberOfLines = 3;
     lbl.font = [UIFont fontWithName:@"HelveticaNueue-UltraLight" size:5];
@@ -237,9 +293,41 @@ UIImage *resizeImage(UIImage *icon)
     return footer;
 }
 
-
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if ([canHaveImages containsObject:[NSNumber numberWithInt:_raw_id]])
+        return section == 2 ? 80 : 0;
     return 80.0;
+}
+
+-(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)searchText
+{
+    searchedIcons = [NSMutableArray array];
+
+    for (NSString* name in statusIcons)
+    {
+        if ([name rangeOfString:searchText options:NSCaseInsensitiveSearch].location != NSNotFound)
+            [searchedIcons addObject:name];
+    }
+
+    [_tableView reloadData];
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    UISearchBar *searchBar = searchDisplayController.searchBar;
+    CGRect searchBarFrame = searchBar.frame;
+    
+    searchBarFrame.origin.y = 0;
+    searchDisplayController.searchBar.frame = searchBarFrame;
+}
+
+- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+    isSearching = YES;
+}
+
+-(void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
+    isSearching = NO;
+    [_tableView reloadData];
 }
 
 @end
