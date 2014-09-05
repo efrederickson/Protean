@@ -107,7 +107,8 @@ UIImage *resizeImage(UIImage *icon)
         NSString *TemplatePath = isPad ? @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle" : @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle";
         static NSBundle *templateBundle = nil;
         if (!templateBundle) templateBundle = [NSBundle bundleWithPath:TemplatePath];
-        cache[name] = resizeImage([[[FSSwitchPanel sharedPanel] imageOfSwitchState:FSSwitchStateOn controlState:UIControlStateNormal forSwitchIdentifier:patchedName2 usingTemplate:templateBundle] _flatImageWithColor:[UIColor blackColor]]);
+        name = [NSString stringWithFormat:@"%@-%@",patchedName2,[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2]==FSSwitchStateOn?@"on":@"off"];
+        cache[name] = resizeImage([[[FSSwitchPanel sharedPanel] imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2] controlState:UIControlStateNormal forSwitchIdentifier:patchedName2 usingTemplate:templateBundle] _flatImageWithColor:[UIColor blackColor]]);
         return cache[name];
     }
 

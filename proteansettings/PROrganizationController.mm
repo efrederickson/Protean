@@ -179,6 +179,8 @@ UIImage *iconForDescription(NSString *desc)
         desc = @"MuteIcon";
     else if ([desc isEqual:@"com.sassoty.bulb"])
         desc = @"Bulb";
+    else if ([desc isEqual:@"ws.hbang.typestatus.icon"])
+        desc = @"TypeStatus";
     
     static __strong NSBundle *imageBundle = nil;
     if (imageBundle == nil)

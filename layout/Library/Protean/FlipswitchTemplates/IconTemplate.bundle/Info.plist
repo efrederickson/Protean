@@ -43,46 +43,6 @@
 			<integer>1</integer>
 			<key>color</key>
 			<string>#000000</string>
-			<key>state</key>
-			<string>indeterminate</string>
-		</dict>
-	</array>
-	<key>layers-on</key>
-	<array>
-		<dict>
-			<key>type</key>
-			<string>glyph</string>
-			<key>size</key>
-			<integer>40</integer>
-			<key>x</key>
-			<integer>10</integer>
-			<key>y</key>
-			<integer>10</integer>
-			<key>opacity</key>
-			<real>1</real>
-			<key>color</key>
-			<string>#000000</string>
-			<key>state</key>
-			<string>indeterminate</string>
-		</dict>
-	</array>
-	<key>layers-disabled</key>
-	<array>
-		<dict>
-			<key>type</key>
-			<string>glyph</string>
-			<key>size</key>
-			<integer>40</integer>
-			<key>x</key>
-			<integer>10</integer>
-			<key>y</key>
-			<integer>10</integer>
-			<key>opacity</key>
-			<integer>1</integer>
-			<key>color</key>
-			<string>#000000</string>
-			<key>state</key>
-			<string>indeterminate</string>
 		</dict>
 	</array>
 </dict>

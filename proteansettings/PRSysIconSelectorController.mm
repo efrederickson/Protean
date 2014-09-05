@@ -7,7 +7,7 @@ NSString* const iconPath = @"/Library/Protean/Images.bundle";
 static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
-NSString* const SilverIconRegexPattern = @"PR_(.*?)(?:@.*|)(?:~.*|).png";
+NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d\\d?)?(?:@.*|)(?:~.*|).png";
 static NSMutableArray *searchedIcons;
 NSArray *canHaveImages = @[ @1, @2, @11, @12, @13, @16, @17, @19, @20, @21, @22];
 
@@ -117,7 +117,21 @@ UIImage *resizeImage(UIImage *icon)
 			NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
 			if (![statusIcons containsObject:name]) [statusIcons addObject:name];
 		}
-		
+		        
+        regex = [NSRegularExpression regularExpressionWithPattern:@"Black_ON_(.*?)(?:@.*|)(?:~.*|).png"
+                                                          options:NSRegularExpressionCaseInsensitive error:nil];
+        
+        for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/System/Library/Frameworks/UIKit.framework" error:nil])
+        {
+            NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
+            if (!match) continue;
+            NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
+            
+            if ([name hasPrefix:@"Count"])
+                continue;
+            
+            if (![statusIcons containsObject:name]) [statusIcons addObject:name];
+        }
 	}
     
     

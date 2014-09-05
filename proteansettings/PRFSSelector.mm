@@ -34,6 +34,7 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
     int tapAction;
     BOOL enabled;
     NSString *checkedIcon;
+    BOOL alwaysEnabled;
 }
 @end
 
@@ -59,6 +60,9 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
     
     prefs[@"flipswitches"] = prefs[@"flipswitches"] ? [prefs[@"flipswitches"] mutableCopy]: [NSMutableDictionary dictionary];
     prefs[@"flipswitches"][_identifier] = enabled ? @YES : @NO;
+
+    prefs[@"alwaysShowFlipswitches"] = prefs[@"alwaysShowFlipswitches"] ? [prefs[@"alwaysShowFlipswitches"] mutableCopy]: [NSMutableDictionary dictionary];
+    prefs[@"alwaysShowFlipswitches"][_identifier] = alwaysEnabled ? @YES : @NO;
 
     prefs[@"images"] = prefs[@"images"] ? [prefs[@"images"] mutableCopy]: [NSMutableDictionary dictionary];
     prefs[@"images"][_identifier] = [checkedIcon isEqual:@"Default"] ? @"" : checkedIcon;
@@ -111,6 +115,7 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
     tapAction = [([prefs[@"tapActions"] mutableCopy] ?: [NSMutableDictionary dictionary])[_identifier] intValue] == 2 ? 1 : 0 ?: 0;
     enabled = [([prefs[@"flipswitches"] mutableCopy] ?: [NSMutableDictionary dictionary])[_identifier] boolValue] ?: NO;
     checkedIcon = ([prefs[@"images"] mutableCopy] ?: [NSMutableDictionary dictionary])[_identifier] ?: @"";
+    alwaysEnabled = [([prefs[@"alwaysShowFlipswitches"] mutableCopy] ?: [NSMutableDictionary dictionary])[_identifier] boolValue] ?: NO;
     
     CGRect bounds = [[UIScreen mainScreen] bounds];
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, bounds.size.width, bounds.size.height) style:UITableViewStyleGrouped];
@@ -170,7 +175,7 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
         return searchedIcons.count;
 
     if (section == 0)
-        return 1;
+        return 1; //2 for Show Always
     else if (section == 1)
         return 2;
     return statusIcons.count;
@@ -190,21 +195,38 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    if (cell == nil)
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+    UITableViewCell *cell;
     
-    if (indexPath.section == 0 && !isSearching)
+    if (indexPath.section == 0 && isSearching == NO)
     {
-        cell.textLabel.text = @"Enabled";
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
-        cell.accessoryView = switchView;
-        [switchView setOn:enabled animated:NO];
-        [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+    	cell = [tableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
+    	if (cell == nil)
+        	cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"SwitchCell"];
+
+        if (indexPath.row == 0)
+        {
+        	cell.textLabel.text = @"Enabled";
+        	cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        	UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+        	cell.accessoryView = switchView;
+        	[switchView setOn:enabled animated:NO];
+        	[switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+        }
+        else
+        {
+        	cell.textLabel.text = @"Always Show";
+        	cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        	UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+        	cell.accessoryView = switchView;
+        	[switchView setOn:alwaysEnabled animated:NO];
+        	[switchView addTarget:self action:@selector(alwaysEnabledSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+        }
     }
     else if (indexPath.section == 1)
     {
+    	cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    	if (cell == nil)
+        	cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
         NSString *alignmentText = @"";
         if (indexPath.row == 0)
             alignmentText = @"Nothing";
@@ -218,6 +240,10 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
     }
     else
     {
+    	cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    	if (cell == nil)
+        	cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+
         if (isSearching)
         {
             NSString *name = searchedIcons.count < indexPath.row ? @"" : searchedIcons[indexPath.row];
@@ -246,6 +272,12 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
 - (void) switchChanged:(id)sender {
     UISwitch* switchControl = sender;
     enabled = switchControl.on;
+    [self updateSavedData];
+}
+
+- (void) alwaysEnabledSwitchChanged:(id)sender {
+    UISwitch* switchControl = sender;
+    alwaysEnabled = switchControl.on;
     [self updateSavedData];
 }
 

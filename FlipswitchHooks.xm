@@ -11,9 +11,14 @@
 
     id enabled_ = [Protean getOrLoadSettings][@"flipswitches"][switchIdentifier];
     BOOL enabled = enabled_ ? [enabled_ boolValue] : NO;
+    id alwaysShow_ = [Protean getOrLoadSettings][@"alwaysShowFlipswitches"][switchIdentifier];
+    BOOL alwaysShow = alwaysShow_ ? [alwaysShow_ boolValue] : NO;
 
-    if (enabled && ret == FSSwitchStateOn)
+    if (enabled && (ret == FSSwitchStateOn || alwaysShow))
+    {
         [PRStatusApps showIconForFlipswitch:switchIdentifier];
+        [PRStatusApps forceUpdateForFlipswitch:switchIdentifier];
+    }
     else
         [PRStatusApps hideIconFor:switchIdentifier];
 
@@ -26,9 +31,14 @@
 
     id enabled_ = [Protean getOrLoadSettings][@"flipswitches"][switchIdentifier];
     BOOL enabled = enabled_ ? [enabled_ boolValue] : NO;
+    id alwaysShow_ = [Protean getOrLoadSettings][@"alwaysShowFlipswitches"][switchIdentifier];
+    BOOL alwaysShow = alwaysShow_ ? [alwaysShow_ boolValue] : NO;
 
-    if (enabled && state == FSSwitchStateOn)
+    if (enabled && (state == FSSwitchStateOn || alwaysShow))
+    {
         [PRStatusApps showIconForFlipswitch:switchIdentifier];
+        [PRStatusApps forceUpdateForFlipswitch:switchIdentifier];
+    }
     else
         [PRStatusApps hideIconFor:switchIdentifier];
 
@@ -44,9 +54,14 @@
 
     id enabled_ = [Protean getOrLoadSettings][@"flipswitches"][switchIdentifier];
     BOOL enabled = enabled_ ? [enabled_ boolValue] : NO;
+    id alwaysShow_ = [Protean getOrLoadSettings][@"alwaysShowFlipswitches"][switchIdentifier];
+    BOOL alwaysShow = alwaysShow_ ? [alwaysShow_ boolValue] : NO;
 
-    if (enabled && ret == FSSwitchStateOn)
+    if (enabled && (ret == FSSwitchStateOn || alwaysShow))
+    {
         [PRStatusApps showIconForFlipswitch:switchIdentifier];
+        [PRStatusApps forceUpdateForFlipswitch:switchIdentifier];
+    }
     else
         [PRStatusApps hideIconFor:switchIdentifier];
 
@@ -59,9 +74,14 @@
 
     id enabled_ = [Protean getOrLoadSettings][@"flipswitches"][switchIdentifier];
     BOOL enabled = enabled_ ? [enabled_ boolValue] : NO;
+    id alwaysShow_ = [Protean getOrLoadSettings][@"alwaysShowFlipswitches"][switchIdentifier];
+    BOOL alwaysShow = alwaysShow_ ? [alwaysShow_ boolValue] : NO;
 
-    if (enabled && state == FSSwitchStateOn)
+    if (enabled && (state == FSSwitchStateOn || alwaysShow))
+    {
         [PRStatusApps showIconForFlipswitch:switchIdentifier];
+        [PRStatusApps forceUpdateForFlipswitch:switchIdentifier];
+    }
     else
         [PRStatusApps hideIconFor:switchIdentifier];
 

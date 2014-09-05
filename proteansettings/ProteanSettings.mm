@@ -67,9 +67,7 @@
                  @"icon": @"organization.png"
                  },
              
-             @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Select applications, flipswitches, etc and glyphs to show in the status bar (similar to OpenNotifier)"
-                },
+                 @{ @"cell": @"PSGroupCell", @"footerText": @"This is a test" },
              @{
                  @"cell": @"PSLinkListCell",
                  @"cellClass": @"SKTintedCell",
@@ -77,6 +75,7 @@
                  @"label": @"Total Notification Count",
                  @"icon": @"tnc.png"
                  },
+                 @{ @"cell": @"PSGroupCell", @"footerText": @"This is a test" },
              @{
                  @"cell": @"PSLinkListCell",
                  @"cellClass": @"SKTintedCell",
@@ -84,6 +83,7 @@
                  @"label": @"Applications",
                  @"icon": @"applications.png"
                  },
+                 @{ @"cell": @"PSGroupCell", @"footerText": @"This is a test" },
              @{
                  @"cell": @"PSLinkListCell",
                  @"cellClass": @"SKTintedCell",
@@ -91,6 +91,7 @@
                  @"label": @"System Icons",
                  @"icon": @"sysicons.png"
                  },
+                 @{ @"cell": @"PSGroupCell", @"footerText": @"This is a test" },
              @{
                @"cell": @"PSLinkListCell",
                  @"cellClass": @"SKTintedCell",
@@ -98,6 +99,9 @@
                @"label": @"Flipswitches",
                @"icon": @"flipswitches.png"
                },
+                 @{ @"cell": @"PSGroupCell",
+                @"footerText": @"Select applications, flipswitches, etc and glyphs to show in the status bar (similar to OpenNotifier)"
+                },
              @{
                  @"cell": @"PSLinkListCell",
                  @"cellClass": @"SKTintedCell",
@@ -105,6 +109,8 @@
                  @"label": @"Bluetooth Devices",
                  @"icon": @"bluetooth.png"
                  },
+
+
             @{ },
             @{
                 @"cell": @"PSLinkListCell",

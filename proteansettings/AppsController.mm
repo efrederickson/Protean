@@ -105,7 +105,38 @@ void PR_AppsControllerNeedsToReload()
 	else
 	{
         //_dataSource.loadsAsynchronously = YES;
-		_dataSource.sectionDescriptors = [NSArray arrayWithObjects:
+        if ([enabledList isEqual:@""])
+        {
+            _dataSource.sectionDescriptors = [NSArray arrayWithObjects:
+                                          [NSDictionary dictionaryWithObjectsAndKeys:
+                                           @"User Applications", ALSectionDescriptorTitleKey,
+                                           @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
+                                           iconSize, ALSectionDescriptorIconSizeKey,
+                                           (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
+                                           [NSString stringWithFormat:@"containerPath contains[cd] 'var/mobile/Applications' %@ and not bundleIdentifier in {%@}", excludeList, enabledList],
+                                           ALSectionDescriptorPredicateKey
+                                           , nil],
+                                          [NSDictionary dictionaryWithObjectsAndKeys:
+                                           @"System Applications", ALSectionDescriptorTitleKey,
+                                           @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
+                                           iconSize, ALSectionDescriptorIconSizeKey,
+                                           (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
+                                           [NSString stringWithFormat:@"containerPath = '/Applications' and bundleIdentifier matches 'com.apple.*' %@ and not bundleIdentifier in {%@}", excludeList, enabledList],
+                                           ALSectionDescriptorPredicateKey
+                                           , nil],
+                                          [NSDictionary dictionaryWithObjectsAndKeys:
+                                           @"Cydia Applications", ALSectionDescriptorTitleKey,
+                                           @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
+                                           iconSize, ALSectionDescriptorIconSizeKey,
+                                           (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
+                                           [NSString stringWithFormat:@"containerPath = '/Applications' and not bundleIdentifier matches 'com.apple.*' %@ and not bundleIdentifier in {%@}", excludeList, enabledList],
+                                           ALSectionDescriptorPredicateKey
+                                           , nil],
+                                          nil];
+        }
+        else
+        {
+            _dataSource.sectionDescriptors = [NSArray arrayWithObjects:
                                           [NSDictionary dictionaryWithObjectsAndKeys:
                                            @"Enabled Applications", ALSectionDescriptorTitleKey,
                                            @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
@@ -139,6 +170,7 @@ void PR_AppsControllerNeedsToReload()
                                            ALSectionDescriptorPredicateKey
                                            , nil],
                                           nil];
+        }
 	}
     [_tableView reloadData];
 }

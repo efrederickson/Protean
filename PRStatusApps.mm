@@ -92,6 +92,19 @@ int totalBadgeCount = 0;
     item.imageName = [imageName isEqual:@""] ? identifier : imageName;
 }
 
++(void) forceUpdateForFlipswitch:(NSString*)identifier
+{
+    LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
+    if (!item)
+        return;
+
+    item.visible = NO; 
+    NSString *imageName = [Protean imageNameForIdentifier:identifier];
+    item.imageName = @"";
+    item.imageName = [imageName isEqual:@""] ? identifier : imageName;
+    item.visible = YES;
+}
+
 +(void) showIconForBluetooth:(NSString*)identifier
 {
     CHECK_ENABLED();
