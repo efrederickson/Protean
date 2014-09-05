@@ -24,13 +24,22 @@ NSMutableDictionary *ncData = [[NSMutableDictionary dictionary] retain];
 
 int totalBadgeCount = 0;
 
+StatusBarAlignment getDefaultAlignment()
+{
+    id right_ = [Protean getOrLoadSettings][@"defaultAlignToRight"];
+    if (!right_ || [right_ boolValue] == NO)
+        return StatusBarAlignmentLeft;
+    else
+        return StatusBarAlignmentRight;
+}
+
 @implementation PRStatusApps
 +(LSStatusBarItem*)getOrCreateItemForIdentifier:(NSString*)identifier
 {
     if (icons[identifier])
         return icons[identifier];
     
-    LSStatusBarItem *item = [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",identifier] alignment:StatusBarAlignmentLeft];
+    LSStatusBarItem *item = [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",identifier] alignment:getDefaultAlignment()];
     item = [item retain];
 
     if (!item)

@@ -235,6 +235,19 @@
                  },
 
              @{ @"cell": @"PSGroupCell",
+                },
+             @{
+                 @"cell": @"PSSwitchCell",
+                 @"default": @NO,
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"defaultAlignToRight",
+                 @"label": @"Default icons to right",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 @"cellClass": @"SKTintedSwitchCell",
+                 @"icon": @"defaulttoright.png"
+                 },
+
+             @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Change the battery percentage and carrier to custom string types. Space for carrier string hides it, empty is original carrier name."
                 },
              @{
