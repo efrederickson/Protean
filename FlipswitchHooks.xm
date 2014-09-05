@@ -13,11 +13,12 @@
     BOOL enabled = enabled_ ? [enabled_ boolValue] : NO;
     id alwaysShow_ = [Protean getOrLoadSettings][@"alwaysShowFlipswitches"][switchIdentifier];
     BOOL alwaysShow = alwaysShow_ ? [alwaysShow_ boolValue] : NO;
+    id showWhenOff_ = [Protean getOrLoadSettings][@"showWhenOffFlipswitches"][switchIdentifier];
+    BOOL showWhenOff = showWhenOff_ ? [showWhenOff_ boolValue] : NO;
 
-    if (enabled && (ret == FSSwitchStateOn || alwaysShow))
+    if (enabled && ((ret == FSSwitchStateOn && showWhenOff == NO) || alwaysShow || (ret == FSSwitchStateOff && showWhenOff)))
     {
         [PRStatusApps showIconForFlipswitch:switchIdentifier];
-        [PRStatusApps forceUpdateForFlipswitch:switchIdentifier];
     }
     else
         [PRStatusApps hideIconFor:switchIdentifier];
@@ -33,11 +34,12 @@
     BOOL enabled = enabled_ ? [enabled_ boolValue] : NO;
     id alwaysShow_ = [Protean getOrLoadSettings][@"alwaysShowFlipswitches"][switchIdentifier];
     BOOL alwaysShow = alwaysShow_ ? [alwaysShow_ boolValue] : NO;
+    id showWhenOff_ = [Protean getOrLoadSettings][@"showWhenOffFlipswitches"][switchIdentifier];
+    BOOL showWhenOff = showWhenOff_ ? [showWhenOff_ boolValue] : NO;
 
-    if (enabled && (state == FSSwitchStateOn || alwaysShow))
+    if (enabled && ((state == FSSwitchStateOn && showWhenOff == NO) || alwaysShow || (state == FSSwitchStateOff && showWhenOff)))
     {
         [PRStatusApps showIconForFlipswitch:switchIdentifier];
-        [PRStatusApps forceUpdateForFlipswitch:switchIdentifier];
     }
     else
         [PRStatusApps hideIconFor:switchIdentifier];
@@ -56,11 +58,12 @@
     BOOL enabled = enabled_ ? [enabled_ boolValue] : NO;
     id alwaysShow_ = [Protean getOrLoadSettings][@"alwaysShowFlipswitches"][switchIdentifier];
     BOOL alwaysShow = alwaysShow_ ? [alwaysShow_ boolValue] : NO;
+    id showWhenOff_ = [Protean getOrLoadSettings][@"showWhenOffFlipswitches"][switchIdentifier];
+    BOOL showWhenOff = showWhenOff_ ? [showWhenOff_ boolValue] : NO;
 
-    if (enabled && (ret == FSSwitchStateOn || alwaysShow))
+    if (enabled && ((ret == FSSwitchStateOn && showWhenOff == NO) || alwaysShow || (ret == FSSwitchStateOff && showWhenOff)))
     {
         [PRStatusApps showIconForFlipswitch:switchIdentifier];
-        [PRStatusApps forceUpdateForFlipswitch:switchIdentifier];
     }
     else
         [PRStatusApps hideIconFor:switchIdentifier];
@@ -76,11 +79,12 @@
     BOOL enabled = enabled_ ? [enabled_ boolValue] : NO;
     id alwaysShow_ = [Protean getOrLoadSettings][@"alwaysShowFlipswitches"][switchIdentifier];
     BOOL alwaysShow = alwaysShow_ ? [alwaysShow_ boolValue] : NO;
+    id showWhenOff_ = [Protean getOrLoadSettings][@"showWhenOffFlipswitches"][switchIdentifier];
+    BOOL showWhenOff = showWhenOff_ ? [showWhenOff_ boolValue] : NO;
 
-    if (enabled && (state == FSSwitchStateOn || alwaysShow))
+    if (enabled && ((state == FSSwitchStateOn && showWhenOff == NO) || alwaysShow || (state == FSSwitchStateOff && showWhenOff)))
     {
         [PRStatusApps showIconForFlipswitch:switchIdentifier];
-        [PRStatusApps forceUpdateForFlipswitch:switchIdentifier];
     }
     else
         [PRStatusApps hideIconFor:switchIdentifier];

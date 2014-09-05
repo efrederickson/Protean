@@ -35,6 +35,7 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
     BOOL enabled;
     NSString *checkedIcon;
     BOOL alwaysEnabled;
+    BOOL showWhenOff;
 }
 @end
 
@@ -63,6 +64,9 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
 
     prefs[@"alwaysShowFlipswitches"] = prefs[@"alwaysShowFlipswitches"] ? [prefs[@"alwaysShowFlipswitches"] mutableCopy]: [NSMutableDictionary dictionary];
     prefs[@"alwaysShowFlipswitches"][_identifier] = alwaysEnabled ? @YES : @NO;
+
+    prefs[@"showWhenOffFlipswitches"] = prefs[@"showWhenOffFlipswitches"] ? [prefs[@"showWhenOffFlipswitches"] mutableCopy]: [NSMutableDictionary dictionary];
+    prefs[@"showWhenOffFlipswitches"][_identifier] = showWhenOff ? @YES : @NO;
 
     prefs[@"images"] = prefs[@"images"] ? [prefs[@"images"] mutableCopy]: [NSMutableDictionary dictionary];
     prefs[@"images"][_identifier] = [checkedIcon isEqual:@"Default"] ? @"" : checkedIcon;
@@ -116,6 +120,7 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
     enabled = [([prefs[@"flipswitches"] mutableCopy] ?: [NSMutableDictionary dictionary])[_identifier] boolValue] ?: NO;
     checkedIcon = ([prefs[@"images"] mutableCopy] ?: [NSMutableDictionary dictionary])[_identifier] ?: @"";
     alwaysEnabled = [([prefs[@"alwaysShowFlipswitches"] mutableCopy] ?: [NSMutableDictionary dictionary])[_identifier] boolValue] ?: NO;
+    showWhenOff = [([prefs[@"showWhenOffFlipswitches"] mutableCopy] ?: [NSMutableDictionary dictionary])[_identifier] boolValue] ?: NO;
     
     CGRect bounds = [[UIScreen mainScreen] bounds];
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, bounds.size.width, bounds.size.height) style:UITableViewStyleGrouped];
@@ -175,7 +180,7 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
         return searchedIcons.count;
 
     if (section == 0)
-        return 1; //2 for Show Always
+        return 2; // 3 for Show Always
     else if (section == 1)
         return 2;
     return statusIcons.count;
@@ -211,6 +216,15 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
         	cell.accessoryView = switchView;
         	[switchView setOn:enabled animated:NO];
         	[switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+        }
+        else if (indexPath.row == 1)
+        {
+            cell.textLabel.text = @"Show when off instead";
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+            cell.accessoryView = switchView;
+            [switchView setOn:enabled animated:NO];
+            [switchView addTarget:self action:@selector(showWhenOffSwitchChanged:) forControlEvents:UIControlEventValueChanged];
         }
         else
         {
@@ -278,6 +292,12 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
 - (void) alwaysEnabledSwitchChanged:(id)sender {
     UISwitch* switchControl = sender;
     alwaysEnabled = switchControl.on;
+    [self updateSavedData];
+}
+
+- (void) showWhenOffSwitchChanged:(id)sender {
+    UISwitch* switchControl = sender;
+    showWhenOff = switchControl.on;
     [self updateSavedData];
 }
 
