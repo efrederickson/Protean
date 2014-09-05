@@ -17,6 +17,14 @@
 #import <SpringBoard/SBApplication.h>
 #import <QuartzCore/QuartzCore.h>
 
+@interface BBServer ()
+- (id)allBulletinIDsForSectionID:(id)arg1;
+- (id)futureBulletinIDsForSectionID:(id)arg1;
+- (id)todayBulletinIDsForSectionID:(id)arg1;
+- (id)noticesBulletinIDsForSectionID:(id)arg1;
+- (id)bulletinIDsForSectionID:(id)arg1 inFeed:(unsigned long long)arg2;
+@end
+
 @interface KJUARR : NSObject /* AUIKI */
 +(BOOL)doUrThing:(BBBulletin *)bulletin;
 +(BOOL)doUrThing:(BBBulletin *)bulletin withImages:(NSArray *)images;

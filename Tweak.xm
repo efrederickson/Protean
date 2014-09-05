@@ -565,21 +565,49 @@ BOOL o = NO;
     if (badgeCount > 0)
     {
         [PRStatusApps showIconFor:self.bundleIdentifier badgeCount:badgeCount];
+        [PRStatusApps updateCachedBadgeCount:self.bundleIdentifier count:badgeCount];
     }
     else
-    {
-        [PRStatusApps hideIconFor:self.bundleIdentifier];
+    {    
+        id nc_ = [Protean getOrLoadSettings][@"useNC"];
+        if (!nc_ || [nc_ boolValue])
+        {
+            if ([PRStatusApps ncCount:self.bundleIdentifier] > 0)
+                ; // ignore
+            else
+                [PRStatusApps hideIconFor:self.bundleIdentifier];
+        }
+        else
+            [PRStatusApps hideIconFor:self.bundleIdentifier];
+        [PRStatusApps updateCachedBadgeCount:self.bundleIdentifier count:0];
     }
     [PRStatusApps updateTotalNotificationCountIcon];
 }
 %end
 
 %hook BBServer
-- (void)publishBulletin:(BBBulletin*)arg1 destinations:(unsigned int)arg2 alwaysToLockScreen:(BOOL)arg3
+- (void)publishBulletin:(BBBulletin*)arg1 destinations:(unsigned long long)arg2 alwaysToLockScreen:(_Bool)arg3
 {
-    [Protean addBulletin:arg1 forApp:arg1.sectionID];
-    
     %orig;
+    
+    NSString *section = arg1.sectionID;
+    [Protean addBulletin:arg1 forApp:arg1.sectionID]; // Add bulletin for QR
+    NSArray *bulletins = [self noticesBulletinIDsForSectionID:section];
+    [PRStatusApps updateNCStatsForIcon:section count:bulletins.count]; // Update stats for Notification center icons
+}
+
+
+- (void)_sendRemoveBulletins:(NSSet*)arg1 toFeeds:(unsigned long long)arg2 shouldSync:(_Bool)arg3
+{
+    %orig;
+    
+    BBBulletin *bulletin = [arg1 anyObject];
+    if (!bulletin)
+        return;
+
+    NSString *section = bulletin.sectionID;
+    NSArray *bulletins = [self noticesBulletinIDsForSectionID:section];
+    [PRStatusApps updateNCStatsForIcon:section count:bulletins.count];
 }
 %end
 

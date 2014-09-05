@@ -18,8 +18,9 @@
 @end
 
 
-NSMutableDictionary *icons = [[NSMutableDictionary dictionary] retain];
+NSMutableDictionary *icons = [[NSMutableDictionary dictionary] retain]; // probably should use alloc] init] retain] instead
 NSMutableDictionary *cachedBadgeCounts = [[NSMutableDictionary dictionary] retain];
+NSMutableDictionary *ncData = [[NSMutableDictionary dictionary] retain];
 
 int totalBadgeCount = 0;
 
@@ -57,6 +58,10 @@ int totalBadgeCount = 0;
         return;
     item.visible = YES;
     item.imageName = imageName;
+}
+
++(void) updateCachedBadgeCount:(NSString*)identifier count:(int) count
+{
     cachedBadgeCounts[identifier] = [NSNumber numberWithInt:count];
 }
 
@@ -74,7 +79,6 @@ int totalBadgeCount = 0;
     //[item dealloc];
     item = nil;
     [icons removeObjectForKey:identifier];
-    cachedBadgeCounts[identifier] = @0; // badge was cleared
 }
 
 +(void) showIconForFlipswitch:(NSString*)identifier
@@ -165,6 +169,12 @@ int totalBadgeCount = 0;
             [icons removeObjectForKey:key];
         }
     }
+
+    for (NSString *key in [ncData copy])
+    {
+        [PRStatusApps updateNCStatsForIcon:key count:[ncData[key] intValue]];
+    }
+
     [PRStatusApps updateTotalNotificationCountIcon];
     
     // Flipswitches
@@ -189,6 +199,33 @@ int totalBadgeCount = 0;
     {
         [PRStatusApps hideIconFor:@"TOTAL_NOTIFICATION_COUNT"];
     }
+}
+
++(void) updateNCStatsForIcon:(NSString*)section count:(int)count
+{
+    //NSLog(@"[Protean] updating nc stats for icon %@", section);
+    ncData[section] = [NSNumber numberWithInt:count];
+
+    id nc_ = [Protean getOrLoadSettings][@"useNC"];
+    if (nc_ && [nc_ boolValue] == NO)
+        return;
+
+    if (count > 0)
+    {
+        NSLog(@"[Protean] showing NC icon for %@", section);
+        [PRStatusApps showIconFor:section badgeCount:count];
+    }
+    else
+    {
+        NSLog(@"[Protean] not showing NC icon for %@", section);
+        if ([cachedBadgeCounts[section] intValue] < 1)
+            [PRStatusApps hideIconFor:section];
+    }
+}
+
++(int) ncCount:(NSString*)identifier
+{
+    return [ncData.allKeys containsObject:identifier] ? [ncData[identifier] intValue] : 0;
 }
 
 @end

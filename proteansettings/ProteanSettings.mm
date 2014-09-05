@@ -67,7 +67,9 @@
                  @"icon": @"organization.png"
                  },
              
-                 @{ @"cell": @"PSGroupCell", @"footerText": @"This is a test" },
+             @{ @"cell": @"PSGroupCell",
+                @"footerText": @"Select applications, flipswitches, etc and glyphs to show in the status bar (similar to OpenNotifier)"
+                },
              @{
                  @"cell": @"PSLinkListCell",
                  @"cellClass": @"SKTintedCell",
@@ -75,7 +77,6 @@
                  @"label": @"Total Notification Count",
                  @"icon": @"tnc.png"
                  },
-                 @{ @"cell": @"PSGroupCell", @"footerText": @"This is a test" },
              @{
                  @"cell": @"PSLinkListCell",
                  @"cellClass": @"SKTintedCell",
@@ -83,7 +84,6 @@
                  @"label": @"Applications",
                  @"icon": @"applications.png"
                  },
-                 @{ @"cell": @"PSGroupCell", @"footerText": @"This is a test" },
              @{
                  @"cell": @"PSLinkListCell",
                  @"cellClass": @"SKTintedCell",
@@ -91,7 +91,6 @@
                  @"label": @"System Icons",
                  @"icon": @"sysicons.png"
                  },
-                 @{ @"cell": @"PSGroupCell", @"footerText": @"This is a test" },
              @{
                @"cell": @"PSLinkListCell",
                  @"cellClass": @"SKTintedCell",
@@ -99,9 +98,6 @@
                @"label": @"Flipswitches",
                @"icon": @"flipswitches.png"
                },
-                 @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Select applications, flipswitches, etc and glyphs to show in the status bar (similar to OpenNotifier)"
-                },
              @{
                  @"cell": @"PSLinkListCell",
                  @"cellClass": @"SKTintedCell",
@@ -224,7 +220,20 @@
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"showLSTime.png"
                  },
-             
+             @{ @"cell": @"PSGroupCell",
+                @"footerText": @"Use counts from the NotificationCenter in addition to badge counts, for applications"
+                },
+             @{
+                 @"cell": @"PSSwitchCell",
+                 @"default": @YES,
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"useNC",
+                 @"label": @"Use NotificationCenter data",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 @"cellClass": @"SKTintedSwitchCell",
+                 @"icon": @"usenc.png"
+                 },
+
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Change the battery percentage and carrier to custom string types. Space for carrier string hides it, empty is original carrier name."
                 },
