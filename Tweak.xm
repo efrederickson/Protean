@@ -2,11 +2,12 @@
 #import "Protean.h"
 #import "PRStatusApps.h"
 #import <flipswitch/Flipswitch.h>
-#import "PlistValidation.h"
 
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
+
+NSObject *lockObject = [[NSObject alloc] init];
 
 void updateItem(int key, NSString *identifier)
 {
@@ -21,26 +22,20 @@ void updateItem(int key, NSString *identifier)
     if (!properties)
         properties = [NSMutableDictionary dictionary];
     
-    if ([[properties objectForKey:@"identifier"] isEqual:identifier] == NO)
-    {
-        properties = [NSMutableDictionary dictionary];
+    //if ([[properties objectForKey:@"identifier"] isEqual:identifier] == NO)
+    //{
+    //    properties = [NSMutableDictionary dictionary];
+    //}
 
-        [properties setObject:identifier forKey:@"identifier"];
-    }
-    else if ([properties objectForKey:@"identifier"] == nil)
-        [properties setObject:identifier forKey:@"identifier"];
-
+    [properties setObject:identifier forKey:@"identifier"];
     [properties setObject:nKey forKey:@"key"];
+
     [prefs setObject:properties forKey:nKey];
 
-    if (![prefs isValidPList])
-    {
-        NSLog(@"[Protean] invalid plist!");
-        [NSDictionary validatePList:prefs withDepth:0 verbose:YES];
-    }
-    else
+    @synchronized (lockObject) {
         [prefs writeToFile:PLIST_NAME atomically:YES];
-    [Protean reloadSettings];
+        [Protean reloadSettings];
+    }
 }
 
 void updateItem2(int key, NSString *identifier)
@@ -84,14 +79,10 @@ void updateItem2(int key, NSString *identifier)
 
             [prefs setObject:tmp forKey:nKey];
 
-            if (![prefs isValidPList])
-            {
-                NSLog(@"[Protean] invalid plist!");
-                [NSDictionary validatePList:prefs withDepth:0 verbose:YES];
-            }
-            else
+            @synchronized (lockObject) {
                 [prefs writeToFile:PLIST_NAME atomically:YES];
-            [Protean reloadSettings];
+                [Protean reloadSettings];
+            }
             return;
         }
         else if ([prefs[key2][@"identifier"] isEqual:identifier] && key == [key2 intValue])
@@ -118,14 +109,10 @@ void updateItem2(int key, NSString *identifier)
     properties[@"key"] = nKey;
     prefs[nKey] = properties;
 
-    if (![prefs isValidPList])
-    {
-        NSLog(@"[Protean] invalid plist!");
-        [NSDictionary validatePList:prefs withDepth:0 verbose:YES];
-    }
-    else
+    @synchronized (lockObject) {
         [prefs writeToFile:PLIST_NAME atomically:YES];
-    [Protean reloadSettings];
+        [Protean reloadSettings];
+    }
 }
 
 NSString *nameFromItem(UIStatusBarItem *item)
@@ -381,8 +368,6 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 }
 %end
 
-
-
 @interface UIStatusBarLayoutManager (Protean)
 - (CGRect)_frameForItemView:(id)arg1 startPosition:(float)arg2 firstView:(BOOL)arg3;
 @end
@@ -390,7 +375,6 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 NSMutableDictionary *storedStarts = [NSMutableDictionary dictionary];
 
 BOOL o = NO;
-
 
 %hook UIStatusBarItemView
 -(void)setUserInteractionEnabled:(BOOL)enabled

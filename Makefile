@@ -15,7 +15,7 @@ Protean_FILES = Tweak.xm Protean.mm \
 		IntroView/PRPage1ViewController.m \
 		IntroView/PRPage2ViewController.m \
 		IntroView/PRFinalViewController.m \
-		SignalRSSI.xm PlistValidation.m \
+		SignalRSSI.xm \
 		Carrier.xm
 
 Protean_FRAMEWORKS = UIKit
