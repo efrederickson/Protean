@@ -126,8 +126,7 @@ UIImage *resizeImage(UIImage *icon)
 }
 %end
 
-%hook UIStatusBarIndicatorItemView
--(_UILegibilityImageSet*) contentsImage
+_UILegibilityImageSet* getContentsImage(UIStatusBarItemView *self)
 {
 	UIStatusBarForegroundStyle* fs = [self foregroundStyle];
 	UIColor* tintColor = [fs tintColor];
@@ -135,7 +134,7 @@ UIImage *resizeImage(UIImage *icon)
 	NSString* itemName = [Protean imageNameForIdentifier:[NSString stringWithFormat:@"%d",type]];
 
 	if (itemName == nil || [itemName isEqual:@""])
-		return %orig;
+		return nil;
 
 	NSString* expandedName_default = [fs expandedNameForImageName: itemName];
 	
@@ -153,130 +152,39 @@ UIImage *resizeImage(UIImage *icon)
 	_UILegibilityImageSet* ret = [_UILegibilityImageSet imageFromImage: image withShadowImage: nil];//image_sh];
 	
 	return ret;
+}
 
+%hook UIStatusBarIndicatorItemView
+-(_UILegibilityImageSet*) contentsImage
+{
+	return getContentsImage((UIStatusBarItemView*)self) ?: %orig;
 }
 %end
 
 %hook UIStatusBarQuietModeItemView
 -(_UILegibilityImageSet*) contentsImage
 {
-	UIStatusBarForegroundStyle* fs = [self foregroundStyle];
-	UIColor* tintColor = [fs tintColor];
-	int type = ((UIStatusBarItemView*)self).item.type;
-	NSString* itemName = [Protean imageNameForIdentifier:[NSString stringWithFormat:@"%d",type]];
-
-	if (itemName == nil || [itemName isEqual:@""])
-		return %orig;
-
-	NSString* expandedName_default = [fs expandedNameForImageName: itemName];
-	
-	bool isBlack = [tintColor isEqual: [UIColor blackColor]];
-	bool isLockscreen = [fs isKindOfClass:objc_getClass("UIStatusBarLockScreenForegroundStyleAttributes")];
-	
-	UIImage* image_color = [UIImage kitImageNamed: [NSString stringWithFormat: @"%@_%@_Color", isLockscreen?  @"LockScreen" : isBlack ? @"Black" : @"White", itemName]];
-	UIImage* image_base = image_color ? 0 : [UIImage kitImageNamed: expandedName_default];
-	
-	UIImage* image = image_color;
-	if(!image && image_base)
-	{
-		image = [image_base _flatImageWithColor: tintColor];
-	}
-	_UILegibilityImageSet* ret = [_UILegibilityImageSet imageFromImage: image withShadowImage: nil];//image_sh];
-	
-	return ret;
-
+	return getContentsImage((UIStatusBarItemView*)self) ?: %orig;
 }
 %end
 
 %hook UIStatusBarAirplaneModeItemView
 -(_UILegibilityImageSet*) contentsImage
 {
-	UIStatusBarForegroundStyle* fs = [self foregroundStyle];
-	UIColor* tintColor = [fs tintColor];
-	int type = ((UIStatusBarItemView*)self).item.type;
-	NSString* itemName = [Protean imageNameForIdentifier:[NSString stringWithFormat:@"%d",type]];
-
-	if (itemName == nil || [itemName isEqual:@""])
-		return %orig;
-
-	NSString* expandedName_default = [fs expandedNameForImageName: itemName];
-	
-	bool isBlack = [tintColor isEqual: [UIColor blackColor]];
-	bool isLockscreen = [fs isKindOfClass:objc_getClass("UIStatusBarLockScreenForegroundStyleAttributes")];
-	
-	UIImage* image_color = [UIImage kitImageNamed: [NSString stringWithFormat: @"%@_%@_Color", isLockscreen?  @"LockScreen" : isBlack ? @"Black" : @"White", itemName]];
-	UIImage* image_base = image_color ? 0 : [UIImage kitImageNamed: expandedName_default];
-	
-	UIImage* image = image_color;
-	if(!image && image_base)
-	{
-		image = [image_base _flatImageWithColor: tintColor];
-	}
-	_UILegibilityImageSet* ret = [_UILegibilityImageSet imageFromImage: image withShadowImage: nil];//image_sh];
-	
-	return ret;
-
+	return getContentsImage((UIStatusBarItemView*)self) ?: %orig;
 }
 %end
 
 %hook UIStatusBarBluetoothItemView
 -(_UILegibilityImageSet*) contentsImage
 {
-	UIStatusBarForegroundStyle* fs = [self foregroundStyle];
-	UIColor* tintColor = [fs tintColor];
-	int type = ((UIStatusBarItemView*)self).item.type;
-	NSString* itemName = [Protean imageNameForIdentifier:[NSString stringWithFormat:@"%d",type]];
-
-	if (itemName == nil || [itemName isEqual:@""])
-		return %orig;
-
-	NSString* expandedName_default = [fs expandedNameForImageName: itemName];
-	
-	bool isBlack = [tintColor isEqual: [UIColor blackColor]];
-	bool isLockscreen = [fs isKindOfClass:objc_getClass("UIStatusBarLockScreenForegroundStyleAttributes")];
-	
-	UIImage* image_color = [UIImage kitImageNamed: [NSString stringWithFormat: @"%@_%@_Color", isLockscreen?  @"LockScreen" : isBlack ? @"Black" : @"White", itemName]];
-	UIImage* image_base = image_color ? 0 : [UIImage kitImageNamed: expandedName_default];
-	
-	UIImage* image = image_color;
-	if(!image && image_base)
-	{
-		image = [image_base _flatImageWithColor: tintColor];
-	}
-	_UILegibilityImageSet* ret = [_UILegibilityImageSet imageFromImage: image withShadowImage: nil];//image_sh];
-	
-	return ret;
-
+	return getContentsImage((UIStatusBarItemView*)self) ?: %orig;
 }
 %end
 
 %hook UIStatusBarLocationItemView
 -(_UILegibilityImageSet*) contentsImage
 {
-	UIStatusBarForegroundStyle* fs = [self foregroundStyle];
-	UIColor* tintColor = [fs tintColor];
-	int type = ((UIStatusBarItemView*)self).item.type;
-	NSString* itemName = [Protean imageNameForIdentifier:[NSString stringWithFormat:@"%d",type]];
-
-	if (itemName == nil || [itemName isEqual:@""])
-		return %orig;
-
-	NSString* expandedName_default = [fs expandedNameForImageName: itemName];
-	
-	bool isBlack = [tintColor isEqual: [UIColor blackColor]];
-	bool isLockscreen = [fs isKindOfClass:objc_getClass("UIStatusBarLockScreenForegroundStyleAttributes")];
-	
-	UIImage* image_color = [UIImage kitImageNamed: [NSString stringWithFormat: @"%@_%@_Color", isLockscreen?  @"LockScreen" : isBlack ? @"Black" : @"White", itemName]];
-	UIImage* image_base = image_color ? 0 : [UIImage kitImageNamed: expandedName_default];
-	
-	UIImage* image = image_color;
-	if(!image && image_base)
-	{
-		image = [image_base _flatImageWithColor: tintColor];
-	}
-	_UILegibilityImageSet* ret = [_UILegibilityImageSet imageFromImage: image withShadowImage: nil];//image_sh];
-	
-	return ret;
-
+	return getContentsImage((UIStatusBarItemView*)self) ?: %orig;
 }
 %end
