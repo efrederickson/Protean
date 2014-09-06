@@ -20,16 +20,16 @@
         self.view.backgroundColor = [UIColor whiteColor];
 
         mainLabel = [[UILabel alloc] init];
-        mainLabel.text = @"Protean";
+        mainLabel.text = @"Welcome to";
         mainLabel.textColor = [UIColor darkGrayColor];
-        mainLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:75];
+        mainLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:40];
         mainLabel.frame = CGRectMake(0, 10, [UIScreen mainScreen].bounds.size.width, 100);
         mainLabel.textAlignment = NSTextAlignmentCenter;
-        mainLabel.alpha = 0;
+        mainLabel.alpha = 1;
         [self.view addSubview:mainLabel];
         
         subLabel = [[UILabel alloc] init];
-        subLabel.text = @"Your status bar, your way.\n\nAdd Applications, Flipswitches, Bluetooth devices, and more to your status bar.\n\nCustomize organization, visibility, and layout.\n\nCustomize the battery percentage string!\nAnd much more.";
+        subLabel.text = @"Your status bar, your way.\n\nAdd Applications, Flipswitches, Bluetooth devices, and more to your status bar.\n\nCustomize organization, visibility, and layout.\n\nCustomize the battery percentage and carrier!\nAnd much more.";
         subLabel.textColor = [UIColor darkGrayColor];
         subLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:20];
         subLabel.frame = CGRectMake(0, 55, [UIScreen mainScreen].bounds.size.width, 400);
@@ -59,13 +59,49 @@
 -(void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    [UIView animateWithDuration:1 animations:^{
-        mainLabel.alpha = 1;
+
+    [UIView animateWithDuration:0.4 animations:^{
+        mainLabel.alpha = .5;
+    } completion:^(BOOL finished) {
+        mainLabel.text = @"Welcome to.";
+        [UIView animateWithDuration:0.4 animations:^{
+            mainLabel.alpha = 1;
+
+            [UIView animateWithDuration:.4 delay:.5 options:UIViewAnimationOptionCurveLinear animations: ^{
+                mainLabel.alpha = .5;
+            } completion:^(BOOL finished) {
+                mainLabel.text = @"Welcome to..";
+                [UIView animateWithDuration:0.4 animations:^{
+                    mainLabel.alpha = 1;
+
+                    [UIView animateWithDuration:.4 delay:.5 options:UIViewAnimationOptionCurveLinear animations: ^{
+                        mainLabel.alpha = .5;
+                    } completion:^(BOOL finished) {
+                        mainLabel.text = @"Welcome to...";
+                        [UIView animateWithDuration:0.4 animations:^{
+                            mainLabel.alpha = 1;
+
+                            [UIView animateWithDuration:.4 delay:.5 options:UIViewAnimationOptionCurveLinear animations: ^{
+                                mainLabel.alpha = .5;
+                            } completion:^(BOOL finished) {
+                                mainLabel.text = @"Protean";
+                                mainLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:75];
+                                [UIView animateWithDuration:0.4 animations:^{
+                                    mainLabel.alpha = 1;
+                                }];
+                            }];
+                        }];
+                    }];
+                }];
+            }];
+        }];
+    }];
+
+    [UIView animateWithDuration:1 delay:3.5 options:UIViewAnimationOptionCurveLinear animations: ^{
         subLabel.alpha = 1;
     } completion:nil];
      
-    [UIView animateWithDuration:1 delay:0.5 options:UIViewAnimationOptionCurveLinear animations: ^{
+    [UIView animateWithDuration:1 delay:4 options:UIViewAnimationOptionCurveLinear animations: ^{
             closeButton.alpha = 1;
     } completion:nil];
     

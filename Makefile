@@ -18,7 +18,7 @@ Protean_FILES = Tweak.xm Protean.mm \
 		SignalRSSI.xm \
 		Carrier.xm
 
-Protean_FRAMEWORKS = UIKit
+Protean_FRAMEWORKS = UIKit CoreGraphics QuartzCore
 Protean_LIBRARIES = activator objcipc flipswitch applist
 Protean_PRIVATE_FRAMEWORKS = 
 

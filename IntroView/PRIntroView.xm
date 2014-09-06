@@ -24,6 +24,9 @@ UIWindow *window;
         
     if ([[Protean getOrLoadSettings][@"hasShownIntro"] boolValue] == YES)
         return;
+
+    if (window)
+        return;
         
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME];
     dict[@"hasShownIntro"] = @YES;
