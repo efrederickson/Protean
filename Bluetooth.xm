@@ -1,30 +1,6 @@
 #import "PRStatusApps.h"
 #import "Protean.h"
 
-@interface BluetoothDevice
-- (_Bool)connected;
-- (_Bool)paired;
-- (id)description;
-- (int)type;
-- (id)address;
-- (id)name;
-@end
-@interface BluetoothManager
-+ (id)sharedInstance;
-- (_Bool)connected;
-- (id)connectedDevices;
-- (id)connectingDevices;
-- (id)pairedDevices;
-- (void)unpairDevice:(id)arg1;
-- (void)resetDeviceScanning;
-- (_Bool)deviceScanningInProgress;
-- (_Bool)deviceScanningEnabled;
-- (_Bool)wasDeviceDiscovered:(id)arg1;
-- (void)_removeDevice:(id)arg1;
-- (id)addDeviceIfNeeded:(struct BTDeviceImpl *)arg1;
-- (void)_connectedStatusChanged;
-@end
-
 %group SpringBoard
 
 %hook BluetoothManager

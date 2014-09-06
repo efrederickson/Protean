@@ -6,33 +6,6 @@
 #import <flipswitch/Flipswitch.h>
 #import "Protean.h"
 
-@interface UIStatusBarForegroundStyle : NSObject
-- (UIColor*) tintColor;
-- (NSString*) expandedNameForImageName: (NSString*) imageName;
-- (UIImage*) shadowImageForImage: (UIImage*) img withIdentifier: (NSString*) id forStyle: (int) style withStrength: (float) strength cachesImage: (bool) cache;
-@end
-
-@interface UIImage (Protean)
-+ (UIImage*)imageNamed:(NSString *)imageName inBundle:(NSBundle*)bundle;
-- (UIImage*) _flatImageWithColor: (UIColor*) color;
-+(UIImage*)kitImageNamed:(NSString*)name;
-@end
-
-@interface UIColor (Protean)
-- (NSString*) styleString;
-@end
-
-@interface UIStatusBarItemView ()
--(UIStatusBarForegroundStyle*) foregroundStyle;
-@end
-
-@interface _UILegibilityImageSet : NSObject
-+ (_UILegibilityImageSet*) imageFromImage: (UIImage*) image withShadowImage: (UIImage*) imag_sh;
-@property(retain) UIImage * image;
-@property(retain) UIImage * shadowImage;
-@end
-
-
 NSMutableDictionary *cache = [NSMutableDictionary dictionary];
 
 // This is... bad... 

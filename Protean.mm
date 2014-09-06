@@ -6,52 +6,6 @@
 #import <notify.h>
 #import "PRStatusApps.h"
 
-@interface UIApplication (Protean)
--(id) statusBar;
-@end
-@interface UIStatusBar
-- (void)_setStyle:(id)arg1;
-- (int)legibilityStyle;
-- (id)initWithFrame:(CGRect)arg1 showForegroundView:(BOOL)arg2 inProcessStateProvider:(id)arg3;
-- (id)initWithFrame:(CGRect)arg1 showForegroundView:(BOOL)arg2;
-- (id)initWithFrame:(CGRect)arg1;
-
-- (void)_crossfadeToNewBackgroundView;
-- (void)_crossfadeToNewForegroundViewWithAlpha:(float)arg1;
-- (void)crossfadeTime:(BOOL)arg1 duration:(double)arg2;
-- (void)setShowsOnlyCenterItems:(BOOL)arg1;
-- (void)forceUpdateData:(BOOL)arg1;
-
-- (UIView *)snapshotViewAfterScreenUpdates:(BOOL)afterUpdates;
--(id) superview;
--(CGRect)frame;
--(void) setFrame:(CGRect)frame;
-@end
-@interface BSQRController /* BiteSMS */
-+(BOOL)maybeLaunchQRFromURL:(id)url;
-+(void)markAsReadFromBulletin:(id)bulletin;
-+(BOOL)canLaunchQRFromBulletin:(id)bulletin;
-+(BOOL)maybeLaunchQRFromBulletin:(id)bulletin;
-+(BOOL)launchQRFromMessage:(id)message;
-+(BOOL)receivedBulletin:(id)bulletin;
-+(void)receivedFZMessage:(id)message inGroup:(id)group addresses:(id)addresses;
-+(BOOL)_handleReceivedMessage:(id)message;
-+(void)_showQR:(id)qr;
-@end
-@interface UIImage (Protean)
-+ (UIImage*)imageNamed:(NSString *)imageName inBundle:(NSBundle*)bundle;
-- (UIImage*) _flatImageWithColor: (UIColor*) color;
-+(UIImage*)kitImageNamed:(NSString*)name;
-@end
-@interface IBMessageHeadsWindow : UIWindow
-+ (id)sharedInstance;
-- (void)showAnimated;
-- (void)hideAnimated;
-- (void)show;
-- (void)hide;
-- (void)setShowingConversation:(_Bool)arg1;
-@end
-
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"

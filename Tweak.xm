@@ -406,7 +406,6 @@ BOOL o = NO;
 {
     if (sender.state == UIGestureRecognizerStateEnded)
     {
-        // handling code
         [Protean HandlerForTapOnItem:self.item];
     }
 }
@@ -611,10 +610,7 @@ void launchApp(CFNotificationCenterRef center,
                     const void *object,
                     CFDictionaryRef userInfo)
 {
-    if (![(SpringBoard*)[UIApplication sharedApplication] launchApplicationWithIdentifier:((__bridge NSDictionary*)userInfo)[@"appId"] suspended:NO])
-    {
-        //launch flipswitch settings page??
-    }
+    [(SpringBoard*)[UIApplication sharedApplication] launchApplicationWithIdentifier:((__bridge NSDictionary*)userInfo)[@"appId"] suspended:NO];
 }
 
 %ctor

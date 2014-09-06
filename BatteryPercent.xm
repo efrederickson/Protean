@@ -67,12 +67,12 @@ NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     
     if (changedBatteryStyle == 1)
     {
-        if ([batteryStr hasSuffix:@"%"])
+        if ([batteryStr hasSuffix:@"%"]) // remove percent sign
             batteryStr = [batteryStr substringToIndex:batteryStr.length - 1];
     }
     else if (changedBatteryStyle == 2)
     {
-        if ([batteryStr hasSuffix:@"%"])
+        if ([batteryStr hasSuffix:@"%"]) // remove percent sign, for the formatter
             batteryStr = [batteryStr substringToIndex:batteryStr.length - 1];
 
         [stringFormatter setNumberStyle: NSNumberFormatterSpellOutStyle];

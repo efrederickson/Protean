@@ -3,20 +3,10 @@
 #import <objc/runtime.h>
 #import "Protean.h"
 #import <flipswitch/Flipswitch.h>
-@interface BluetoothManager
-+ (id)sharedInstance;
-- (void)_connectedStatusChanged;
-@end
+
 @interface PRFSTimer
 +(void) updateTimer;
 @end
-
-@interface UIImage (Protean)
-+ (UIImage*)imageNamed:(NSString *)imageName inBundle:(NSBundle*)bundle;
-- (UIImage*) _flatImageWithColor: (UIColor*) color;
-+(UIImage*)kitImageNamed:(NSString*)name;
-@end
-
 
 NSMutableDictionary *icons = [[NSMutableDictionary dictionary] retain]; // probably should use alloc] init] retain] instead
 NSMutableDictionary *cachedBadgeCounts = [[NSMutableDictionary dictionary] retain];

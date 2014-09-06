@@ -17,6 +17,92 @@
 #import <SpringBoard/SBApplication.h>
 #import <QuartzCore/QuartzCore.h>
 
+@interface UIStatusBarForegroundStyle : NSObject
+- (UIColor*) tintColor;
+- (NSString*) expandedNameForImageName: (NSString*) imageName;
+- (UIImage*) shadowImageForImage: (UIImage*) img withIdentifier: (NSString*) id forStyle: (int) style withStrength: (float) strength cachesImage: (bool) cache;
+@end
+
+@interface UIColor (Protean)
+- (NSString*) styleString;
+@end
+
+@interface _UILegibilityImageSet : NSObject
++ (_UILegibilityImageSet*) imageFromImage: (UIImage*) image withShadowImage: (UIImage*) imag_sh;
+@property(retain) UIImage * image;
+@property(retain) UIImage * shadowImage;
+@end
+
+@interface BluetoothDevice
+- (_Bool)connected;
+- (_Bool)paired;
+- (id)description;
+- (int)type;
+- (id)address;
+- (id)name;
+@end
+@interface BluetoothManager
++ (id)sharedInstance;
+- (_Bool)connected;
+- (id)connectedDevices;
+- (id)connectingDevices;
+- (id)pairedDevices;
+- (void)unpairDevice:(id)arg1;
+- (void)resetDeviceScanning;
+- (_Bool)deviceScanningInProgress;
+- (_Bool)deviceScanningEnabled;
+- (_Bool)wasDeviceDiscovered:(id)arg1;
+- (void)_removeDevice:(id)arg1;
+- (id)addDeviceIfNeeded:(struct BTDeviceImpl *)arg1;
+- (void)_connectedStatusChanged;
+@end
+
+@interface UIApplication (Protean)
+-(id) statusBar;
+@end
+@interface UIStatusBar
+- (void)_setStyle:(id)arg1;
+- (int)legibilityStyle;
+- (id)initWithFrame:(CGRect)arg1 showForegroundView:(BOOL)arg2 inProcessStateProvider:(id)arg3;
+- (id)initWithFrame:(CGRect)arg1 showForegroundView:(BOOL)arg2;
+- (id)initWithFrame:(CGRect)arg1;
+
+- (void)_crossfadeToNewBackgroundView;
+- (void)_crossfadeToNewForegroundViewWithAlpha:(float)arg1;
+- (void)crossfadeTime:(BOOL)arg1 duration:(double)arg2;
+- (void)setShowsOnlyCenterItems:(BOOL)arg1;
+- (void)forceUpdateData:(BOOL)arg1;
+
+- (UIView *)snapshotViewAfterScreenUpdates:(BOOL)afterUpdates;
+-(id) superview;
+-(CGRect)frame;
+-(void) setFrame:(CGRect)frame;
+@end
+@interface BSQRController /* BiteSMS */
++(BOOL)maybeLaunchQRFromURL:(id)url;
++(void)markAsReadFromBulletin:(id)bulletin;
++(BOOL)canLaunchQRFromBulletin:(id)bulletin;
++(BOOL)maybeLaunchQRFromBulletin:(id)bulletin;
++(BOOL)launchQRFromMessage:(id)message;
++(BOOL)receivedBulletin:(id)bulletin;
++(void)receivedFZMessage:(id)message inGroup:(id)group addresses:(id)addresses;
++(BOOL)_handleReceivedMessage:(id)message;
++(void)_showQR:(id)qr;
+@end
+@interface UIImage (Protean)
++ (UIImage*)imageNamed:(NSString *)imageName inBundle:(NSBundle*)bundle;
+- (UIImage*) _flatImageWithColor: (UIColor*) color;
++(UIImage*)kitImageNamed:(NSString*)name;
+@end
+@interface IBMessageHeadsWindow : UIWindow
++ (id)sharedInstance;
+- (void)showAnimated;
+- (void)hideAnimated;
+- (void)show;
+- (void)hide;
+- (void)setShowingConversation:(_Bool)arg1;
+@end
+
 @interface BBServer ()
 - (id)allBulletinIDsForSectionID:(id)arg1;
 - (id)futureBulletinIDsForSectionID:(id)arg1;
@@ -484,6 +570,7 @@
 - (void)dealloc;
 - (id)initWithItem:(id)arg1 data:(id)arg2 actions:(int)arg3 style:(id)arg4;
 - (_Bool)_shouldAnimatePropertyWithKey:(id)arg1;
+- (UIStatusBarForegroundStyle*)foregroundStyle;
 @end
 
 @interface UIStatusBarCustomItemView : UIStatusBarItemView
