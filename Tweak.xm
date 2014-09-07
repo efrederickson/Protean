@@ -298,28 +298,38 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 }
 %end
 
+NSMutableDictionary *cachedAlignments = [NSMutableDictionary dictionary];
 %hook LSStatusBarItem
-- (id) initWithIdentifier: (NSString*) identifier alignment: (StatusBarAlignment) orig_alignment
+- (id) initWithIdentifier:(NSString*) identifier alignment:(StatusBarAlignment) orig_alignment
 {
     CHECK_ENABLED(%orig);
-    int alignment = (int)orig_alignment;
+    StatusBarAlignment new_alignment = orig_alignment;
 
-    NSDictionary *prefs = [Protean getOrLoadSettings];
-    for (id key in prefs)
+    if (cachedAlignments[identifier])
     {
-        if (prefs[key] && [prefs[key] isKindOfClass:[NSDictionary class]] && [prefs[key][@"identifier"] isEqual:identifier])
+        new_alignment = (StatusBarAlignment)[cachedAlignments[identifier] intValue];
+    }
+    else
+    {
+        NSDictionary *prefs = [Protean getOrLoadSettings];
+        for (id key in prefs)
         {
-            id _alignment = prefs[key][@"alignment"];
-            alignment = _alignment == nil ? 4 : [_alignment intValue];
-            break;
+            if (prefs[key] && [prefs[key] isKindOfClass:[NSDictionary class]] && [prefs[key][@"identifier"] isEqual:identifier])
+            {
+                id _alignment = prefs[key][@"alignment"];
+                int alignment = _alignment == nil ? 4 : [_alignment intValue];
+                if (alignment == 0)
+                    new_alignment = StatusBarAlignmentLeft;
+                else if (alignment == 1)
+                    new_alignment = StatusBarAlignmentRight;
+
+                break;
+            }
         }
+        cachedAlignments[identifier] = [NSNumber numberWithInt:(int)new_alignment];
     }
 
-    StatusBarAlignment new_alignment = orig_alignment;
-    if (alignment == 0)
-        new_alignment = StatusBarAlignmentLeft;
-    else if (alignment == 1)
-        new_alignment = StatusBarAlignmentRight;
+    // 0 = left, 1 = right
     //else if (alignment == 2) // wait can't have image LSB items in the center (WHY?!?!?!)
     //    new_alignment = orig_alignment;
     // 3 = hidden, 4 = default

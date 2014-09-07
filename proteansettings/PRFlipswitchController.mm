@@ -38,7 +38,7 @@ void updateFlipswitches()
     for (NSString *identifier in fsp.sortedSwitchIdentifiers) {
         [flipswitches addObject:@{
                                   @"title": [[FSSwitchPanel sharedPanel] titleForSwitchIdentifier:identifier],
-                                  @"icon": [[[FSSwitchPanel sharedPanel] imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:identifier] controlState:UIControlStateNormal forSwitchIdentifier:identifier usingTemplate:templateBundle] _flatImageWithColor:[UIColor blackColor]],
+                                  @"icon": [[[FSSwitchPanel sharedPanel] imageOfSwitchState:FSSwitchStateOn controlState:UIControlStateNormal forSwitchIdentifier:identifier usingTemplate:templateBundle] _flatImageWithColor:[UIColor blackColor]],
                                   @"identifier": identifier
                                   }];
     }
