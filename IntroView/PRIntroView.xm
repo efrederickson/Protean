@@ -46,9 +46,9 @@ UIWindow *window;
 -(void) PR_HideIntro
 {
     [UIView animateWithDuration:.5 animations:^{
-        //window.alpha = 0.1;
-        window.frame = CGRectMake(window.frame.origin.x, [UIScreen mainScreen].bounds.size.height,
-                                      window.frame.size.width, window.frame.size.height);
+        window.alpha = 0;
+        //window.frame = CGRectMake(window.frame.origin.x, [UIScreen mainScreen].bounds.size.height,
+                                      //window.frame.size.width, window.frame.size.height);
     } completion:^(BOOL finished) {  
         [window release];
         window = nil;

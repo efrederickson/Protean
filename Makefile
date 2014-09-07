@@ -16,7 +16,7 @@ Protean_FILES = Tweak.xm Protean.mm \
 		IntroView/PRPage2ViewController.m \
 		IntroView/PRFinalViewController.m \
 		SignalRSSI.xm \
-		Carrier.xm
+		Carrier.xm CustomTime.xm
 
 Protean_FRAMEWORKS = UIKit CoreGraphics QuartzCore
 Protean_LIBRARIES = activator objcipc flipswitch applist

@@ -306,6 +306,7 @@ static BOOL first = YES;
     }
     else
         first = NO;
+
 }
 @end
 
@@ -332,6 +333,13 @@ void refreshStatusBar(CFNotificationCenterRef center,
     // LOLWUT
     [statusBar setShowsOnlyCenterItems:YES];
     [statusBar setShowsOnlyCenterItems:NO];
+
+    if ([NSBundle.mainBundle.bundleIdentifier isEqual:@"com.apple.springboard"])
+    {
+        SBStatusBarStateAggregator *stateAggregator = [objc_getClass("SBStatusBarStateAggregator") sharedInstance];
+        [stateAggregator _resetTimeItemFormatter];
+        [stateAggregator _updateTimeItems];
+    }
     
 	CGRect upwards = statusBar.frame;
 	upwards.origin.y -= upwards.size.height;
@@ -402,6 +410,9 @@ static __attribute__((constructor)) void __protean_init()
                 [Protean launchQR:app];
             return nil;
         }];
+
+
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &refreshStatusBar, CFSTR("com.efrederickson.protean/refreshStatusBar"), NULL, 0);
     }
     
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &reloadSettings, CFSTR("com.efrederickson.protean/reloadSettings"), NULL, 0);

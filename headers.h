@@ -129,6 +129,10 @@
 - (_Bool)_setItem:(int)arg1 enabled:(_Bool)arg2;
 - (void)_updateServiceItem;
 - (void)_updateSignalStrengthItem;
+- (void)_updateTimeItems;
+- (void)_resetTimeItemFormatter;
+- (void)_restartTimeItemTimer;
+- (void)updateStatusBarItem:(int)arg1;
 @end
 
 @interface SBApplicationIcon (Protean2)

@@ -269,9 +269,28 @@
                  @"key": @"serviceString",
                  @"label": @"Custom Carrier",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"icon": @"carrierName.png",
+                 @"icon": @"carriername.png",
                  },
-             
+             @{
+                 @"cell": @"PSEditTextCell",
+                 @"default": @"h:mm a",
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"timeFormat",
+                 @"label": @"Custom Time Format:",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 @"icon": @"timeformat.png",
+                 },
+             @{
+                 @"cell": @"PSSwitchCell",
+                 @"default": @NO,
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"lowercaseAMPM",
+                 @"label": @"Lowercase AM/PM",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 @"cellClass": @"SKTintedSwitchCell",
+                 @"icon": @"lowercaseampm.png"
+                 },
+
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"This may cause minor spacing or overlap issues if items extend pass the midline of the status bar. It is, of course, libstatusbar's fault ;P. Requires a respring to fully apply."
                 },
