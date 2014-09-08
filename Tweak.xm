@@ -599,8 +599,7 @@ BOOL o = NO;
         return;
 
     NSString *section = bulletin.sectionID;
-    NSArray *bulletins = [self noticesBulletinIDsForSectionID:section];
-    [PRStatusApps updateNCStatsForIcon:section count:bulletins.count];
+    [PRStatusApps updateNCStatsForIcon:section count:[PRStatusApps ncCount:section] - arg1.count];
 }
 %end
 

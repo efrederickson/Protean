@@ -45,7 +45,7 @@
 
 -(void)viewDidLoad
 {
-	((UIViewController *)self).title = @"Bluetooth";
+	((UIViewController *)self).title = @"Bluetooth Devices";
 	
 	[self setView:_tableView];
     

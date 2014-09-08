@@ -194,7 +194,7 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
     if (section == 0)
         return @"Enabled";
     else if (section == 1)
-        return @"Icon Tap";
+        return @"Tap Action";
     return @"Icons";
 }
 

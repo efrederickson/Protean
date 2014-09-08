@@ -194,7 +194,7 @@
                  @"label": @"Normalize Lock Screen",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"cellClass": @"SKTintedSwitchCell",
-                 @"icon": @"normalizeLS.png"
+                 @"icon": @"normalizeLS.png",
                  @"footerText": @"Equalizes the height of the lock screen and home screen status bar."
                  },
              @{
@@ -250,7 +250,7 @@
                  },
 
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Change the battery percentage and carrier to custom string types. Space for carrier string hides it, empty is original carrier name."
+                @"footerText": @"Change the battery percentage and carrier to custom string types. Space for carrier string hides it, empty is original carrier name. Time formatting guide is available under Credits & Recommendations"
                 },
              @{
                  @"cell": @"PSLinkListCell",
@@ -315,7 +315,8 @@
                  @"icon": @"respring.png"
                  }
 
-             ]; }
+             ]; 
+}
 
 -(void)respring
 {

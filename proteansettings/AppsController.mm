@@ -50,86 +50,45 @@ void PR_AppsControllerNeedsToReload()
 {
 	NSNumber *iconSize = [NSNumber numberWithUnsignedInteger:ALApplicationIconSizeSmall];
     
-	NSString* excludeList = @
-	"and not displayName in {"
-    "'DataActivation', "
-    "'DemoApp', "
-    "'DDActionsService', "
-    "'FacebookAccountMigrationDialog', "
-    "'FieldTest', "
-    "'iAd', "
-    "'iAdOptOut', "
-    "'iOS Diagnostics', "
-    "'iPodOut', "
-    "'kbd', "
-    "'MailCompositionService', "
-    "'MessagesViewService', "
-    "'quicklookd', "
-    "'Setup', "
-    "'ShoeboxUIService', "
-    "'SocialUIService', "
-    "'TrustMe', "
-    "'WebSheet', "
-    "'WebViewService'"
-	"} "
-	"and not bundleIdentifier in {"
-    "'com.apple.ios.StoreKitUIService', "
-    "'com.apple.gamecenter.GameCenterUIService'"
-	"} ";
-	
-	NSString* enabledList = @"";
+	NSString *enabledList = @"";
     NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME];
     prefs = prefs ?: [NSMutableDictionary dictionary];
     
+    NSArray *apps = [[ALApplicationList sharedApplicationList] applications].allKeys;
 	for (NSString* identifier in prefs[@"images"])
 	{
         if ([prefs[@"images"][identifier] isEqual:@""] == NO)
-            enabledList = [enabledList stringByAppendingString:[NSString stringWithFormat:@"'%@',", identifier]];
+        {
+            if ([apps containsObject:identifier])
+                enabledList = [enabledList stringByAppendingString:[NSString stringWithFormat:@"'%@',", identifier]];
+        }
 	}
     enabledList = [enabledList stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@","]];
-	NSString* filter = (searchText && searchText.length > 0) ? [NSString stringWithFormat:@"displayName beginsWith[cd] '%@' %@", searchText, excludeList] : nil;
+	NSString* filter = (searchText && searchText.length > 0) ? [NSString stringWithFormat:@"displayName beginsWith[cd] '%@'", searchText] : nil;
     
 	if (filter)
 	{
-        //_dataSource.loadsAsynchronously = NO;
 		_dataSource.sectionDescriptors = [NSArray arrayWithObjects:
                                           [NSDictionary dictionaryWithObjectsAndKeys:
                                            @"Search Results", ALSectionDescriptorTitleKey,
                                            @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
                                            iconSize, ALSectionDescriptorIconSizeKey,
-                                           (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
+                                           @YES, ALSectionDescriptorSuppressHiddenAppsKey,
                                            filter, ALSectionDescriptorPredicateKey
                                            , nil]
                                           , nil];
 	}
 	else
 	{
-        //_dataSource.loadsAsynchronously = YES;
         if ([enabledList isEqual:@""])
         {
             _dataSource.sectionDescriptors = [NSArray arrayWithObjects:
                                           [NSDictionary dictionaryWithObjectsAndKeys:
-                                           @"User Applications", ALSectionDescriptorTitleKey,
+                                           //@"", ALSectionDescriptorTitleKey,
                                            @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
                                            iconSize, ALSectionDescriptorIconSizeKey,
-                                           (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
-                                           [NSString stringWithFormat:@"containerPath contains[cd] 'var/mobile/Applications' %@ and not bundleIdentifier in {%@}", excludeList, enabledList],
-                                           ALSectionDescriptorPredicateKey
-                                           , nil],
-                                          [NSDictionary dictionaryWithObjectsAndKeys:
-                                           @"System Applications", ALSectionDescriptorTitleKey,
-                                           @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
-                                           iconSize, ALSectionDescriptorIconSizeKey,
-                                           (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
-                                           [NSString stringWithFormat:@"containerPath = '/Applications' and bundleIdentifier matches 'com.apple.*' %@ and not bundleIdentifier in {%@}", excludeList, enabledList],
-                                           ALSectionDescriptorPredicateKey
-                                           , nil],
-                                          [NSDictionary dictionaryWithObjectsAndKeys:
-                                           @"Cydia Applications", ALSectionDescriptorTitleKey,
-                                           @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
-                                           iconSize, ALSectionDescriptorIconSizeKey,
-                                           (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
-                                           [NSString stringWithFormat:@"containerPath = '/Applications' and not bundleIdentifier matches 'com.apple.*' %@ and not bundleIdentifier in {%@}", excludeList, enabledList],
+                                            @YES, ALSectionDescriptorSuppressHiddenAppsKey,
+                                           [NSString stringWithFormat:@"not bundleIdentifier in {%@}", enabledList],
                                            ALSectionDescriptorPredicateKey
                                            , nil],
                                           nil];
@@ -141,32 +100,16 @@ void PR_AppsControllerNeedsToReload()
                                            @"Enabled Applications", ALSectionDescriptorTitleKey,
                                            @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
                                            iconSize, ALSectionDescriptorIconSizeKey,
-                                           (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
+                                           @YES, ALSectionDescriptorSuppressHiddenAppsKey,
                                            [NSString stringWithFormat:@"bundleIdentifier in {%@}", enabledList],
                                            ALSectionDescriptorPredicateKey
                                            , nil],
                                           [NSDictionary dictionaryWithObjectsAndKeys:
-                                           @"User Applications", ALSectionDescriptorTitleKey,
+                                           @"All Applications", ALSectionDescriptorTitleKey,
                                            @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
                                            iconSize, ALSectionDescriptorIconSizeKey,
-                                           (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
-                                           [NSString stringWithFormat:@"containerPath contains[cd] 'var/mobile/Applications' %@ and not bundleIdentifier in {%@}", excludeList, enabledList],
-                                           ALSectionDescriptorPredicateKey
-                                           , nil],
-                                          [NSDictionary dictionaryWithObjectsAndKeys:
-                                           @"System Applications", ALSectionDescriptorTitleKey,
-                                           @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
-                                           iconSize, ALSectionDescriptorIconSizeKey,
-                                           (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
-                                           [NSString stringWithFormat:@"containerPath = '/Applications' and bundleIdentifier matches 'com.apple.*' %@ and not bundleIdentifier in {%@}", excludeList, enabledList],
-                                           ALSectionDescriptorPredicateKey
-                                           , nil],
-                                          [NSDictionary dictionaryWithObjectsAndKeys:
-                                           @"Cydia Applications", ALSectionDescriptorTitleKey,
-                                           @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
-                                           iconSize, ALSectionDescriptorIconSizeKey,
-                                           (id)kCFBooleanTrue, ALSectionDescriptorSuppressHiddenAppsKey,
-                                           [NSString stringWithFormat:@"containerPath = '/Applications' and not bundleIdentifier matches 'com.apple.*' %@ and not bundleIdentifier in {%@}", excludeList, enabledList],
+                                           @YES, ALSectionDescriptorSuppressHiddenAppsKey,
+                                           [NSString stringWithFormat:@"not bundleIdentifier in {%@}", enabledList],
                                            ALSectionDescriptorPredicateKey
                                            , nil],
                                           nil];

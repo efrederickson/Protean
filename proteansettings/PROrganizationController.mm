@@ -313,7 +313,6 @@ NSDictionary *mapSettings()
     }
         
     i = 0;
-        
     for (id obj_ in mapped[[NSNumber numberWithInt:destinationIndexPath.section]])
     {
         id obj = mapped[[NSNumber numberWithInt:destinationIndexPath.section]][obj_];
@@ -331,7 +330,6 @@ NSDictionary *mapSettings()
     
     [prefs writeToFile:PLIST_NAME atomically:YES];
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
-    
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
 }
 

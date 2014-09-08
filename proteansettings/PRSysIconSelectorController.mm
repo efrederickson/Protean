@@ -215,7 +215,7 @@ UIImage *resizeImage(UIImage *icon)
         return @"Icons";
 
     if (section == 0)
-        return @"Icon Tap";
+        return @"Tap Action";
     else
         return @"Icons";
 }

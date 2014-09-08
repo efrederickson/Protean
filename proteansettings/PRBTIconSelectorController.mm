@@ -172,7 +172,7 @@ extern UIImage *imageFromName(NSString *name);
         return @"Icons";
 
     if (section == 0)
-        return @"Icon Tap";
+        return @"Tap Action";
     else
         return @"Icons";
 }
