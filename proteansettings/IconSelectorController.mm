@@ -315,11 +315,11 @@ UIImage *imageFromName(NSString *name)
     {
         checkedIcon = cell.textLabel.text;
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+        PR_AppsControllerNeedsToReload();
     }
     cell.accessoryType = UITableViewCellAccessoryCheckmark;
     [self updateSavedData];
     [tableView reloadData];
-    PR_AppsControllerNeedsToReload();
 }
 
 -(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)searchText

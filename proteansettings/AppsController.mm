@@ -185,8 +185,9 @@ void PR_AppsControllerNeedsToReload()
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
+    if (!searchDisplayController) return;
     UISearchBar *searchBar = searchDisplayController.searchBar;
+    if (!searchBar) return;
     CGRect searchBarFrame = searchBar.frame;
     
     if (isSearching) {
