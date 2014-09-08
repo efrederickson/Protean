@@ -2,6 +2,19 @@
 #import "Protean.h"
 #import <flipswitch/Flipswitch.h>
 
+NSArray *enabledFlipswitches()
+{
+    NSMutableArray *fs = [NSMutableArray array];
+    for (id key in [Protean getOrLoadSettings][@"flipswitches"])
+    {
+        id enabled_ = [Protean getOrLoadSettings][@"flipswitches"][key];
+        BOOL enabled = enabled_ ? [enabled_ boolValue] : NO;
+        if (enabled)
+            [fs addObject:key];
+    }
+    return fs;
+}
+
 %group SpringBoard
 %hook FSSwitchMainPanel
 - (FSSwitchState)stateForSwitchIdentifier:(NSString *)switchIdentifier
@@ -100,7 +113,7 @@ NSTimer *timer = nil;
 @implementation PRFSTimer
 -(void) timerTick
 {
-    for (id key in [Protean getOrLoadSettings][@"flipswitches"])
+    for (id key in enabledFlipswitches())
     {
         [[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:key];
     }
@@ -108,7 +121,7 @@ NSTimer *timer = nil;
 
 +(void) updateTimer
 {
-    if ([[Protean getOrLoadSettings][@"flipswitches"] count] > 0)
+    if ([enabledFlipswitches() count] > 0)
     {
         if (!timer)
         {
@@ -137,7 +150,7 @@ NSTimer *timer = nil;
     {
         %init(SpringBoard);
         
-        for (id key in [Protean getOrLoadSettings][@"flipswitches"])
+        for (id key in enabledFlipswitches())
         {
             [[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:key];
         }
