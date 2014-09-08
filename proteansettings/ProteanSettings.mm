@@ -191,10 +191,11 @@
                  @"default": @YES,
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"normalizeLS",
-                 @"label": @"Normalize LS StatusBar",
+                 @"label": @"Normalize Lock Screen",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"normalizeLS.png"
+                 @"footerText": @"Equalizes the height of the lock screen and home screen status bar."
                  },
              @{
                  @"cell": @"PSSwitchCell",
@@ -208,7 +209,7 @@
                  },
              
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Enabled by default if time is not aligned in the center. Unlike many other tweaks, it is compatible with LockInfo7 and Forecast."
+                @"footerText": @"Enabled by default if the time is not aligned in the center. Unlike many other tweaks, it is compatible with LockInfo7 and Forecast."
                 },
              @{
                  @"cell": @"PSSwitchCell",
@@ -221,14 +222,14 @@
                  @"icon": @"showLSTime.png"
                  },
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Use counts from the NotificationCenter in addition to badge counts, for applications"
+                @"footerText": @"Include notification counts from the Notification Center in addition to badge counts for applications."
                 },
              @{
                  @"cell": @"PSSwitchCell",
                  @"default": @YES,
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"useNC",
-                 @"label": @"Use NotificationCenter data",
+                 @"label": @"Use Notification Center Data",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"usenc.png"
@@ -241,10 +242,11 @@
                  @"default": @NO,
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"defaultAlignToRight",
-                 @"label": @"Default icons to right",
+                 @"label": @"Default Glyphs to the Right",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"defaulttoright.png"
+                 @"footerText" @"Rather than glyphs defaulting to the left, this will have them default to the right."
                  },
 
              @{ @"cell": @"PSGroupCell",
@@ -267,7 +269,7 @@
                  @"default": @"",
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"serviceString",
-                 @"label": @"Custom Carrier",
+                 @"label": @"Custom Carrier:",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"icon": @"carriername.png",
                  },
@@ -299,7 +301,7 @@
                  @"default": @YES,
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"allowOverlap",
-                 @"label": @"Don't cut off items",
+                 @"label": @"Don't Cut Off Items",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"allowOverlap.png"

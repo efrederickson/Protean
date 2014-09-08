@@ -297,9 +297,9 @@ UIImage *resizeImage(UIImage *icon)
     UILabel *lbl = [[UILabel alloc] initWithFrame:footer.frame];
     lbl.backgroundColor = [UIColor clearColor];
     if (_raw_id == 7)
-        lbl.text = @"This icon cannot be themed\nwith Protean. Alkaline can theme it.";
+        lbl.text = @"Sorry, this icon cannot be\nthemed with Protean.";
     else
-        lbl.text = section == 1 ? @"\nRespring to apply changes\nto System Icons." : @"This icon cannot be themed\nwith Protean. Winterboard may\nbe able to theme it.";
+        lbl.text = section == 1 ? @"\nRespring to apply changes\nto System Icons." : @"Sorry, this icon cannot be\nthemed with Protean.";
     lbl.textAlignment = NSTextAlignmentCenter;
     lbl.numberOfLines = 3;
     lbl.font = [UIFont fontWithName:@"HelveticaNueue-UltraLight" size:5];

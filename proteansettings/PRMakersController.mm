@@ -109,14 +109,11 @@
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Acknowledgments: \n\
 \n\
-Julian Weiss - StatusBar refresh animation\n\
-Bensge - UIStatusBar research\n\
-n00neimp0rtant & tateu - OpenNotifier\n\n\
-Situ Herrera, Pele Saeng-a-loon Chaengsavang, Icons8, Allan McAvoy, and Alessio Atzeni - Provided some glyphs and inspiration.\n\n\
-All of you for the tremendous support.\n\
-\n\
-\n\
-Beta testers:\n\
+Julian Weiss: Status bar refresh animation.\n\
+Bensge: UIStatusBar research.\n\
+n00neimp0rtant and tateu: OpenNotifier\n\n\
+Situ Herrera, Pele Saeng-a-loon Chaengsavang, Icons8, Allan McAvoy, Alessio Atzeni, and Vincent Le Moign: Inspiration and a few icons.\n\n\
+Beta Testers:\n\
 CPDigitalDarkroom\n\
 hellomisterjedi\n\
 hodhr\n\
