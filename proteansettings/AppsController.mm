@@ -173,11 +173,6 @@ void PR_AppsControllerNeedsToReload()
     [super viewDidAppear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-	[super viewWillDisappear:animated];
-}
-
 -(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)searchText
 {
 	[self updateDataSource:searchText];
