@@ -84,7 +84,7 @@ void PR_AppsControllerNeedsToReload()
         {
             _dataSource.sectionDescriptors = [NSArray arrayWithObjects:
                                           [NSDictionary dictionaryWithObjectsAndKeys:
-                                           //@"", ALSectionDescriptorTitleKey,
+                                           @"", ALSectionDescriptorTitleKey,
                                            @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
                                            iconSize, ALSectionDescriptorIconSizeKey,
                                             @YES, ALSectionDescriptorSuppressHiddenAppsKey,
@@ -105,7 +105,7 @@ void PR_AppsControllerNeedsToReload()
                                            ALSectionDescriptorPredicateKey
                                            , nil],
                                           [NSDictionary dictionaryWithObjectsAndKeys:
-                                           @"All Applications", ALSectionDescriptorTitleKey,
+                                           @"Other Applications", ALSectionDescriptorTitleKey,
                                            @"ALLinkCell", ALSectionDescriptorCellClassNameKey,
                                            iconSize, ALSectionDescriptorIconSizeKey,
                                            @YES, ALSectionDescriptorSuppressHiddenAppsKey,
@@ -163,14 +163,14 @@ void PR_AppsControllerNeedsToReload()
 	[super viewDidLoad];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+-(void) viewWillAppear:(BOOL) animated
 {
     if (reload)
     {
         [self updateDataSource:nil];
         reload = NO;
     }
-    [super viewDidAppear:animated];
+    //[super viewWillAppear:animated];
 }
 
 -(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)searchText

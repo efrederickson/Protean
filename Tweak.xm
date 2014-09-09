@@ -584,7 +584,7 @@ BOOL o = NO;
     %orig;
     
     NSString *section = arg1.sectionID;
-    [Protean addBulletin:arg1 forApp:arg1.sectionID]; // Add bulletin for QR
+    [Protean addBulletin:arg1 forApp:section]; // Add bulletin for QR
     NSArray *bulletins = [self noticesBulletinIDsForSectionID:section];
     [PRStatusApps updateNCStatsForIcon:section count:bulletins.count]; // Update stats for Notification center icons
 }

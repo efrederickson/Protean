@@ -49,9 +49,6 @@ StatusBarAlignment getDefaultAlignment()
     if (imageName == nil || [imageName isEqual:@""])
         return;
     
-    //if ([UIImage kitImageNamed:imageName] == nil && [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_%@",imageName]] == nil)
-    //    return;
-    
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
     if (!item)
         return;
@@ -62,6 +59,7 @@ StatusBarAlignment getDefaultAlignment()
 +(void) updateCachedBadgeCount:(NSString*)identifier count:(int) count
 {
     cachedBadgeCounts[identifier] = [NSNumber numberWithInt:count];
+    [PRStatusApps updateTotalNotificationCountIcon];
 }
 
 +(void) hideIconFor:(NSString*)identifier
@@ -189,6 +187,8 @@ StatusBarAlignment getDefaultAlignment()
 
 +(void) updateNCStatsForIcon:(NSString*)section count:(int)count
 {
+    if (count < 0) count = 0;
+    
     //NSLog(@"[Protean] updating nc stats for icon %@", section);
     ncData[section] = [NSNumber numberWithInt:count];
 

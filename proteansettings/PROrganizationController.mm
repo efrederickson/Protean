@@ -56,7 +56,8 @@ NSString *nameForDescription(NSString *desc)
                 @"phantom.coke": @"Phantom",
                 @"com.lablabla.muteicon": @"MuteIcon",
                 @"ws.hbang.typestatus.icon": @"TypeStatus",
-                @"com.sassoty.bulb": @"Bulb"
+                @"com.sassoty.bulb": @"Bulb",
+                @"statusmodifier.mute": @"Mute (StatusModifier)"
                 };
     }
     

@@ -4,7 +4,6 @@
 #import <flipswitch/Flipswitch.h>
 
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
-
 #define isPad ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
 #define iPhoneTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle"
 #define iPadTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle"
@@ -107,7 +106,11 @@ void updateFlipswitches()
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
- 
+ 	
+ 	NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME] ?: [NSMutableDictionary dictionary];
+ 	BOOL enabled = [([prefs[@"flipswitches"] mutableCopy] ?: [NSMutableDictionary dictionary])[flipswitches[indexPath.row][@"identifier"]] boolValue] ?: NO;
+ 	cell.accessoryType = enabled ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+
     cell.textLabel.text = flipswitches[indexPath.row][@"title"];
     cell.imageView.image = flipswitches[indexPath.row][@"icon"];
     

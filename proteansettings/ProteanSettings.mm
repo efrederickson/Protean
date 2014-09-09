@@ -25,6 +25,9 @@
 @interface PRAdvancedSettingsListController : SKTintedListController<SKListControllerProtocol>
 @end
 
+@interface PRDocumentationListController : SKTintedListController<SKListControllerProtocol>
+@end
+
 @implementation ProteanSettingsListController
 -(NSString*) headerText { return @"Protean"; }
 -(NSString*) headerSubText { return NO ? @"Your status bar, your way" : @"By Elijah and Andrew"; }
@@ -124,6 +127,15 @@
                  @"icon": @"makers.png",
                  @"cellClass": @"SKTintedCell",
                  },
+
+             @{ @"cell": @"PSGroupCell" },
+             @{
+                 @"cell": @"PSLinkCell",
+                 @"detail": @"PRDocumentationListController",
+                 @"label": @"User Manual",
+                 @"icon": @"documentation.png",
+                 @"cellClass": @"SKTintedCell",
+                 },
              
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"© 2014 Elijah Frederickson & Andrew Abosh" },
@@ -186,6 +198,10 @@
 
 -(NSArray*) customSpecifiers {
              return @[
+             	@{ 
+        		 @"cell": @"PSGroupCell",
+                 @"footerText": @"Equalizes the height of the lock screen and home screen status bar."
+                 },
                 @{
                  @"cell": @"PSSwitchCell",
                  @"default": @YES,
@@ -194,8 +210,7 @@
                  @"label": @"Normalize Lock Screen",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"cellClass": @"SKTintedSwitchCell",
-                 @"icon": @"normalizeLS.png",
-                 @"footerText": @"Equalizes the height of the lock screen and home screen status bar."
+                 @"icon": @"normalizeLS.png"
                  },
              @{
                  @"cell": @"PSSwitchCell",
@@ -236,6 +251,7 @@
                  },
 
              @{ @"cell": @"PSGroupCell",
+                 @"footerText": @"Rather than glyphs defaulting to the left, this will have them default to the right."
                 },
              @{
                  @"cell": @"PSSwitchCell",
@@ -246,7 +262,6 @@
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"defaulttoright.png"
-                 @"footerText" @"Rather than glyphs defaulting to the left, this will have them default to the right."
                  },
 
              @{ @"cell": @"PSGroupCell",
@@ -327,6 +342,45 @@
 {
     [super setPreferenceValue:value specifier:specifier];
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+}
+@end
+
+@implementation PRDocumentationListController
+-(BOOL) showHeartImage { return NO; }
+-(UIColor*) navigationTintColor { return [UIColor colorWithRed:79/255.0f green:176/255.0f blue:136/255.0f alpha:1.0f]; }
+-(UIColor*) switchOnTintColor { return self.navigationTintColor; }
+-(UIColor*) iconColor { return self.navigationTintColor; }
+-(UIColor*) headerColor { return [UIColor colorWithRed:74/255.0f green:74/255.0f blue:74/255.0f alpha:1.0f]; }
+
+-(NSArray*) customSpecifiers {
+             return @[
+                @{
+                @"cell": @"PSButtonCell",
+                @"label": @"More Documentation",
+                @"action": @"showDoc"
+                },
+                @{ 
+                 @"cell": @"PSGroupCell",
+                 @"footerText": @"In the Organization tab you can rearrange or hide any item on the status bar.\n"
+                    "Simply drag each item to its desired location, and enjoy!\n\n"
+                    "Special notes: Custom items cannot be in the center, and a respring is required to apply changes to them."
+                 },
+                 @{ 
+                 @"cell": @"PSGroupCell",
+                 @"footerText": @"The \"Total Notification Count\", \"Applications\", \"System Icons\", \"Flipswitches\", and \"Bluetooth Devices\" you can use to show the specified target in the status bar.\n"
+                 "For example, you can select the Messages app to show an icon in the status bar when it has either a badge or an item in the Notification Center.\n"
+                 "Have a Pebble SmartWatch? Great! You can show when it's connected to your device by selecting an icon for it under the Bluetooth Devices tab.\n"
+                 },
+                 @{ 
+                 @"cell": @"PSGroupCell",
+                 @"footerText": @"Advanced Options contains many other options you can change, including custom time formats, custom battery percentage formats, show signal RSSI, and much more."
+                 }
+             ]; 
+}
+
+-(void) showDoc
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://proteantweak.com/manual/"]];
 }
 @end
 

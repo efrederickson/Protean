@@ -57,6 +57,11 @@
     [_tableView reloadData];
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return [[BluetoothManager sharedInstance] pairedDevices].count > 0 ? @"Connected Devices" : @"";
+}
+
 -(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
 	UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
