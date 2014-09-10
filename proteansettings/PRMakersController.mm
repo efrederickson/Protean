@@ -57,7 +57,7 @@
                  @"icon": @"github.png"
                  },
              
-             
+            /* 
              @{ @"cell": @"PSGroupCell",
                 @"label": @"Recommended Themes" },
              @{
@@ -72,15 +72,22 @@
                  @"action": @"openHabeshaPack",
                  @"icon": @"rhabeshapack.png"
                  },
-             
+             */
              @{ @"cell": @"PSGroupCell",
-                @"label": @"Recommended StatusBar Tweaks" },
+                @"label": @"" },
              @{
                  @"cell": @"PSLinkCell",
                  @"label": @"RSSIPeek",
                  @"action": @"openRSSIPeek",
                  @"icon": @"rssipeek.png"
                  },
+            @{
+                 @"cell": @"PSLinkCell",
+                 @"label": @"OpenNotifier iOS7 IconPack",
+                 @"action": @"openRCRepoPack",
+                 @"icon": @"rcrepopack.png"
+                 },
+                 /*
              @{
                  @"cell": @"PSLinkCell",
                  @"label": @"Circlet",
@@ -104,21 +111,26 @@
                  @"label": @"Zeppelin",
                  @"action": @"openZeppelin",
                  @"icon": @"zeppelin.png"
-                 },
+                 },*/
              
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Acknowledgments: \n\
 \n\
 Julian Weiss: Status bar refresh animation.\n\
 Bensge: UIStatusBar research.\n\
-n00neimp0rtant and tateu: OpenNotifier\n\n\
+n00neimp0rtant and tateu: OpenNotifier\n\
+/u/binders_of_women_: Helped out with the site.\n\
+/u/moshed: Created a few amount of glyphs.\n\
+\n\
 Situ Herrera, Pele Saeng-a-loon Chaengsavang, Icons8, Allan McAvoy, Alessio Atzeni, and Vincent Le Moign: Inspiration and a few icons.\n\n\
 Beta Testers:\n\
 CPDigitalDarkroom\n\
 hellomisterjedi\n\
 hodhr\n\
 /u/narcolepticinsomniac\n\
-/u/binders_of_women_",
+Framboogle\n\
+Djaovx\n\
+",
                 },
              ];
 }
@@ -140,10 +152,12 @@ hodhr\n\
 
 -(void) openRCRepoPack
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"3rd Party Source" message:@"This icon pack is from the Reddit community repo!\nMake sure you have rcrepo.com added as a Cydia source!" delegate:self cancelButtonTitle:@"Have it" otherButtonTitles:nil];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://package/com.md.on7"]];
+
+    /*UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"3rd Party Source" message:@"This icon pack is from the Reddit community repo!\nMake sure you have rcrepo.com added as a Cydia source!" delegate:self cancelButtonTitle:@"Have it" otherButtonTitles:nil];
     [alert addButtonWithTitle:@"Add Repo"];
     [alert setTag:3];
-    [alert show];
+    [alert show];*/
 }
 
 -(void) openHabeshaPack

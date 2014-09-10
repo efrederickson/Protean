@@ -22,10 +22,8 @@ void updateItem(int key, NSString *identifier)
     if (!properties)
         properties = [NSMutableDictionary dictionary];
     
-    //if ([[properties objectForKey:@"identifier"] isEqual:identifier] == NO)
-    //{
-    //    properties = [NSMutableDictionary dictionary];
-    //}
+    if ([[properties objectForKey:@"identifier"] isEqual:identifier] == NO)
+        properties = [NSMutableDictionary dictionary];
 
     [properties setObject:identifier forKey:@"identifier"];
     [properties setObject:nKey forKey:@"key"];
@@ -621,6 +619,22 @@ void launchApp(CFNotificationCenterRef center,
 {
     [(SpringBoard*)[UIApplication sharedApplication] launchApplicationWithIdentifier:((__bridge NSDictionary*)userInfo)[@"appId"] suspended:NO];
 }
+
+%hook SBLockScreenViewController
+-(void) _handleDisplayTurnedOn
+{
+    %orig;
+
+    [PRStatusApps updateLockState:YES];
+}
+
+-(void)_handleDisplayTurnedOff
+{
+    %orig;
+
+    [PRStatusApps updateLockState:NO];
+}
+%end
 
 %ctor
 {

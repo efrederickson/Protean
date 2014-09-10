@@ -11,7 +11,8 @@
 NSMutableDictionary *icons = [[NSMutableDictionary dictionary] retain]; // probably should use alloc] init] retain] instead
 NSMutableDictionary *cachedBadgeCounts = [[NSMutableDictionary dictionary] retain];
 NSMutableDictionary *ncData = [[NSMutableDictionary dictionary] retain];
-
+NSMutableArray *showWhenOff = [[NSMutableArray array] retain];
+BOOL isScreenOff = NO;
 int totalBadgeCount = 0;
 
 StatusBarAlignment getDefaultAlignment()
@@ -52,7 +53,13 @@ StatusBarAlignment getDefaultAlignment()
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
     if (!item)
         return;
-    item.visible = YES;
+    if (isScreenOff)
+    {
+    	item.visible = NO;
+    	[showWhenOff addObject:item];
+    }
+    else
+    	item.visible = YES;
     item.imageName = imageName;
 }
 
@@ -87,7 +94,13 @@ StatusBarAlignment getDefaultAlignment()
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
     if (!item)
         return;
-    item.visible = YES;
+    if (isScreenOff)
+    {
+    	item.visible = NO;
+    	[showWhenOff addObject:item];
+    }
+    else
+    	item.visible = YES;
     NSString *imageName = [Protean imageNameForIdentifier:identifier];
     
     item.imageName = [imageName isEqual:@""] ? identifier : imageName;
@@ -105,7 +118,13 @@ StatusBarAlignment getDefaultAlignment()
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
     if (!item)
         return;
-    item.visible = YES;
+    if (isScreenOff)
+    {
+    	item.visible = NO;
+    	[showWhenOff addObject:item];
+    }
+    else
+    	item.visible = YES;
     item.imageName = [Protean imageNameForIdentifier:identifier];
 }
 
@@ -212,6 +231,23 @@ StatusBarAlignment getDefaultAlignment()
 +(int) ncCount:(NSString*)identifier
 {
     return [ncData.allKeys containsObject:identifier] ? [ncData[identifier] intValue] : 0;
+}
+
+
++(void) updateLockState:(BOOL)locked
+{
+	isScreenOff = !locked;
+
+	if (isScreenOff)
+	{
+
+	}
+	else // screen is on
+	{
+		for (LSStatusBarItem *item in showWhenOff)
+			item.visible = YES;
+		[showWhenOff removeAllObjects];
+	}
 }
 
 @end

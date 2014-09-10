@@ -262,11 +262,11 @@ UIImage *imageFromName(NSString *name)
         if (indexPath.row == 0)
             alignmentText = @"Nothing";
         else if (indexPath.row == 1)
-            alignmentText = @"Open Application";
+            alignmentText = @"Launch Application";
         else if (indexPath.row == 2)
             alignmentText = @"Activator Action";
         else if (indexPath.row == 3)
-            alignmentText = @"Open Associated Quick-Reply";
+            alignmentText = @"Launch Associated Quick-Reply";
         
         cell.textLabel.text = alignmentText;
         cell.accessoryType = indexPath.row == tapAction ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;

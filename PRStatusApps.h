@@ -13,4 +13,6 @@
 +(void) updateCachedBadgeCount:(NSString*)identifier count:(int) count;
 +(void) updateNCStatsForIcon:(NSString*)section count:(int)count;
 +(int) ncCount:(NSString*)identifier;
+
++(void) updateLockState:(BOOL)locked;
 @end

@@ -30,7 +30,7 @@
 
 @implementation ProteanSettingsListController
 -(NSString*) headerText { return @"Protean"; }
--(NSString*) headerSubText { return NO ? @"Your status bar, your way" : @"By Elijah and Andrew"; }
+-(NSString*) headerSubText { return NO ? @"Your status bar, your way" : @"By Elijah and Andrew\nYour status bar, your way."; }
 -(NSString*) customTitle { return @""; }
 
 -(NSString*) shareMessage { return @"I'm using #Protean by @daementor and @drewplex: your status bar, your way."; }
@@ -71,7 +71,7 @@
                  },
              
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Select applications, flipswitches, etc and glyphs to show in the status bar (similar to OpenNotifier)"
+                @"footerText": @"Select applications, flipswitches, and others to be represented by a glyph in the status bar."
                 },
              @{
                  @"cell": @"PSLinkListCell",
@@ -132,7 +132,7 @@
              @{
                  @"cell": @"PSLinkCell",
                  @"detail": @"PRDocumentationListController",
-                 @"label": @"User Manual",
+                 @"label": @"Documentation",
                  @"icon": @"documentation.png",
                  @"cellClass": @"SKTintedCell",
                  },
@@ -212,6 +212,7 @@
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"normalizeLS.png"
                  },
+                 @{},
              @{
                  @"cell": @"PSSwitchCell",
                  @"default": @NO,
@@ -220,7 +221,7 @@
                  @"label": @"Show Signal RSSI",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"cellClass": @"SKTintedSwitchCell",
-                 @"icon": @"normalizeLS.png"
+                 @"icon": @"signalrssi.png"
                  },
              
              @{ @"cell": @"PSGroupCell",
@@ -265,7 +266,7 @@
                  },
 
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Change the battery percentage and carrier to custom string types. Space for carrier string hides it, empty is original carrier name. Time formatting guide is available under Credits & Recommendations"
+                @"footerText": @"Change the battery percentage and carrier to custom string types. Space for carrier string hides it, empty is original carrier name. A time formatting guide is available in the documentation."
                 },
              @{
                  @"cell": @"PSLinkListCell",
@@ -359,6 +360,13 @@
                 @"label": @"More Documentation",
                 @"action": @"showDoc"
                 },
+
+                @{ 
+                 @"cell": @"PSGroupCell",
+                 @"footerText": @"** Coming soon **"
+                 },
+
+                /*
                 @{ 
                  @"cell": @"PSGroupCell",
                  @"footerText": @"In the Organization tab you can rearrange or hide any item on the status bar.\n"
@@ -374,7 +382,7 @@
                  @{ 
                  @"cell": @"PSGroupCell",
                  @"footerText": @"Advanced Options contains many other options you can change, including custom time formats, custom battery percentage formats, show signal RSSI, and much more."
-                 }
+                 }*/
              ]; 
 }
 
