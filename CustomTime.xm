@@ -12,6 +12,9 @@ BOOL wasLowercased = NO;
 
 	NSDateFormatter *formatter = MSHookIvar<NSDateFormatter*>(self, "_timeItemDateFormatter");
 
+	if (!formatter)
+		return;
+	
 	NSString *format = [Protean getOrLoadSettings][@"timeFormat"];
 	if (format && enabled)
 		[formatter setDateFormat:format];

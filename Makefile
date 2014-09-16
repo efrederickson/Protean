@@ -5,8 +5,10 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Protean
 
-Protean_FILES = Tweak.xm Protean.mm \
-                PRStatusApps.mm UIStatusBarItemView.xm \
+Protean_FILES = Protean.mm \
+				Tweak.xm \
+                PRStatusApps.mm \
+                UIStatusBarItemView.xm \
                 FlipswitchHooks.xm Bluetooth.xm \
                 LockscreenStatusBar.xm LSStatusTime.xm \
   	        BatteryPercent.xm \

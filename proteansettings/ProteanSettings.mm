@@ -158,7 +158,7 @@
         mailViewController.mailComposeDelegate = self;
         [mailViewController setSubject:@"Protean"];
         [mailViewController setMessageBody:@"" isHTML:NO];
-        [mailViewController setToRecipients:@[@"elijah.frederickson@gmail.com", @"andrewaboshartworks@gmail.com"]];
+        [mailViewController setToRecipients:@[@"elijahandandrew@gmail.com"]];
             
         [self.rootController presentViewController:mailViewController animated:YES completion:nil];
     }

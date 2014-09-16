@@ -152,7 +152,7 @@ Djaovx\n\
 
 -(void) openRCRepoPack
 {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://package/com.md.on7"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"cydia://package/com.modmyi.opennotifierios7iconpack"]];
 
     /*UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"3rd Party Source" message:@"This icon pack is from the Reddit community repo!\nMake sure you have rcrepo.com added as a Cydia source!" delegate:self cancelButtonTitle:@"Have it" otherButtonTitles:nil];
     [alert addButtonWithTitle:@"Add Repo"];

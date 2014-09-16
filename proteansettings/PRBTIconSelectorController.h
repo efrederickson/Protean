@@ -1,5 +1,11 @@
 #import <Preferences/Preferences.h>
 
+@interface PSViewController (SettingsKit)
+-(UINavigationController*)navigationController;
+-(void)viewWillAppear:(BOOL)animated;
+-(void)viewWillDisappear:(BOOL)animated;
+@end
+
 @interface PRBTIconSelectorController : PSViewController <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchDisplayDelegate>
 {
 	NSString* _appName;

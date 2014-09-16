@@ -36,8 +36,11 @@
 - (UIImage*) _flatImageWithColor: (UIColor*) color;
 @end
 
+NSMutableDictionary *nameCache = [NSMutableDictionary dictionary];
 NSString *nameForDescription(NSString *desc)
 {
+    if (nameCache[desc]) return nameCache[desc];
+
     static __strong NSDictionary *map;
     if (!map) {
         map = @{
@@ -69,10 +72,14 @@ NSString *nameForDescription(NSString *desc)
             return @"Total Notification Count";
         
         if ([[FSSwitchPanel sharedPanel].switchIdentifiers containsObject:identifier])
-            return [NSString stringWithFormat:@"%@ (Flipswitch)",[[FSSwitchPanel sharedPanel] titleForSwitchIdentifier:identifier]];
+        {
+            nameCache[desc] = [NSString stringWithFormat:@"%@ (Flipswitch)",[[FSSwitchPanel sharedPanel] titleForSwitchIdentifier:identifier]];
+            return nameCache[desc];
+        }
         
         ALApplicationList *al = [ALApplicationList sharedApplicationList];
-        return [al.applications objectForKey:identifier] ?: identifier;
+        nameCache[desc] = [al.applications objectForKey:identifier] ?: identifier;
+        return nameCache[desc];
     }
     
     if ([desc hasPrefix:@"opennotifier."])
@@ -95,7 +102,8 @@ NSString *nameForDescription(NSString *desc)
     if ([desc hasPrefix:@"Indicator:"])
         desc = [desc substringFromIndex:10];
     
-    return map[desc] ?: desc;
+    nameCache[desc] = map[desc] ?: desc;
+    return nameCache[desc];
 }
 
 UIImage *resizeFSImage(UIImage *icon, float max = 30.0f)
@@ -133,8 +141,13 @@ UIImage *resizeFSImage(UIImage *icon, float max = 30.0f)
 	return icon;
 }
 
+NSMutableDictionary *cachedImages = [NSMutableDictionary dictionary];
 UIImage *iconForDescription(NSString *desc)
 {
+    if (cachedImages[desc])
+    {
+        return cachedImages[desc];
+    }
     static __strong NSBundle *templateBundle;
     if (!templateBundle)
         templateBundle = [NSBundle bundleWithPath:TemplatePath];
@@ -145,9 +158,15 @@ UIImage *iconForDescription(NSString *desc)
         
         ALApplicationList *al = [ALApplicationList sharedApplicationList];
         if ([al.applications.allKeys containsObject:identifier])
-            return [al iconOfSize:ALApplicationIconSizeSmall forDisplayIdentifier:identifier];
+        {
+            cachedImages[desc] = [al iconOfSize:ALApplicationIconSizeSmall forDisplayIdentifier:identifier];
+            return cachedImages[desc];
+        }
         if ([[FSSwitchPanel sharedPanel].switchIdentifiers containsObject:identifier])
-            return resizeFSImage([[[FSSwitchPanel sharedPanel] imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:identifier] controlState:UIControlStateNormal forSwitchIdentifier:identifier usingTemplate:templateBundle] _flatImageWithColor:[UIColor blackColor]]);
+        {
+            cachedImages[desc] = resizeFSImage([[[FSSwitchPanel sharedPanel] imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:identifier] controlState:UIControlStateNormal forSwitchIdentifier:identifier usingTemplate:templateBundle] _flatImageWithColor:[UIColor blackColor]]);
+            return cachedImages[desc];
+        }
         
         if ([identifier hasPrefix:@"Pebble"])
             desc = @"Pebble";
@@ -163,12 +182,6 @@ UIImage *iconForDescription(NSString *desc)
         desc = @"DND";
     if ([desc hasPrefix:@"AirplaneMode"])
         desc = @"AirplaneMode";
-    
-    if ([desc hasPrefix:@"opennotifier."])
-    {
-        //return [desc substringFromIndex:13];
-        return nil;
-    }
     
     if ([desc isEqual:@"com.rabih96.macvolume"])
         desc = @"Volume Status";
@@ -187,13 +200,16 @@ UIImage *iconForDescription(NSString *desc)
     if (imageBundle == nil)
         imageBundle = [NSBundle bundleWithPath:@"/Library/Protean/OrganizeIcons.bundle"];
     
-    return [UIImage imageNamed:desc inBundle:imageBundle] ?: [UIImage imageNamed:@"Unknown" inBundle:imageBundle];
+    cachedImages[desc] = [UIImage imageNamed:desc inBundle:imageBundle] ?: [UIImage imageNamed:@"Unknown" inBundle:imageBundle];
+    return cachedImages[desc];
 }
 
 NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
 
+static NSDictionary *cachedSettings = nil;
 NSDictionary *mapSettings()
 {
+    if (cachedSettings) return cachedSettings;
     static NSArray *systemItems = @[@0, @1, @2, @3, @4, @5, @7, @8, @9, @10, @11, @12, @13, @16, @17, @19, @20, @21, @22, @23, @28];
     
     NSMutableDictionary *mapped = [NSMutableDictionary dictionary];
@@ -228,7 +244,8 @@ NSDictionary *mapSettings()
         mapped[alignment][order] = d;
     }
     
-    return mapped;
+    cachedSettings = mapped;
+    return cachedSettings;
 }
 
 @implementation PROrganizationController
@@ -259,9 +276,11 @@ NSDictionary *mapSettings()
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         [cell setSelectionStyle:UITableViewCellSelectionStyleBlue];
     }
-    
-    NSString *desc = [mapSettings() objectForKey:[NSNumber numberWithInt:indexPath.section]][[NSNumber numberWithInt:indexPath.row]][@"identifier"];
-    
+
+    if (!cachedSettings)
+        cachedSettings = mapSettings();
+    NSString *desc = [cachedSettings objectForKey:[NSNumber numberWithInt:indexPath.section]][[NSNumber numberWithInt:indexPath.row]][@"identifier"];
+
     cell.textLabel.text = nameForDescription(desc);
     cell.imageView.image = iconForDescription(desc);
     
@@ -292,13 +311,13 @@ NSDictionary *mapSettings()
     NSMutableDictionary *prefs = [NSMutableDictionary
                                   dictionaryWithContentsOfFile:PLIST_NAME];
     
-    //prefs[dict[@"key"]][@"order"] = [NSNumber numberWithInt:destinationIndexPath.row];
     prefs[dict[@"key"]][@"alignment"] = [NSNumber numberWithInt:destinationIndexPath.section];
         
     int old_order = sourceIndexPath.row;
     int new_order = destinationIndexPath.row;
         
     int i = 0;
+    NSMutableArray *counts = [NSMutableArray array];
     [mapped[[NSNumber numberWithInt:sourceIndexPath.section]] removeObjectForKey:[NSNumber numberWithInt:sourceIndexPath.row]];
     for (id obj_ in mapped[[NSNumber numberWithInt:sourceIndexPath.section]])
     {
@@ -306,25 +325,38 @@ NSDictionary *mapSettings()
         
         if (prefs[obj[@"key"]][@"order"])
         {
+            [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue]]];
             if ([prefs[obj[@"key"]][@"order"] intValue] > old_order)
                 prefs[obj[@"key"]][@"order"] = [NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] - 1];
         }
         else
+        {
+            while ([counts containsObject:[NSNumber numberWithInt:i]])
+                i++;
+            [counts addObject:[NSNumber numberWithInt:i]];
             prefs[obj[@"key"]][@"order"] = [NSNumber numberWithInt:i++];
+        }
     }
         
     i = 0;
+    counts = [NSMutableArray array];
     for (id obj_ in mapped[[NSNumber numberWithInt:destinationIndexPath.section]])
     {
         id obj = mapped[[NSNumber numberWithInt:destinationIndexPath.section]][obj_];
         
         if (prefs[obj[@"key"]][@"order"])
         {
+            [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue]]];
             if ([prefs[obj[@"key"]][@"order"] intValue] >= new_order)
                 prefs[obj[@"key"]][@"order"] = [NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] + 1];
         }
         else
+        {
+            while ([counts containsObject:[NSNumber numberWithInt:i]])
+                i++;
+            [counts addObject:[NSNumber numberWithInt:i]];
             prefs[obj[@"key"]][@"order"] = [NSNumber numberWithInt:i++];
+        }
     }
         
     prefs[dict[@"key"]][@"order"] = [NSNumber numberWithInt:destinationIndexPath.row];
@@ -332,6 +364,8 @@ NSDictionary *mapSettings()
     [prefs writeToFile:PLIST_NAME atomically:YES];
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+    cachedSettings = nil;
+    [tableView reloadData];
 }
 
 - (id)initForContentSize:(CGSize)size
@@ -348,6 +382,7 @@ NSDictionary *mapSettings()
         
         [self setView:self.tableView];
     }
+
     return self;
 }
 
@@ -360,4 +395,21 @@ NSDictionary *mapSettings()
 {
     return NO;
 }
+
+-(UIColor*) tintColor { return [UIColor colorWithRed:79/255.0f green:176/255.0f blue:136/255.0f alpha:1.0f]; }
+
+- (void)viewWillAppear:(BOOL)animated {
+    ((UIView*)self.view).tintColor = self.tintColor;
+    self.navigationController.navigationBar.tintColor = self.tintColor;
+
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    ((UIView*)self.view).tintColor = nil;
+    self.navigationController.navigationBar.tintColor = nil;
+}
+
 @end

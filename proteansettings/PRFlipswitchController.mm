@@ -72,11 +72,17 @@ void updateFlipswitches()
 {
     updateFlipswitches();
     [_tableView reloadData];
+    ((UIView*)self.view).tintColor = self.tintColor;
+    self.navigationController.navigationBar.tintColor = self.tintColor;
+
+    [super viewWillAppear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-	[super viewWillDisappear:animated];
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    ((UIView*)self.view).tintColor = nil;
+    self.navigationController.navigationBar.tintColor = nil;
 }
 
 -(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
@@ -117,4 +123,5 @@ void updateFlipswitches()
     return cell;
 }
 
+-(UIColor*) tintColor { return [UIColor colorWithRed:79/255.0f green:176/255.0f blue:136/255.0f alpha:1.0f]; }
 @end

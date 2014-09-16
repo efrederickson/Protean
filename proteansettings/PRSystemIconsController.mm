@@ -7,6 +7,9 @@
 
 @interface PSViewController ()
 -(void) setView:(id)view;
+-(UINavigationController*)navigationController;
+-(void)viewWillAppear:(BOOL)animated;
+-(void)viewWillDisappear:(BOOL)animated;
 @end
 @interface UIApplication (Protean)
 -(id) statusBar;
@@ -133,4 +136,19 @@ NSMutableArray *mapSettingsForSysIcons()
 	[tableView deselectRowAtIndexPath:indexPath animated:true];
 }
 
+-(UIColor*) tintColor { return [UIColor colorWithRed:79/255.0f green:176/255.0f blue:136/255.0f alpha:1.0f]; }
+
+- (void)viewWillAppear:(BOOL)animated {
+    ((UIView*)self.view).tintColor = self.tintColor;
+    self.navigationController.navigationBar.tintColor = self.tintColor;
+
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    ((UIView*)self.view).tintColor = nil;
+    self.navigationController.navigationBar.tintColor = nil;
+}
 @end

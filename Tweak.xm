@@ -8,6 +8,7 @@ extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
 NSObject *lockObject = [[NSObject alloc] init];
+BOOL _isSpringBoardLoading = YES;
 
 void updateItem(int key, NSString *identifier)
 {
@@ -30,6 +31,7 @@ void updateItem(int key, NSString *identifier)
 
     [prefs setObject:properties forKey:nKey];
 
+    if (_isSpringBoardLoading) return;
     @synchronized (lockObject) {
         [prefs writeToFile:PLIST_NAME atomically:YES];
         [Protean reloadSettings];
@@ -77,6 +79,7 @@ void updateItem2(int key, NSString *identifier)
 
             [prefs setObject:tmp forKey:nKey];
 
+            if (_isSpringBoardLoading) return;
             @synchronized (lockObject) {
                 [prefs writeToFile:PLIST_NAME atomically:YES];
                 [Protean reloadSettings];
@@ -107,6 +110,7 @@ void updateItem2(int key, NSString *identifier)
     properties[@"key"] = nKey;
     prefs[nKey] = properties;
 
+    if (_isSpringBoardLoading) return;
     @synchronized (lockObject) {
         [prefs writeToFile:PLIST_NAME atomically:YES];
         [Protean reloadSettings];
@@ -608,6 +612,7 @@ BOOL o = NO;
 
     CHECK_ENABLED();
     [PRStatusApps reloadAllImages];
+    _isSpringBoardLoading = NO;
 }
 %end
 
@@ -642,8 +647,6 @@ void launchApp(CFNotificationCenterRef center,
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/bars.dylib"])
         dlopen("/Library/MobileSubstrate/DynamicLibraries/bars.dylib", RTLD_NOW | RTLD_GLOBAL);
 
-    %init;
-    
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
     {
         CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &launchApp, CFSTR("com.efrederickson.protean/launchApp"), NULL, 0);

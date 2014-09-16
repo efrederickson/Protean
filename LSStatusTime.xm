@@ -11,9 +11,9 @@
     CHECK_ENABLED(%orig);
 
     id item = [Protean getOrLoadSettings][@"showLSTime"];
-    id time = [Protean getOrLoadSettings][@"0"];
-    int alignment = time && time[@"alignment"] ? [time[@"alignment"] intValue] : 4;
-    if ((item ? [item boolValue] : YES) || (alignment == 0 || alignment == 1))
+    //id time = [Protean getOrLoadSettings][@"0"];
+    //int alignment = time && time[@"alignment"] ? [time[@"alignment"] intValue] : 4;
+    if ((item ? [item boolValue] : YES)) //  || (alignment == 0 || alignment == 1)
         return YES;
     else
         return %orig;
@@ -26,9 +26,7 @@
     CHECK_ENABLED(%orig);
 
     id item = [Protean getOrLoadSettings][@"showLSTime"];
-    id time = [Protean getOrLoadSettings][@"0"];
-    int alignment = time && time[@"alignment"] ? [time[@"alignment"] intValue] : 4;
-    if ((item ? [item boolValue] : YES) || (alignment == 0 || alignment == 1))
+    if ((item ? [item boolValue] : YES))
         return YES;
     else
         return %orig;
@@ -41,9 +39,7 @@
     CHECK_ENABLED(%orig);
 
     id item = [Protean getOrLoadSettings][@"showLSTime"];
-    id time = [Protean getOrLoadSettings][@"0"];
-    int alignment = time && time[@"alignment"] ? [time[@"alignment"] intValue] : 4;
-    if ((item ? [item boolValue] : YES) || (alignment == 0 || alignment == 1))
+    if ((item ? [item boolValue] : YES))
         return YES;
     else
         return %orig;
@@ -56,9 +52,7 @@
     CHECK_ENABLED(%orig);
 
     id item = [Protean getOrLoadSettings][@"showLSTime"];
-    id time = [Protean getOrLoadSettings][@"0"];
-    int alignment = time && time[@"alignment"] ? [time[@"alignment"] intValue] : 4;
-    if ((item ? [item boolValue] : YES) || (alignment == 0 || alignment == 1))
+    if ((item ? [item boolValue] : YES))
         return YES;
     else
         return %orig;
@@ -71,9 +65,7 @@
     CHECK_ENABLED2(%orig);
 
     id item = [Protean getOrLoadSettings][@"showLSTime"];
-    id time = [Protean getOrLoadSettings][@"0"];
-    int alignment = time && time[@"alignment"] ? [time[@"alignment"] intValue] : 4;
-    if ((item ? [item boolValue] : YES) || (alignment == 0 || alignment == 1))
+    if ((item ? [item boolValue] : YES))
     {
         %orig(YES, arg2);
         return;
@@ -84,37 +76,3 @@
 //- (_Bool)isTopGrabberHidden;
 %end
 
-/*
-%ctor
-{
-    if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/LockPages.dylib"])
-    {
-        int numClasses = objc_getClassList(NULL, 0);
-
-        Class* list = (Class*)malloc(sizeof(Class) * numClasses);
-        objc_getClassList(list, numClasses);
-
-        for (int i = 0; i < numClasses; i++)
-        {
-            IMP orig$isTimeEnabled = NULL;
-            
-            BOOL (^new$isTimeEnabled)(id, SEL) = ^BOOL(id self, SEL _cmd) {
-                id item = [Protean getOrLoadSettings][@"showLSTime"];
-                id time = [Protean getOrLoadSettings][@"0"];
-                int alignment = time && time[@"alignment"] ? [time[@"alignment"] intValue] : 4;
-                if ((item ? [item boolValue] : YES) || (alignment == 0 || alignment == 1))
-                    return YES;
-                else
-                    return [orig$isTimeEnabled(self, _cmd) boolValue];
-            };
-
-            if (class_conformsToProtocol(list[i], @protocol(LPPage)) &&
-                class_getInstanceMethod(list[i], @selector(isTimeEnabled)))
-            {
-                MSHookMessageEx(list[i], @selector(isTimeEnabled), (IMP)new$isTimeEnabled, (IMP*)&orig$isTimeEnabled);
-            }
-        }
-        free(list);
-    }
-}
-*/
