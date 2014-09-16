@@ -11,6 +11,8 @@ NSObject *lockObject = [[NSObject alloc] init];
 
 void updateItem(int key, NSString *identifier)
 {
+    if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"]) return;
+
     NSString *nKey = [NSString stringWithFormat:@"%d",key];
 
     NSMutableDictionary *prefs = [NSMutableDictionary
