@@ -185,7 +185,7 @@ StatusBarAlignment getDefaultAlignment()
     {
         [[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:key];
     }
-    [objc_getClass("PRFSTimer") updateTimer];
+    //[objc_getClass("PRFSTimer") updateTimer];
     
     // Bluetooth
     id bt = objc_getClass("BluetoothManager");

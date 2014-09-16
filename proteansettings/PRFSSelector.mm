@@ -225,7 +225,7 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
             cell.accessoryView = switchView;
-            [switchView setOn:enabled animated:NO];
+            [switchView setOn:showWhenOff animated:NO];
             [switchView addTarget:self action:@selector(showWhenOffSwitchChanged:) forControlEvents:UIControlEventValueChanged];
         }
         else
@@ -240,9 +240,9 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
     }
     else if (indexPath.section == 1)
     {
-    	cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    	cell = [tableView dequeueReusableCellWithIdentifier:@"TextCell"];
     	if (cell == nil)
-        	cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+        	cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TextCell"];
         NSString *alignmentText = @"";
         if (indexPath.row == 0)
             alignmentText = @"Nothing";

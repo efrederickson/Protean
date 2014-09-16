@@ -8,7 +8,6 @@ extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
 NSObject *lockObject = [[NSObject alloc] init];
-BOOL _isSpringBoardLoading = YES;
 
 void updateItem(int key, NSString *identifier)
 {
@@ -31,7 +30,6 @@ void updateItem(int key, NSString *identifier)
 
     [prefs setObject:properties forKey:nKey];
 
-    if (_isSpringBoardLoading) return;
     @synchronized (lockObject) {
         [prefs writeToFile:PLIST_NAME atomically:YES];
         [Protean reloadSettings];
@@ -79,7 +77,6 @@ void updateItem2(int key, NSString *identifier)
 
             [prefs setObject:tmp forKey:nKey];
 
-            if (_isSpringBoardLoading) return;
             @synchronized (lockObject) {
                 [prefs writeToFile:PLIST_NAME atomically:YES];
                 [Protean reloadSettings];
@@ -110,7 +107,6 @@ void updateItem2(int key, NSString *identifier)
     properties[@"key"] = nKey;
     prefs[nKey] = properties;
 
-    if (_isSpringBoardLoading) return;
     @synchronized (lockObject) {
         [prefs writeToFile:PLIST_NAME atomically:YES];
         [Protean reloadSettings];
@@ -548,7 +544,6 @@ BOOL o = NO;
 }
 %end
 
-
 %hook SBApplication
 - (void)setBadge:(id)arg1
 {
@@ -612,7 +607,6 @@ BOOL o = NO;
 
     CHECK_ENABLED();
     [PRStatusApps reloadAllImages];
-    _isSpringBoardLoading = NO;
 }
 %end
 

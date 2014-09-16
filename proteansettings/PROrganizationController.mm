@@ -10,6 +10,7 @@
 
 @interface PSViewController ()
 -(void) setView:(id)view;
+-(void) setTitle:(NSString*)title;
 @end
 @interface UIApplication (Protean)
 -(id) statusBar;
@@ -381,6 +382,8 @@ NSDictionary *mapSettings()
         [self.tableView setAllowsSelection:NO];
         
         [self setView:self.tableView];
+
+        [self setTitle:@"Organization"];
     }
 
     return self;
