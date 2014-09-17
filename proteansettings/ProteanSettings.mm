@@ -387,11 +387,14 @@
 - (void)viewWillAppear:(BOOL)animated {
     ((UIView*)self.view).tintColor = self.tintColor;
     self.navigationController.navigationBar.tintColor = self.tintColor;
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 
     [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+[self.navigationController setNavigationBarHidden:NO animated:YES];
+
     [super viewWillDisappear:animated];
     
     ((UIView*)self.view).tintColor = nil;
@@ -407,7 +410,7 @@
     }
     if ([requestURL.absoluteString isEqual:@"internal://back-to-settings"])
     {
-        
+        [[self navigationController] popViewControllerAnimated:YES];
     }
     return YES; 
 }
