@@ -258,7 +258,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         }
     }
     
-    id couria = objc_getClass("Couria");
+    id couria = NSClassFromString(@"Couria");
     if (couria)
     {
         [[couria sharedInstance] handleBulletin:bulletin];

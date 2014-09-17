@@ -172,6 +172,46 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
     }
 }
 
+%hook UIStatusBarCustomItem
+-(int) rightOrder
+{
+    CHECK_ENABLED(%orig);
+
+    id _alignment = settingsForItem(self)[@"alignment"];
+    int alignment = _alignment == nil ? 4 : [_alignment intValue];
+
+    id _rightOrder = settingsForItem(self)[@"order"];
+    
+    if (alignment != 1)
+        return %orig;
+
+    int rightOrder = _rightOrder == nil ? %orig : ([_rightOrder intValue] == 0 ? 1 : [_rightOrder intValue]);
+
+    return rightOrder;
+}
+-(int) leftOrder
+{
+    CHECK_ENABLED(%orig);
+
+    id _alignment = settingsForItem(self)[@"alignment"];
+    int alignment = _alignment == nil ? 4 : [_alignment intValue];
+
+    if (alignment != 0)
+        return %orig;
+
+    id _leftOrder = settingsForItem(self)[@"order"];
+    int leftOrder = _leftOrder == nil ? %orig : ([_leftOrder intValue] == 0 ? 1 : [_leftOrder intValue]);
+
+    return leftOrder;
+}
+- (int)priority
+{
+    CHECK_ENABLED(%orig);
+
+    return 2;
+}
+%end
+
 %hook UIStatusBarItem
 + (UIStatusBarItem*)itemWithType:(int)arg1 idiom:(long long)arg2
 {

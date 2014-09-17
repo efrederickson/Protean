@@ -252,12 +252,15 @@ UIImage *imageFromName(NSString *name)
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    if (cell == nil)
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
-    
+    UITableViewCell *cell = nil;
+
     if (indexPath.section == 0 && isSearching == NO)
     {
+        [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+        if (cell == nil)
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+    
+
         NSString *alignmentText = @"";
         if (indexPath.row == 0)
             alignmentText = @"Nothing";
@@ -274,6 +277,10 @@ UIImage *imageFromName(NSString *name)
     }
     else
     {
+        [tableView dequeueReusableCellWithIdentifier:@"IconCell"];
+        if (cell == nil)
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"IconCell"];
+    
         if (isSearching)
         {
             NSString *name = searchedIcons.count < indexPath.row ? @"" : searchedIcons[indexPath.row];

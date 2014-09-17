@@ -653,7 +653,8 @@
 -(id)init;
 @end
 
-
+@interface UIStatusBarCustomItem : UIStatusBarItem
+@end
 
 
 

@@ -8,6 +8,8 @@
 #define iPadTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle"
 #define TemplatePath (isPad() ? iPadTemplatePath : iPhoneTemplatePath)
 
+BOOL movedLSBItem = NO;
+
 @interface PSViewController ()
 -(void) setView:(id)view;
 -(void) setTitle:(NSString*)title;
@@ -40,6 +42,9 @@
 NSMutableDictionary *nameCache = [NSMutableDictionary dictionary];
 NSString *nameForDescription(NSString *desc)
 {
+    if (desc == nil)
+        desc = @"";
+
     if (nameCache[desc]) return nameCache[desc];
 
     static __strong NSDictionary *map;
@@ -145,6 +150,9 @@ UIImage *resizeFSImage(UIImage *icon, float max = 30.0f)
 NSMutableDictionary *cachedImages = [NSMutableDictionary dictionary];
 UIImage *iconForDescription(NSString *desc)
 {
+    if (desc == nil)
+        desc = @"";
+
     if (cachedImages[desc])
     {
         return cachedImages[desc];
@@ -308,7 +316,15 @@ NSDictionary *mapSettings()
     NSDictionary *mapped = mapSettings();
     
     NSDictionary *dict = [mapped objectForKey:[NSNumber numberWithInt:sourceIndexPath.section]][[NSNumber numberWithInt:sourceIndexPath.row]];
-    
+
+    if (destinationIndexPath.section == 2 && // center
+        [dict[@"key"] intValue] > 32) // non-system item
+    {
+        cachedSettings = nil;
+        [tableView reloadData];
+        return;
+    }
+
     NSMutableDictionary *prefs = [NSMutableDictionary
                                   dictionaryWithContentsOfFile:PLIST_NAME];
     
@@ -364,7 +380,10 @@ NSDictionary *mapSettings()
     
     [prefs writeToFile:PLIST_NAME atomically:YES];
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+    if ([dict[@"key"] intValue] < 32)
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+    else
+        movedLSBItem = YES;
     cachedSettings = nil;
     [tableView reloadData];
 }
@@ -404,15 +423,25 @@ NSDictionary *mapSettings()
 - (void)viewWillAppear:(BOOL)animated {
     ((UIView*)self.view).tintColor = self.tintColor;
     self.navigationController.navigationBar.tintColor = self.tintColor;
+    movedLSBItem = NO;
 
     [super viewWillAppear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
+- (void)viewWillDisappear:(BOOL)animated {   
     ((UIView*)self.view).tintColor = nil;
     self.navigationController.navigationBar.tintColor = nil;
+    [super viewWillDisappear:animated];
+}
+
+-(void) viewDidDisappear:(BOOL) animated
+{
+    if (movedLSBItem)
+    {
+         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Respring needed" 
+            message:@"Unfortunately, to apply changes to custom (libstatusbar) icons, a respring is necessary." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
 }
 
 @end
