@@ -339,6 +339,29 @@ void refreshStatusBar(CFNotificationCenterRef center,
         SBStatusBarStateAggregator *stateAggregator = [objc_getClass("SBStatusBarStateAggregator") sharedInstance];
         [stateAggregator _resetTimeItemFormatter];
         [stateAggregator _updateTimeItems];
+        
+        [stateAggregator _setItem:11 enabled:NO];
+        [stateAggregator updateStatusBarItem:11];
+        [stateAggregator _setItem:1 enabled:NO];
+        [stateAggregator updateStatusBarItem:1];
+        [stateAggregator _setItem:2 enabled:NO];
+        [stateAggregator updateStatusBarItem:2];
+        [stateAggregator _setItem:12 enabled:NO];
+        [stateAggregator updateStatusBarItem:12];
+        [stateAggregator _setItem:13 enabled:NO];
+        [stateAggregator updateStatusBarItem:13];
+        [stateAggregator _setItem:16 enabled:NO];
+        [stateAggregator updateStatusBarItem:16];
+        [stateAggregator _setItem:17 enabled:NO];
+        [stateAggregator updateStatusBarItem:17];
+        [stateAggregator _setItem:19 enabled:NO];
+        [stateAggregator updateStatusBarItem:19];
+        [stateAggregator _setItem:20 enabled:NO];
+        [stateAggregator updateStatusBarItem:20];
+        [stateAggregator _setItem:21 enabled:NO];
+        [stateAggregator updateStatusBarItem:21];
+        [stateAggregator _setItem:22 enabled:NO];
+        [stateAggregator updateStatusBarItem:22];
     }
     
 	CGRect upwards = statusBar.frame;

@@ -8,7 +8,7 @@
 #define iPadTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle"
 #define TemplatePath (isPad() ? iPadTemplatePath : iPhoneTemplatePath)
 
-BOOL movedLSBItem = NO;
+BOOL showedAlert = NO;
 
 @interface PSViewController ()
 -(void) setView:(id)view;
@@ -383,7 +383,15 @@ NSDictionary *mapSettings()
     if ([dict[@"key"] intValue] < 32)
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
     else
-        movedLSBItem = YES;
+    {
+        if (!showedAlert)
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Respring needed" 
+                message:@"Unfortunately, to apply changes to custom (libstatusbar) icons, a respring is necessary." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            showedAlert = YES;
+        }
+    }
     cachedSettings = nil;
     [tableView reloadData];
 }
@@ -423,7 +431,7 @@ NSDictionary *mapSettings()
 - (void)viewWillAppear:(BOOL)animated {
     ((UIView*)self.view).tintColor = self.tintColor;
     self.navigationController.navigationBar.tintColor = self.tintColor;
-    movedLSBItem = NO;
+    showedAlert = NO;
 
     [super viewWillAppear:animated];
 }
@@ -434,14 +442,5 @@ NSDictionary *mapSettings()
     [super viewWillDisappear:animated];
 }
 
--(void) viewDidDisappear:(BOOL) animated
-{
-    if (movedLSBItem)
-    {
-         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Respring needed" 
-            message:@"Unfortunately, to apply changes to custom (libstatusbar) icons, a respring is necessary." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-    }
-}
 
 @end

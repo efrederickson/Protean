@@ -78,7 +78,7 @@ StatusBarAlignment getDefaultAlignment()
     if (!item)
         return;
     item.visible = NO;
-    item.imageName = @"";
+    //item.imageName = @"";
     [item release];
     //[item dealloc];
     item = nil;

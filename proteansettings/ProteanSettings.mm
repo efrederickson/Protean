@@ -405,6 +405,10 @@
     { 
         return ![[UIApplication sharedApplication] openURL:requestURL]; 
     }
+    if ([requestURL.absoluteString isEqual:@"internal://back-to-settings"])
+    {
+        
+    }
     return YES; 
 }
 @end

@@ -283,7 +283,10 @@ UIImage *resizeImage(UIImage *icon)
         }
     }
     else
+    {
         checkedIcon = cell.textLabel.text;
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+    }
     
     cell.accessoryType = UITableViewCellAccessoryCheckmark;
     [self updateSavedData];
