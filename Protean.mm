@@ -7,7 +7,6 @@
 #import "PRStatusApps.h"
 
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
-
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
 //based on http://iphonedevwiki.net/index.php/Libactivator#Dispatching_Events
@@ -27,11 +26,9 @@ NSMutableArray *mappedIdentifiers = [NSMutableArray array];
 int LSBitems_index = 33;
 
 NSMutableDictionary *prefs = nil;
-
 NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
 @implementation Protean
-
 +(NSMutableDictionary*) getOrLoadSettings
 {
     if (!prefs)
@@ -40,8 +37,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         if (prefs == nil)
             prefs = [[NSMutableDictionary dictionary] retain];
     }
-    
-    
     return prefs;
 }
 
@@ -211,6 +206,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
 +(void) addBulletin:(BBBulletin*)bulletin forApp:(NSString*)appId
 {
+    if (appId == nil) return;
     // We are obviously SpringBoard
     
     storedBulletins[appId] = storedBulletins[appId] ?: [NSMutableArray array];

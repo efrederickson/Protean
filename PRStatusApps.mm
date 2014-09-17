@@ -27,6 +27,8 @@ StatusBarAlignment getDefaultAlignment()
 @implementation PRStatusApps
 +(LSStatusBarItem*)getOrCreateItemForIdentifier:(NSString*)identifier
 {
+    if (identifier == nil) return nil;
+
     if (icons[identifier])
         return icons[identifier];
     
@@ -233,7 +235,6 @@ StatusBarAlignment getDefaultAlignment()
     return [ncData.allKeys containsObject:identifier] ? [ncData[identifier] intValue] : 0;
 }
 
-
 +(void) updateLockState:(BOOL)locked
 {
 	isScreenOff = !locked;
@@ -245,7 +246,8 @@ StatusBarAlignment getDefaultAlignment()
 	else // screen is on
 	{
 		for (LSStatusBarItem *item in showWhenOff)
-			item.visible = YES;
+            if (item && item.imageName != nil && [item.imageName isEqual:@""] == NO)
+                item.visible = YES;
 		[showWhenOff removeAllObjects];
 	}
 }
