@@ -66,7 +66,9 @@ NSString *nameForDescription(NSString *desc)
                 @"com.lablabla.muteicon": @"MuteIcon",
                 @"ws.hbang.typestatus.icon": @"TypeStatus",
                 @"com.sassoty.bulb": @"Bulb",
-                @"statusmodifier.mute": @"Mute (StatusModifier)"
+                @"statusmodifier.mute": @"Mute (StatusModifier)",
+                @"com.malcolmhall.insomnia": @"Insomnia",
+                @"com.malcolmhall.insomniapro": @"Insomnia Pro",
                 };
     }
     
@@ -390,7 +392,7 @@ NSDictionary *mapSettings()
         if (!showedAlert)
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Respring needed" 
-                message:@"Unfortunately, to apply changes to custom (libstatusbar) icons, a respring is necessary." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                message:@"Unfortunately, to apply changes to custom (libstatusbar) icons, a respring is necessary." delegate:self cancelButtonTitle:@"Later" otherButtonTitles:@"Respring",nil];
             [alert show];
             showedAlert = YES;
         }
@@ -445,5 +447,9 @@ NSDictionary *mapSettings()
     [super viewWillDisappear:animated];
 }
 
-
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        system("killall -9 SpringBoard");
+    }
+}
 @end

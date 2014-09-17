@@ -172,7 +172,66 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
     }
 }
 
-%hook UIStatusBarCustomItem
+%hook UIStatusBarItem
++ (UIStatusBarItem*)itemWithType:(int)arg1 idiom:(long long)arg2
+{
+    UIStatusBarItem* item = %orig;
+ 
+    CHECK_ENABLED(item)
+
+    if ([itemTypes containsObject:[NSNumber numberWithInt:arg1]] == NO)
+    {
+        NSString *name = @"";
+
+        if ([item isKindOfClass:[%c(UIStatusBarCustomItem) class]])
+        {
+            //name = [%c(Protean) mappedIdentifierForItem:(arg1 - 33)]; // 32 is number of default items (LSB starts from there)
+            name = nil;
+        }
+        else
+            name = nameFromItem(item);
+
+        [itemTypes addObject:[NSNumber numberWithInt:arg1]];
+        if (name != nil)
+            updateItem(arg1, name);
+    }
+
+    return item;
+}
+
+- (_Bool)appearsInRegion:(int)arg1
+{
+    CHECK_ENABLED(%orig);
+
+    id _alignment = settingsForItem(self)[@"alignment"];
+    int alignment = _alignment == nil ? 4 : [_alignment intValue];
+
+    if (alignment == arg1) // 0, 1, 2 :: left, right, ?center
+        return YES;
+    else if (alignment == 3) // hide
+        return NO;
+    else if (alignment == 4) // default
+        return %orig;
+    else
+        return NO;
+}
+
+-(int) centerOrder
+{
+    CHECK_ENABLED(%orig);
+
+    id _alignment = settingsForItem(self)[@"alignment"];
+    int alignment = _alignment == nil ? 4 : [_alignment intValue];
+
+    id _centerOrder = settingsForItem(self)[@"order"];
+    
+    if (alignment != 2)
+        return %orig;
+
+    int centerOrder = _centerOrder == nil ? %orig : [_centerOrder intValue];
+    return centerOrder;
+}
+
 -(int) rightOrder
 {
     CHECK_ENABLED(%orig);
@@ -185,7 +244,7 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
     if (alignment != 1)
         return %orig;
 
-    int rightOrder = _rightOrder == nil ? %orig : ([_rightOrder intValue] == 0 ? 1 : [_rightOrder intValue]);
+    int rightOrder = _rightOrder == nil ? %orig : [_rightOrder intValue];
 
     return rightOrder;
 }
@@ -200,10 +259,37 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
         return %orig;
 
     id _leftOrder = settingsForItem(self)[@"order"];
-    int leftOrder = _leftOrder == nil ? %orig : ([_leftOrder intValue] == 0 ? 1 : [_leftOrder intValue]);
+    int leftOrder = _leftOrder == nil ? %orig : [_leftOrder intValue];
 
     return leftOrder;
 }
+
+-(BOOL) appearsOnRight
+{
+    CHECK_ENABLED(%orig);
+
+    id _alignment = settingsForItem(self)[@"alignment"];
+    int alignment = _alignment == nil ? 4 : [_alignment intValue];
+    if (alignment == 0 || alignment == 2 || alignment == 3) // left, center, hidden
+        return NO;
+    else if (alignment == 1)
+        return YES;
+    return %orig;
+}
+
+-(BOOL) appearsOnLeft
+{
+    CHECK_ENABLED(%orig);
+
+    id _alignment = settingsForItem(self)[@"alignment"];
+    int alignment = _alignment == nil ? 4 : [_alignment intValue];
+    if (alignment == 1 || alignment == 2 || alignment == 3) // left, center, hidden
+        return NO;
+    else if (alignment == 0)
+        return YES;
+    return %orig;
+}
+
 - (int)priority
 {
     CHECK_ENABLED(%orig);
@@ -212,7 +298,7 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 }
 %end
 
-%hook UIStatusBarItem
+%hook UIStatusBarCustomItem
 + (UIStatusBarItem*)itemWithType:(int)arg1 idiom:(long long)arg2
 {
     UIStatusBarItem* item = %orig;
@@ -380,6 +466,31 @@ NSMutableDictionary *cachedAlignments = [NSMutableDictionary dictionary];
     }
 
     return %orig(identifier, new_alignment);
+}
+
+-(void) setVisible:(BOOL)visible
+{
+    CHECK_ENABLED2(%orig);
+
+    int alignment;
+    NSDictionary *prefs = [Protean getOrLoadSettings];
+
+    for (id key in prefs)
+    {
+        if (prefs[key] && [prefs[key] isKindOfClass:[NSDictionary class]] && [prefs[key][@"identifier"] isEqual:MSHookIvar<NSString*>(self, "_identifier")])
+        {
+            id _alignment = prefs[key][@"alignment"];
+            alignment = _alignment == nil ? 4 : [_alignment intValue];
+            break;
+        }
+    }
+
+    if (alignment == 3)
+    {
+        %orig(NO);
+        return;
+    }
+    %orig;  
 }
 
 -(BOOL) isVisible
@@ -682,6 +793,8 @@ void launchApp(CFNotificationCenterRef center,
     dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar.dylib", RTLD_NOW | RTLD_GLOBAL);
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/bars.dylib"])
         dlopen("/Library/MobileSubstrate/DynamicLibraries/bars.dylib", RTLD_NOW | RTLD_GLOBAL);
+
+    %init;
 
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
     {
