@@ -367,6 +367,7 @@
         
         [self setView:webView];
         webView.delegate = self;
+        webView.backgroundColor = [UIColor whiteColor];
 
         NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:@"file:///Library/Protean/Documentation/index.html"]];
         [webView loadRequest:req];
