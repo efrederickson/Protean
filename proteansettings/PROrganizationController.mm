@@ -322,6 +322,9 @@ NSDictionary *mapSettings()
     {
         cachedSettings = nil;
         [tableView reloadData];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops" 
+                message:@"Unfortunately, libstatusbar icons cannot be aligned to the center." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
         return;
     }
 
