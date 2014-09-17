@@ -234,7 +234,14 @@ UIImage *imageFromName(NSString *name)
     }
 
     if (section == 0)
-        return 4;
+    {
+        if ([_identifier isEqual:@"com.apple.MobileSMS"] || [_identifier isEqual:@"net.whatsapp.WhatsApp"] || 
+            [_identifier isEqual:@"com.skype.skype"] || [_identifier isEqual:@"com.kik.chat"] ||
+            [_identifier isEqual:@"com.viber"])
+            return 4;
+        else
+            return 3;
+    }
     else
         return statusIcons.count + 1;
 }
