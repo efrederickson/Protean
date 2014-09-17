@@ -15,8 +15,38 @@ NSMutableArray *showWhenOff = [[NSMutableArray array] retain];
 BOOL isScreenOff = NO;
 int totalBadgeCount = 0;
 
-StatusBarAlignment getDefaultAlignment()
+NSDictionary *settingsForItemWithName(NSString *item)
 {
+    NSDictionary *prefs = [Protean getOrLoadSettings];
+            
+    for (id key in prefs)
+    {
+        if (prefs[key] && [prefs[key] isKindOfClass:[NSDictionary class]] && [prefs[key][@"identifier"] isEqual:item])
+        {
+            return prefs[key];
+        }
+    }
+
+    return nil;
+}
+
+StatusBarAlignment getDefaultAlignment(NSString *ident)
+{
+    NSDictionary *settings = settingsForItemWithName(ident);
+    if (settings)
+    {
+        if (settings[@"alignment"])
+        {
+            int alignment = [settings[@"alignment"] intValue];
+            if (alignment == 0) 
+                return StatusBarAlignmentLeft;
+            else if (alignment == 1)
+                return StatusBarAlignmentRight;
+            // 2 = center (not supported)
+            // 3 = hidden, 4 = default, both not relevant
+        }
+    }
+
     id right_ = [Protean getOrLoadSettings][@"defaultAlignToRight"];
     if (!right_ || [right_ boolValue] == NO)
         return StatusBarAlignmentLeft;
@@ -32,7 +62,7 @@ StatusBarAlignment getDefaultAlignment()
     if (icons[identifier])
         return icons[identifier];
     
-    LSStatusBarItem *item = [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",identifier] alignment:getDefaultAlignment()];
+    LSStatusBarItem *item = [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",identifier] alignment:getDefaultAlignment(identifier)];
     item = [item retain];
 
     if (!item)

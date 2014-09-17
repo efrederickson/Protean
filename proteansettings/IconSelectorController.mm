@@ -92,6 +92,82 @@ UIImage *imageFromName(NSString *name)
 	return icon;
 }
 
+BOOL supportsQR(NSString *app)
+{
+    NSDictionary *map = @{
+        @"Hermes": @[ @"com.kik.chat", @"com.apple.MobileSMS", @"net.whatsapp.WhatsApp" ],
+        @"auki": @[ @"com.apple.MobileSMS" ],
+        @"BiteSMS": @[ @"com.apple.MobileSMS" ],
+        @"Twitkafly": @[ @"com.atebits.Tweetie2", @"com.tapbots.Tweetbot3" ],
+        @"Couria": @[ @"com.viber", @"com.apple.MobileSMS", @"com.skype.skype" ],
+        @"MessageHeads": @[ @"com.apple.MobileSMS" ]
+    };
+
+    BOOL auki = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/auki.dylib"];
+    if (auki && [map[@"auki"] containsObject:app])
+        return YES;
+        
+    BOOL bitesms = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/biteSMSsb.dylib"];
+    if (bitesms && [map[@"BiteSMS"] containsObject:app])
+        return YES;
+
+    BOOL twitkafly = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/twitkafly.dylib"];
+    if (twitkafly && [map[@"Twitkafly"] containsObject:app])
+        return YES;
+    
+    BOOL couria = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/Couria.dylib"];
+    if (couria && [map[@"Couria"] containsObject:app])
+        return YES;
+
+    BOOL hermes = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/Hermes.dylib"];
+    if (hermes && [map[@"Hermes"] containsObject:app])
+        return YES;
+    
+    BOOL messageHeads = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/MessageHeads.dylib"];
+    if (messageHeads && [map[@"MessageHeads"] containsObject:app])
+        return YES;
+
+    return NO;
+}
+
+NSString *associatedQRNameForApp(NSString *app)
+{
+    NSDictionary *map = @{
+        @"Hermes": @[ @"com.kik.chat", @"com.apple.MobileSMS", @"net.whatsapp.WhatsApp" ],
+        @"auki": @[ @"com.apple.MobileSMS" ],
+        @"BiteSMS": @[ @"com.apple.MobileSMS" ],
+        @"Twitkafly": @[ @"com.atebits.Tweetie2", @"com.tapbots.Tweetbot3" ],
+        @"Couria": @[ @"com.viber", @"com.apple.MobileSMS", @"com.skype.skype" ],
+        @"MessageHeads": @[ @"com.apple.MobileSMS" ]
+    };
+
+    BOOL auki = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/auki.dylib"];
+    if (auki && [map[@"auki"] containsObject:app])
+        return @"auki";
+        
+    BOOL bitesms = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/biteSMSsb.dylib"];
+    if (bitesms && [map[@"BiteSMS"] containsObject:app])
+        return @"BiteSMS";
+
+    BOOL twitkafly = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/twitkafly.dylib"];
+    if (twitkafly && [map[@"Twitkafly"] containsObject:app])
+        return @"Twitkafly";
+    
+    BOOL couria = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/Couria.dylib"];
+    if (couria && [map[@"Couria"] containsObject:app])
+        return @"Couria";
+
+    BOOL hermes = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/Hermes.dylib"];
+    if (hermes && [map[@"Hermes"] containsObject:app])
+        return @"Hermes";
+    
+    BOOL messageHeads = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/MessageHeads.dylib"];
+    if (messageHeads && [map[@"MessageHeads"] containsObject:app])
+        return @"MessageHeads QC";
+
+    return @"Associated Quick-Reply";
+}
+
 @implementation PRIconSelectorController
 
 -(id)initWithAppName:(NSString*)appName identifier:(NSString*)identifier
@@ -235,9 +311,7 @@ UIImage *imageFromName(NSString *name)
 
     if (section == 0)
     {
-        if ([_identifier isEqual:@"com.apple.MobileSMS"] || [_identifier isEqual:@"net.whatsapp.WhatsApp"] || 
-            [_identifier isEqual:@"com.skype.skype"] || [_identifier isEqual:@"com.kik.chat"] ||
-            [_identifier isEqual:@"com.viber"])
+        if (supportsQR(_identifier))
             return 4;
         else
             return 3;
@@ -276,7 +350,8 @@ UIImage *imageFromName(NSString *name)
         else if (indexPath.row == 2)
             alignmentText = @"Activator Action";
         else if (indexPath.row == 3)
-            alignmentText = @"Launch Associated Quick-Reply";
+            alignmentText = [NSString stringWithFormat:@"Open %@", associatedQRNameForApp(_identifier)];
+            //alignmentText = @"Launch Associated Quick-Reply";
         
         cell.textLabel.text = alignmentText;
         cell.accessoryType = indexPath.row == tapAction ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;

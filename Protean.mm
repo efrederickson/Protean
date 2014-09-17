@@ -253,6 +253,16 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
             return;
         }
     }
+    else if ([app isEqual:@"com.atebits.Tweetie2"] || [app isEqual:@"com.tapbots.Tweetbot3"])
+    {
+        id twitkafly = objc_getClass("LibTwitkaFly");
+        if (twitkafly)
+        {
+            BOOL success = [[twitkafly sharedTwitkaFly] showQRForBulletin:bulletin];
+            if (success)
+                return;
+        }
+    }
     
     id couria = NSClassFromString(@"Couria");
     if (couria)
