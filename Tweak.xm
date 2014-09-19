@@ -643,7 +643,8 @@ BOOL o = NO;
     
     if (arg1.item)
     {
-        if (storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]])
+    	NSNumber *num = [NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")];
+        if (storedStarts[num])
         {
             if (o)
             {
@@ -658,18 +659,18 @@ BOOL o = NO;
                     }
                     else
                     {
-                        if ([storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]] floatValue] < r.origin.x / 2);
+                        if ([storedStarts[num floatValue] < r.origin.x / 2);
                         else
                             return r;
                     }
                 }
 
-                storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]] = [NSNumber numberWithFloat:r.origin.x];
+                storedStarts[num] = [NSNumber numberWithFloat:r.origin.x];
             }
         }
         else
         {
-            storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(arg1.item, "_type")]] = [NSNumber numberWithFloat:r.origin.x];
+            storedStarts[num] = [NSNumber numberWithFloat:r.origin.x];
         }
     }
     return r;

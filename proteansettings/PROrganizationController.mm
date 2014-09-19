@@ -69,6 +69,7 @@ NSString *nameForDescription(NSString *desc)
                 @"statusmodifier.mute": @"Mute (StatusModifier)",
                 @"com.malcolmhall.insomnia": @"Insomnia",
                 @"com.malcolmhall.insomniapro": @"Insomnia Pro",
+                @"TetherStatus.icon": @"TetherStatus"
                 };
     }
     
@@ -347,7 +348,7 @@ NSDictionary *mapSettings()
         
         if (prefs[obj[@"key"]][@"order"])
         {
-            [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue]]];
+            [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] - 1]];
             if ([prefs[obj[@"key"]][@"order"] intValue] > old_order)
                 prefs[obj[@"key"]][@"order"] = [NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] - 1];
         }
@@ -368,7 +369,7 @@ NSDictionary *mapSettings()
         
         if (prefs[obj[@"key"]][@"order"])
         {
-            [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue]]];
+            [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] + 1]];
             if ([prefs[obj[@"key"]][@"order"] intValue] >= new_order)
                 prefs[obj[@"key"]][@"order"] = [NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] + 1];
         }
@@ -385,7 +386,7 @@ NSDictionary *mapSettings()
     
     [prefs writeToFile:PLIST_NAME atomically:YES];
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
-    if ([dict[@"key"] intValue] < 32)
+    if ([dict[@"key"] intValue] < 32 || sourceIndexPath.section == destinationIndexPath.section)
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
     else
     {
