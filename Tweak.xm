@@ -594,7 +594,7 @@ BOOL o = NO;
     if (ret.origin.x == 0 && ret.origin.y == 0)
     {
         id overlap_ = [Protean getOrLoadSettings][@"allowOverlap"];
-        if (!overlap_ || [overlap_ boolValue])
+        if ([overlap_ boolValue])
         {
             ret = (CGRect) { { [storedStarts[[NSNumber numberWithInt:MSHookIvar<int>(self.item, "_type")]] floatValue], 0}, ret.size };
         }
@@ -621,7 +621,7 @@ BOOL o = NO;
     BOOL force = o;
     
     id overlap_ = [Protean getOrLoadSettings][@"allowOverlap"];
-    if ((!overlap_ || [overlap_ boolValue]) == NO)
+    if (!overlap_ || [overlap_ boolValue] == NO)
     {
         %orig;
         return;

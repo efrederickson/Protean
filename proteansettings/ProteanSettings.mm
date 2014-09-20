@@ -318,7 +318,7 @@
                 },
              @{
                  @"cell": @"PSSwitchCell",
-                 @"default": @YES,
+                 @"default": @NO,
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"allowOverlap",
                  @"label": @"Don't Cut Off Items",
