@@ -11,7 +11,10 @@ NSObject *lockObject = [[NSObject alloc] init];
 
 void updateItem(int key, NSString *identifier)
 {
-    if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"]) return;
+    if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
+    	return;
+    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive)
+    	return;
 
     NSString *nKey = [NSString stringWithFormat:@"%d",key];
 
@@ -23,9 +26,11 @@ void updateItem(int key, NSString *identifier)
     NSMutableDictionary *properties = [prefs objectForKey:nKey];
     if (!properties)
         properties = [NSMutableDictionary dictionary];
-    
-    if ([[properties objectForKey:@"identifier"] isEqual:identifier] == NO)
-        properties = [NSMutableDictionary dictionary];
+
+    if ([properties[@"identifier"] isEqual:identifier])
+    	return;
+
+    properties = [NSMutableDictionary dictionary];
 
     [properties setObject:identifier forKey:@"identifier"];
     [properties setObject:nKey forKey:@"key"];
@@ -43,6 +48,9 @@ void updateItem2(int key, NSString *identifier)
     //NSLog(@"[Protean] %@", identifier);
     if (identifier == nil || key < 33)
         return;
+
+    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive)
+    	return;
 
     NSString *nKey = [NSString stringWithFormat:@"%d",key];
 
@@ -371,7 +379,8 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
         return %orig;
 
     int rightOrder = _rightOrder == nil ? %orig : [_rightOrder intValue];
-
+    if (rightOrder == 0)
+        rightOrder = 1;
     return rightOrder;
 }
 -(int) leftOrder
@@ -386,7 +395,8 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 
     id _leftOrder = settingsForItem(self)[@"order"];
     int leftOrder = _leftOrder == nil ? %orig : [_leftOrder intValue];
-
+    if (leftOrder == 0)
+        leftOrder = 1;
     return leftOrder;
 }
 
@@ -659,7 +669,8 @@ BOOL o = NO;
                     }
                     else
                     {
-                        if ([storedStarts[num floatValue] < r.origin.x / 2);
+                        if ([storedStarts[num] floatValue] < r.origin.x / 2)
+                            ;
                         else
                             return r;
                     }
