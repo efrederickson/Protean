@@ -227,6 +227,16 @@
                  @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"signalrssi.png"
                  },
+             @{
+                 @"cell": @"PSSwitchCell",
+                 @"default": @NO,
+                 @"defaults": @"com.apple.springboard",
+                 @"key": @"SBShowRSSI",
+                 @"label": @"Show Wifi/Data RSSI",
+                 @"PostNotification": @"",
+                 @"cellClass": @"SKTintedSwitchCell",
+                 @"icon": @"wifirssi.png"
+                 },
              
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Enabled by default if the time is not aligned in the center. Unlike many other tweaks, it is compatible with LockInfo7 and Forecast."
@@ -281,7 +291,7 @@
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"detail": @"SKListItemsController",
                  @"icon": @"batteryStyle.png",
-                 @"validTitles": @[ @"Default", @"Hide '%' sign", @"Textual", @"mAh charge", @"\"Real\" charge (mAh/capacity)", @"\"Real\" charge with decimals" ],
+                 @"validTitles": @[ @"Default", @"Hide '%' sign", @"Textual", @"mAh charge", @"Actual percentage (mAh/capacity)", @"Longer actual percentage" ],
                  @"validValues": @[ @0,         @1,               @2,         @3,            @4,                 @5]
                  },
              @{

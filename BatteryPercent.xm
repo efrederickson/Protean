@@ -119,7 +119,7 @@ NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
 
         double rawCurrent = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawCurrentCapacity;
         double rawMax = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawMaxCapacity;
-        double rawActual = (rawCurrent / rawMax) * 100;
+        double rawActual = floor((rawCurrent / rawMax) * 100);
         batteryStr = [NSString stringWithFormat:@"%.0f%%", rawActual];
     }
     else if (changedBatteryStyle == 5)

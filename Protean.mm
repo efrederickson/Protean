@@ -83,7 +83,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
 +(id) HandlerForTapOnItem:(UIStatusBarItem*)item
 {
-    NSLog(@"[Protean] HandlerForTapOnItem");
+    //NSLog(@"[Protean] HandlerForTapOnItem");
     int type = MSHookIvar<int>(item, "_type");
     
     if (type <= 32) // System item
@@ -174,7 +174,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 {    
     NSDictionary *dict = [Protean getOrLoadSettings];
     NSString *ret = dict[@"images"][identifier];
-    if (ret == nil) return nil;
+    if (ret == nil || ret.length == 0) return nil;
     
     if ([UIImage kitImageNamed:[NSString stringWithFormat:@"PR_%@",ret]])
         return [NSString stringWithFormat:@"PR_%@",ret];
@@ -217,6 +217,8 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
 +(void) launchQR:(NSString*)app
 {
+    if (app == nil) return;
+    
     // Launch QR here
     
     if (!storedBulletins[app] || [storedBulletins[app] count] == 0)

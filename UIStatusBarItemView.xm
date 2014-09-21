@@ -51,6 +51,8 @@ UIImage *resizeImage(UIImage *icon)
 +(id) kitImageNamed:(NSString*)name
 {
     CHECK_ENABLED(%orig);
+    if (name == nil)
+    	return %orig;
 
     if (cache[name])
         return cache[name];
