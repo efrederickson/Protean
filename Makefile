@@ -21,8 +21,8 @@ Protean_FILES = Protean.mm \
 		Carrier.xm CustomTime.xm
 
 Protean_FRAMEWORKS = UIKit CoreGraphics QuartzCore
-Protean_LIBRARIES = activator objcipc flipswitch applist
-Protean_PRIVATE_FRAMEWORKS = 
+Protean_LIBRARIES = activator objcipc flipswitch applist 
+Protean_PRIVATE_FRAMEWORKS = PowerlogLoggerSupport
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

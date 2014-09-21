@@ -13,8 +13,8 @@ void updateItem(int key, NSString *identifier)
 {
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
     	return;
-    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive)
-    	return;
+    //if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive)
+    //	return;
 
     NSString *nKey = [NSString stringWithFormat:@"%d",key];
 
@@ -24,10 +24,7 @@ void updateItem(int key, NSString *identifier)
         prefs = [NSMutableDictionary dictionary];
 
     NSMutableDictionary *properties = [prefs objectForKey:nKey];
-    if (!properties)
-        properties = [NSMutableDictionary dictionary];
-
-    if ([properties[@"identifier"] isEqual:identifier])
+    if (properties)
     	return;
 
     properties = [NSMutableDictionary dictionary];

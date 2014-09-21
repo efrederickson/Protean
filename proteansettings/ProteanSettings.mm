@@ -281,8 +281,8 @@
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"detail": @"SKListItemsController",
                  @"icon": @"batteryStyle.png",
-                 @"validTitles": @[ @"Default", @"Hide '%' sign", @"Textual" ],
-                 @"validValues": @[ @0,         @1,               @2         ]
+                 @"validTitles": @[ @"Default", @"Hide '%' sign", @"Textual", @"mAh charge", @"\"Real\" charge (mAh/capacity)", @"\"Real\" charge with decimals" ],
+                 @"validValues": @[ @0,         @1,               @2,         @3,            @4,                 @5]
                  },
              @{
                  @"cell": @"PSEditTextCell",

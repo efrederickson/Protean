@@ -1,5 +1,33 @@
 #import "Protean.h"
 
+@interface PLBatteryPropertiesEntry// : PLEntry
++(instancetype) batteryPropertiesEntry;
+@property(readonly, nonatomic) BOOL draining;
+@property(readonly, nonatomic) BOOL isPluggedIn;
+@property(readonly, nonatomic) NSString *chargingState;
+@property(readonly, nonatomic) int batteryTemp;
+@property(readonly, nonatomic) NSNumber *connectedStatus;
+@property(readonly, nonatomic) NSNumber *adapterInfo;
+@property(readonly, nonatomic) int chargingCurrent;
+@property(readonly, nonatomic) BOOL fullyCharged;
+@property(readonly, nonatomic) BOOL isCharging;
+@property(readonly, nonatomic) int cycleCount;
+@property(readonly, nonatomic) int designCapacity;
+@property(readonly, nonatomic) double rawMaxCapacity;
+@property(readonly, nonatomic) double maxCapacity;
+@property(readonly, nonatomic) double rawCurrentCapacity;
+@property(readonly, nonatomic) double currentCapacity;
+@property(readonly, nonatomic) int current;
+@property(readonly, nonatomic) int voltage;
+@property(readonly, nonatomic) BOOL isCritical;
+@property(readonly, nonatomic) double rawCapacity;
+@property(readonly, nonatomic) double capacity;
+- (void)dealloc;
+- (id)humanReadableChargingStateFromIORegistryEntryDictionary:(id)arg1;
+- (id)initEntryWithIORegistryEntry:(unsigned int)arg1;
+- (id)init;
+@end
+
 struct RAWDATA {
         BOOL itemIsEnabled[25]; 
         BOOL timeString[64]; 
@@ -79,6 +107,29 @@ NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
         NSNumber *num = [numberFormatter numberFromString:batteryStr];
         if (num)
             batteryStr = [stringFormatter stringFromNumber:num];
+    }
+    else if (changedBatteryStyle == 3)
+    {
+        // mAh charge
+        batteryStr = [NSString stringWithFormat:@"%.0f mAh", [PLBatteryPropertiesEntry batteryPropertiesEntry].rawCurrentCapacity];
+    }
+    else if (changedBatteryStyle == 4)
+    {
+        // "real" battery charge
+
+        double rawCurrent = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawCurrentCapacity;
+        double rawMax = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawMaxCapacity;
+        double rawActual = (rawCurrent / rawMax) * 100;
+        batteryStr = [NSString stringWithFormat:@"%.0f%%", rawActual];
+    }
+    else if (changedBatteryStyle == 5)
+    {
+        // "real" battery charge with decimals
+
+        double rawCurrent = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawCurrentCapacity;
+        double rawMax = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawMaxCapacity;
+        double rawActual = (rawCurrent / rawMax) * 100;
+        batteryStr = [NSString stringWithFormat:@"%.2f%%", rawActual];
     }
 
     strlcpy(arg1.rawData->batteryDetailString, [batteryStr UTF8String], sizeof(arg1.rawData->batteryDetailString));

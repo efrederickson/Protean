@@ -348,9 +348,13 @@ NSDictionary *mapSettings()
         
         if (prefs[obj[@"key"]][@"order"])
         {
-            [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] - 1]];
             if ([prefs[obj[@"key"]][@"order"] intValue] > old_order)
+            {
+                [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] - 1]];
                 prefs[obj[@"key"]][@"order"] = [NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] - 1];
+            }
+            else
+                [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue]]];
         }
         else
         {
@@ -369,9 +373,13 @@ NSDictionary *mapSettings()
         
         if (prefs[obj[@"key"]][@"order"])
         {
-            [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] + 1]];
             if ([prefs[obj[@"key"]][@"order"] intValue] >= new_order)
+            {
+                [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] + 1]];
                 prefs[obj[@"key"]][@"order"] = [NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue] + 1];
+            }
+            else
+                [counts addObject:[NSNumber numberWithInt:[prefs[obj[@"key"]][@"order"] intValue]]];
         }
         else
         {
@@ -438,6 +446,7 @@ NSDictionary *mapSettings()
     ((UIView*)self.view).tintColor = self.tintColor;
     self.navigationController.navigationBar.tintColor = self.tintColor;
     showedAlert = NO;
+    cachedSettings = nil;
 
     [super viewWillAppear:animated];
 }
