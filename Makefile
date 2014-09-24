@@ -1,5 +1,6 @@
 ARCHS = armv7 armv7s arm64
 THEOS_PACKAGE_DIR_NAME = debs
+TARGET = iphone:clang:7.1
 
 include $(THEOS)/makefiles/common.mk
 
@@ -21,7 +22,7 @@ Protean_FILES = Protean.mm \
 		Carrier.xm CustomTime.xm
 
 Protean_FRAMEWORKS = UIKit CoreGraphics QuartzCore
-Protean_LIBRARIES = activator objcipc flipswitch applist 
+Protean_LIBRARIES = activator flipswitch applist 
 Protean_PRIVATE_FRAMEWORKS = PowerlogLoggerSupport
 
 include $(THEOS_MAKE_PATH)/tweak.mk

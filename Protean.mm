@@ -2,7 +2,6 @@
 #import "headers.h"
 #import <UIKit/UIKit.h>
 #import <libactivator/libactivator.h>
-#import <objcipc/objcipc.h>
 #import <notify.h>
 #import "PRStatusApps.h"
 
@@ -134,7 +133,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
             // Quick Reply
             
             if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
-                [OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/launchQR" dictionary:@{ @"appId":ident}];
+                CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("com.efrederickson.protean/launchQR"), nil, (__bridge CFDictionaryRef)@{ @"appId":ident}, YES);
             else
                 [Protean launchQR:ident];
         }
@@ -212,7 +211,9 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     storedBulletins[appId] = storedBulletins[appId] ?: [NSMutableArray array];
     if ([storedBulletins[appId] containsObject:bulletin])
         return;
-    [(NSMutableArray*)storedBulletins[appId] insertObject:bulletin atIndex:0];
+
+    //[(NSMutableArray*)storedBulletins[appId] insertObject:bulletin atIndex:0];
+    [(NSMutableArray*)storedBulletins[appId] addObject:bulletin];
 }
 
 +(void) launchQR:(NSString*)app
@@ -229,8 +230,9 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         return;
     }
     
-    __strong BBBulletin* bulletin = [[storedBulletins[app] objectAtIndex:0] copy];
-    [storedBulletins[app] removeObjectAtIndex:0];
+    //__strong BBBulletin* bulletin = [[storedBulletins[app] objectAtIndex:0] copy];
+    //[storedBulletins[app] removeObjectAtIndex:0];
+    __strong BBBulletin *bulletin = [storedBulletins[app] objectAtIndex:[storedBulletins[app] count] - 1];
     
     if (!bulletin)
         return;
@@ -404,45 +406,47 @@ void reloadSettings(CFNotificationCenterRef center,
     [Protean reloadSettings];
 }
 
-void updateLSBItems(CFNotificationCenterRef center,
+void requestUpdate(CFNotificationCenterRef center,
                     void *observer,
                     CFStringRef name,
                     const void *object,
                     CFDictionaryRef userInfo)
 {
-    [OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/requestUpdate" dictionary:nil replyHandler:^(NSDictionary *response) {
-        LSBitems = response ? [response mutableCopy] : @{ };
-    }];
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("com.efrederickson.protean/receiveItems"), nil, (__bridge CFDictionaryRef)LSBitems, YES);
+}
+
+void receiveItems(CFNotificationCenterRef center,
+                    void *observer,
+                    CFStringRef name,
+                    const void *object,
+                    CFDictionaryRef userInfo)
+{
+    LSBitems = [(__bridge NSDictionary*)userInfo mutableCopy];
+}
+
+void launchQR(CFNotificationCenterRef center,
+                    void *observer,
+                    CFStringRef name,
+                    const void *object,
+                    CFDictionaryRef userInfo)
+{
+    NSString *app = ((__bridge NSDictionary*)userInfo)[@"appId"];
+    [Protean launchQR:app];
 }
 
 static __attribute__((constructor)) void __protean_init()
 {
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
     {
-        [OBJCIPC sendMessageToSpringBoardWithMessageName:@"com.efrederickson.protean/requestUpdate" dictionary:nil replyHandler:^(NSDictionary *response) {
-            LSBitems = response ? [response mutableCopy] : @{ };
-        }];
-        
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &updateLSBItems, CFSTR("com.efrederickson.protean/updateItems"), NULL, 0);
-        
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &refreshStatusBar, CFSTR("com.efrederickson.protean/refreshStatusBar"), NULL, 0);
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &receiveItems, CFSTR("com.efrederickson.protean/receiveItems"), NULL, 0);
+
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/updateItems"), nil, nil, YES);
     }
     else
     {
-        [OBJCIPC registerIncomingMessageFromAppHandlerForMessageName:@"com.efrederickson.protean/requestUpdate"  handler:^NSDictionary *(NSDictionary *message) {
-            return LSBitems;
-        }];
-        
-        [OBJCIPC registerIncomingMessageFromAppHandlerForMessageName:@"com.efrederickson.protean/launchQR"  handler:^NSDictionary *(NSDictionary *message) {
-            if (!message)
-                return nil;
-            NSString *app = message[@"appId"];
-            if (app)
-                [Protean launchQR:app];
-            return nil;
-        }];
-
-
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &requestUpdate, CFSTR("com.efrederickson.protean/updateItems"), NULL, 0);
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &launchQR, CFSTR("com.efrederickson.protean/launchQR"), NULL, 0);
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &refreshStatusBar, CFSTR("com.efrederickson.protean/refreshStatusBar"), NULL, 0);
     }
     
