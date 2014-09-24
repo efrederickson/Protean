@@ -47,6 +47,16 @@ UIImage *imageFromName(NSString *name)
     if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@@2x.png",ONIconPath,name]])
         icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@@2x.png", ONIconPath, name]];
     
+    // Non-@2x
+    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/PR_%@.png",iconPath,name]])
+        //icon = [UIImage imageNamed:[NSString stringWithFormat:@"PR_%@", name] inBundle:imageBundle];
+        icon =  [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/PR_%@.png", iconPath, name]];
+    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_%@.png",ONIconPath,name]])
+        //icon = [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",name]];
+        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_%@.png", ONIconPath, name]];
+    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png",ONIconPath,name]])
+        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png", ONIconPath, name]];
+    
     BOOL wasDefault = NO;
     if (!icon)
     {
