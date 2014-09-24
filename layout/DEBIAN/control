@@ -1,6 +1,6 @@
 Package: org.thebigboss.protean
 Name: Protean
-Depends: firmware (>=7.0), mobilesubstrate, libstatusbar (>= 0.9.7.0), applist, cc.tweak.libobjcipc, com.a3tweaks.flipswitch, libactivator, preferenceloader
+Depends: firmware (>=7.0), mobilesubstrate, libstatusbar (>= 0.9.7.0), applist, com.a3tweaks.flipswitch, libactivator, preferenceloader
 Provides: com.n00neimp0rtant.opennotifier
 Conflicts: com.n00neimp0rtant.opennotifier, net.tateu.opennotifierbeta, net.tateu.opennotifier
 Version: 1.0.3
