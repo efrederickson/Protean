@@ -1,5 +1,5 @@
 ARCHS = armv7 armv7s arm64
-TARGET = iPhone:clang:latest:latest
+TARGET = iPhone:clang:7.1:latest
 CFLAGS = -fobjc-arc
 
 include $(THEOS)/makefiles/common.mk
@@ -15,7 +15,7 @@ ProteanSettings_FILES = ProteanSettings.mm \
 ProteanSettings_INSTALL_PATH = /Library/PreferenceBundles
 ProteanSettings_FRAMEWORKS = UIKit MessageUI Social QuartzCore CoreGraphics CoreBluetooth
 ProteanSettings_PRIVATE_FRAMEWORKS = Preferences BluetoothManager
-ProteanSettings_LIBRARIES = applist activator objcipc flipswitch
+ProteanSettings_LIBRARIES = applist activator flipswitch
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

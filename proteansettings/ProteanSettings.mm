@@ -191,6 +191,17 @@
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
 }
 
+-(void) viewWillAppear:(BOOL) animated
+{
+    [super viewWillAppear:animated];
+    self.title = @"";
+}
+
+-(void) viewWillDisappear:(BOOL) animated
+{
+    [super viewWillDisappear:animated];
+    self.title = @"Protean";
+}
 @end
 
 @implementation PRAdvancedSettingsListController
@@ -422,6 +433,10 @@
     if ([requestURL.absoluteString isEqual:@"internal://back-to-settings"])
     {
         [[self navigationController] popViewControllerAnimated:YES];
+    }
+    if ([[requestURL.absoluteString substringToIndex:16] isEqual:@"internal://open?"])
+    {
+        return ![[UIApplication sharedApplication] openURL:[NSURL URLWithString:[requestURL.absoluteString substringFromIndex:16]]]; 
     }
     return YES; 
 }

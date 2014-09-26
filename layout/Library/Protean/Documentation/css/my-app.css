@@ -1,0 +1,18 @@
+.binders_footer {
+	font-size:11px;
+	color:rgb(109, 109, 114);
+	text-align:center;
+	margin-top: 5px;
+}
+.content-block-title-pages {
+    color: rgb(109, 109, 114);
+    font-size: 14px;
+    line-height: 1;
+    margin: 35px 15px 10px 0px;
+    overflow: hidden;
+    position: relative;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+

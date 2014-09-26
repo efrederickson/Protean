@@ -1,0 +1,227 @@
+
+<!-- We don't need full layout here, because this page will be parsed with Ajax-->
+<!-- Top Navbar-->
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="left"><a href="#" class="back link"><i class="icon icon-back"></i><span>Back</span></a></div>
+    <div class="center sliding">Advanced Options</div>
+    </div>
+  </div>
+</div>
+<div class="pages">
+  <!-- Page, data-page contains page name-->
+  <div data-page="about" class="page">
+    <!-- Scrollable page content-->
+    <div class="page-content">
+      <div class="content-block">
+	<div class="content-block-title-pages">Introduction</div>
+	        <div class="content-block-inner">
+          <p>The Advanced Options pane includes additonal Protean features that allow for further customization of your status bar.</p>
+          </div>
+
+	<div class="content-block-title-pages">Signal and WiFi/Data RSSI</div>
+	        <div class="content-block-inner">
+          <p>These options will change the graphical cellular/data strength indicator into an RSSI indicator (useful if you're trying to avoid asking "Can you hear me now?". RSSI (received signal strength indication) is the standard metric used by the telecommunications industry to measure power in a received radio signal (measured in decibels, dB). The closer the number is to zero, the better your reception, so -80 is a stronger signal than -90.</p>
+          <p>The dB range for signal RSSI is -47 to -130 with -47 indicating the strongest signal.</p>
+          <p>The dB range for WiFi/Data RSSI is 0 to -100 with 0 indicating the strongest possible signal.</p>
+	</div>
+
+	<div class="content-block-title-pages">Battery Percentage Styling</div>
+	        <div class="content-block-inner">
+          <p><!--<img src="http://i.imgur.com/6eQ5Gro.png?1" width="40%"  style="display: block; margin-left:12.5px; margin-right:3%; border:solid; border-width:2px" align="right"/>-->Protean gives you the option of six different options when it comes to your battery percentage. Details about the options are listed below. Please note, the actual battery percentage options may not be function properly on iOS devices that do not have the hardware support reading the battery's charge, capacity, etc.</p>
+          <ul>
+    <li><strong>Default:</strong> The battery percentage iOS displays by default, calculated from Apple's algorithm. The algorithm uses a running average of your battery usage and incorporates this into the current percentage. This results in the percentage showing your "remaining battery" rather than your current charge.</li>
+    <img src="http://i.imgur.com/IcHiCEP.png?1" width="75%" style="display: block; margin-top:10px; margin-left:auto; margin-right:auto; border:solid; border-width:1px"/><br>
+    
+    <li><strong>Hide % sign:</strong>The default battery percentage with no percentage sign.</li>
+    <img src="http://i.imgur.com/aWzBhkB.png?1" width="75%" style="display: block; margin-top:10px; margin-left:auto; margin-right:auto; border:solid; border-width:1px"/><br>
+        
+    <li><strong>Textual:</strong> The default battery percentage written out.</li>
+    <img src="http://i.imgur.com/N5bJPRz.png?1" width="75%" style="display: block; margin-top:10px; margin-left:auto; margin-right:auto; border:solid; border-width:1px"/><br>
+        
+    <li><strong>mAh charge:</strong> The current charge value of your battery</li>
+    <img src="http://i.imgur.com/QHst1l8.png?1" width="75%" style="display: block; margin-top:10px; margin-left:auto; margin-right:auto; border:solid; border-width:1px"/><br>
+    
+    <li><strong>Actual percentage:</strong> Calculated by taking your battery's charge (mAh) and dividing it by the battery's current max capacity</li>
+    <img src="http://i.imgur.com/JsGhCyp.png?1" width="75%" style="display: block; margin-top:10px; margin-left:auto; margin-right:auto; border:solid; border-width:1px"/><br>
+    
+    <li><strong>Longer actual percentage:</strong> The actual battey percentage to the hundredth of a percent</li>
+        <img src="http://i.imgur.com/CTkxy10.png?1" width="75%" style="display: block; margin-top:10px; margin-left:auto; margin-right:auto; border:solid; border-width:1px"/><br>
+    	</ul>
+	</div>
+        
+	<div class="content-block-title-pages">Custom Time Format</div>
+	        <div class="content-block-inner">
+          <p>Using Protean's Custom Time Format, you're able to add a number of variables to the Time system icon. The table below includes a number of possible time formats.</p>
+            <table border="1" align="center" cellpadding="1px">
+              <thead>
+  <tr>
+  <th><strong>Preview</strong></th>
+  <th><strong>Date Format</strong></th>
+  </tr>
+  </thead><tbody>
+  <tr>
+  <td>Mon Apr 1 · 3:56 PM</td>
+  <td>E MMM d · h:mm a</td>
+  </tr>
+  <tr>
+  <td>Mon Apr 1st · 3:56 PM</td>
+  <td>E MMM d'st' · h:mm a</td>
+  </tr>
+  <tr>
+  <td>Monday Apr 1st · 3:56 PM</td>
+  <td>EEEE MMM d'st · h:mm a</td>
+  </tr>
+  <tr>
+  <td>Monday April 1 · 15:56 PM</td>
+  <td>EEEE MMMM d · H:mm a</td>
+  </tr>
+  <tr>
+  <td>Monday April 1 · 3:56:17 PM</td>
+  <td>EEEE MMMM d · h:mm:s a</td>
+  </tr>
+  <tr>
+  <td>Apr 1st, 2013 · 3:56 PM MDT</td>
+  <td>MMMM d'st', y · h:mm a z</td>
+  </tr>
+  <tr>
+  <td>Apr 1st, '13 · 3:56 PM</td>
+  <td>MMMM d'st', ''yy · h:mm a</td>
+  </tr>
+  <tr>
+  <td>91st day of 2013</td>
+  <td>D'st day of' y</td>
+  </tr>
+  <tr>
+  <td>Day 91 of 365</td>
+  <td>'Day' D 'of 365'</td>
+  </tr>
+  <tr>
+  <td>14th week of the year</td>
+  <td>w'th week of the year'</td>
+  </tr>
+  <tr>
+  <td>Mountain Daylight Time</td>
+  <td>zzzz</td>
+  </tr>
+  <tr>
+  <td>Mon 4/1 · 3:56</td>
+  <td>E M/d · h:mm</td>
+  </tr>
+  </tbody></table>
+
+<p>If you'd prefer to make your own layout you can mix-and-match fields using the code below.</p>
+<div align="center">
+  <table border="1" align="center" style="display:inline-table">
+    <thead>
+      <tr>
+        <th>Input</th>
+        <th>Output</th>
+        </tr>
+      </thead><tbody>
+        <tr>
+          <td>a</td>
+          <td>AM or PM</td>
+          </tr>
+        <tr>
+          <td>d</td>
+          <td>day of the month</td>
+          </tr>
+        <tr>
+          <td>D</td>
+          <td>day of the year</td>
+          </tr>
+        <tr>
+          <td>w</td>
+          <td>week of the year</td>
+          </tr>
+        <tr>
+          <td>W</td>
+          <td>week of the month</td>
+          </tr>
+        <tr>
+          <td>h</td>
+          <td>hour (12-hour time)</td>
+          </tr>
+        <tr>
+          <td>H</td>
+          <td>hour (24-hour time)</td>
+          </tr>
+        <tr>
+          <td>m</td>
+          <td>minute</td>
+          </tr>
+        <tr>
+          <td>s</td>
+          <td>second</td>
+          </tr>
+        <tr>
+          <td>z</td>
+          <td>MDT</td>
+          </tr>
+        <tr>
+          <td>FM</td>
+          <td>free memory</td>
+          </tr>
+      </tbody></table>
+  
+<table border="1" style="display:inline-table; margin-left:12.5px;"><thead>
+<tr>
+<th>Input</th>
+<th>Output</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>E</td>
+<td>Mon</td>
+</tr>
+<tr>
+<td>EE</td>
+<td>Mon</td>
+</tr>
+<tr>
+<td>EEE</td>
+<td>Mon</td>
+</tr>
+<tr>
+<td>EEEE</td>
+<td>Monday</td>
+</tr>
+<tr>
+<td>M</td>
+<td>4</td>
+</tr>
+<tr>
+<td>MM</td>
+<td>04</td>
+</tr>
+<tr>
+<td>MMM</td>
+<td>Apr</td>
+</tr>
+<tr>
+<td>MMMM</td>
+<td>April</td>
+</tr>
+<tr>
+<td>y</td>
+<td>2013</td>
+</tr>
+<tr>
+<td>yy</td>
+<td>13</td>
+</tr>
+<tr>
+<td>''yy</td>
+<td>'13</td>
+</tr>
+</tbody></table>
+</div>
+<p>You can view the complete list of data format codes at <a href="internal://open?http://unicode.org/reports/tr35/tr35-6.html#Date_Format_Patterns" target="_blank">this page.</a></p>
+          </div>
+        </div>
+        	<p class="binders_footer">Documentation by /u/binders_of_women_</p> 
+</div>       
+    </div>
+  </div>
+</div>

@@ -1,18 +1,217 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 16.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 26.0px Helvetica}
-  </style>
-</head>
-<body>
-<br />
-<p class="p1">Coming soon! Visit the <a href="http://proteantweak.com/manual/">site</a> for more information.</p>
-<br /><br />
-<p class="p2"><a href="internal://back-to-settings">Back to Settings</a></p>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Protean: Documentation</title>
+    <!-- Path to Framework7 Library CSS-->
+    <link rel="stylesheet" href="css/framework7.min.css">
+    <!-- Path to your custom app styles-->
+    <link rel="stylesheet" href="css/my-app.css">
+  </head>
+  <body class="theme-gray">
+    <!-- Status bar overlay for fullscreen mode-->
+    <div class="statusbar-overlay"></div>
+    <!-- Panels overlay-->
+    <div class="panel-overlay"></div>
+    <!-- Left panel with reveal effect-->
+    <div class="panel panel-left panel-reveal">
+      <div class="content-block">
+        <p>Left panel content goes here</p>
+      </div>
+    </div>
+    <!-- Right panel with cover effect-->
+    <div class="panel panel-right panel-cover">
+      <div class="content-block">
+        <p>Right panel content goes here</p>
+      </div>
+    </div>
+    <!-- Views-->
+    <div class="views">
+      <!-- Your main view, should have "view-main" class-->
+      <div class="view view-main">
+        <!-- Top Navbar-->
+        <div class="navbar">
+          <div class="navbar-inner">
+            <!-- We have home navbar without left link-->
+            <div class="left"><a href="internal://back-to-settings" class="back link"><i class="icon icon-back"></i>&nbsp;Protean</a></div>
+            <div class="center sliding">Documentation</div>
+            <div class="right">
+
+            </div>
+          </div>
+        </div>
+        <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+          <!-- Page, data-page contains page name-->
+          <div data-page="index" class="page">
+            <!-- Scrollable page content-->
+            <div class="page-content">
+              <div class="content-block-title">Introduction</div>
+              <div class="content-block">
+                <div class="content-block-inner">
+                  <p>Welcome to Protean! Throughout these documentation pages, you'll find help for every feature.</p>
+                </div>
+              </div>
+              <div class="content-block-title">Features</div>
+                <div class="list-block">
+                <ul>
+					<li><a href="organization.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-image">
+                          	<img src="img/Icons/org.png" width="29" height="29" style="vertical-align:middle">
+                            &nbsp;
+                          		<div class="item-title" style="display:inline;">Organization</div>
+                          </div>
+                        </div>
+                      </div></a></li>
+
+                </ul>
+              </div>
+              
+              <div class="list-block">
+                <ul>
+                  
+                  
+                  <li><a href="totalnotificationcount.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-image">
+                          	<img src="img/Icons/tnc.png" width="29" height="29" style="vertical-align:middle">
+                            &nbsp;
+                          		<div class="item-title" style="display:inline;">Total Notification Count</div>
+                          </div>
+                        </div>
+                      </div></a></li>
+                  
+                  <li><a href="apps.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-image">
+                          	<img src="img/Icons/apps.png" width="29" height="29" style="vertical-align:middle">
+                            &nbsp;
+                          		<div class="item-title" style="display:inline;">Applications</div>
+                          </div>
+                        </div>
+                      </div></a></li>
+                      
+                      <li><a href="systemicons.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-image">
+                          	<img src="img/Icons/si.png" width="29" height="29" style="vertical-align:middle">
+                            &nbsp;
+                          		<div class="item-title" style="display:inline;">System Icons</div>
+                          </div>
+                        </div>
+                      </div></a></li>
+                  
+                  <li><a href="flipswitches.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-image">
+                          	<img src="img/Icons/fs.png" width="29" height="29" style="vertical-align:middle">
+                            &nbsp;
+                          		<div class="item-title" style="display:inline;">Flipswitches</div>
+                          		</div>
+                        </div>
+                      </div></a></li>
+                  
+                  <!--<li><a href="totalnotificationcount.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-image">
+                          	<img src="img/Icons/tnc.png" width="29" height="29" style="vertical-align:middle">
+                            &nbsp;
+                          		<div class="item-title" style="display:inline;">Total Notification Count</div>
+                          </div>
+                        </div>
+                      </div></a></li>-->
+                  
+                  <!--<li><a href="organization.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-image">
+                          	<img src="img/Icons/org.png" width="29" height="29" style="vertical-align:middle">
+                            &nbsp;
+                          		<div class="item-title" style="display:inline;">Organization</div>
+                          </div>
+                        </div>
+                      </div></a></li>-->
+                  
+                  <!--<li><a href="systemicons.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-image">
+                          	<img src="img/Icons/si.png" width="29" height="29" style="vertical-align:middle">
+                            &nbsp;
+                          		<div class="item-title" style="display:inline;">System Icons</div>
+                          </div>
+                        </div>
+                      </div></a></li>-->
+                  
+                 <li><a href="bluetoothdevices.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-image">
+                          	<img src="img/Icons/bt.png" width="29" height="29" style="vertical-align:middle">
+                            &nbsp;
+                          		<div class="item-title" style="display:inline;">Bluetooth Devices</div>
+                          </div>
+                        </div>
+                      </div></a></li>
+                      </ul>
+                      </div>
+                      
+                      <div class="content-block-title">miscellaneous</div>
+              <div class="list-block">
+                <ul>
+<li><a href="advanced.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-image">
+                          	<img src="img/Icons/settings.png" width="29" height="29" style="vertical-align:middle">
+                            &nbsp;
+                          		<div class="item-title" style="display:inline;">Advanced Options</div>
+                          </div>
+                        </div>
+                      </div></a></li>
+
+                </ul>
+              </div>
+              
+              <div class="list-block">
+                <ul>
+					<li><a href="glyphs.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-image">
+                          	<img src="img/Icons/glyphs.png" width="29" height="29" style="vertical-align:middle">
+                            &nbsp;
+                       		<div class="item-title" style="display:inline;">Creating Glyphs</div>
+                          </div>
+                        </div>
+                      </div></a></li>
+
+                    
+
+
+                </ul>
+              </div>
+                <p class="binders_footer">Documentation by /u/binders_of_women_</p> 
+        </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+<!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="js/framework7.js"></script>
+    <!-- Path to your app js-->
+    <script type="text/javascript" src="js/my-app.js"></script>
+  </body>
 </html>

@@ -12,6 +12,7 @@ NSMutableDictionary *icons = [[NSMutableDictionary dictionary] retain]; // proba
 NSMutableDictionary *cachedBadgeCounts = [[NSMutableDictionary dictionary] retain];
 NSMutableDictionary *ncData = [[NSMutableDictionary dictionary] retain];
 NSMutableArray *showWhenOff = [[NSMutableArray array] retain];
+NSMutableArray *removeWhenOff = [[NSMutableArray array] retain];
 BOOL isScreenOff = NO;
 int totalBadgeCount = 0;
 
@@ -109,6 +110,12 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
     if (!item)
         return;
+
+    if (isScreenOff)
+    {
+    	[removeWhenOff addObject:identifier];
+    	return;
+    }
     item.visible = NO;
     //item.imageName = @"";
     [item release];
@@ -238,6 +245,7 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
 
 +(void) updateNCStatsForIcon:(NSString*)section count:(int)count
 {
+    if (section == nil || section.length == 0) return;
     if (count < 0) count = 0;
     
     //NSLog(@"[Protean] updating nc stats for icon %@", section);
@@ -279,6 +287,10 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
             if (item && item.imageName != nil && [item.imageName isEqual:@""] == NO)
                 item.visible = YES;
 		[showWhenOff removeAllObjects];
+
+		for (NSString *ident in removeWhenOff)
+			[PRStatusApps hideIconFor:ident];
+		[removeWhenOff removeAllObjects];
 	}
 }
 
