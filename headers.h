@@ -17,7 +17,12 @@
 #import <SpringBoard/SBApplication.h>
 #import <QuartzCore/QuartzCore.h>
 
-@interface LibTwitkaFly /* TwitkaFly */
+@interface SBBulletinBannerController : NSObject
++(id)sharedInstance;
+-(void)_queueBulletin:(BBBulletin *)bulletin;
+@end
+
+@interface LibTwitkaFly /* TwitkaFly, duh */
 + (id) sharedTwitkaFly;
 - (BOOL) showSheetWithInitialText:(NSString *)text andInitialImage:(UIImage *)image;
 // deprecated in the iOS7 version

@@ -213,7 +213,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         return;
 
     //[(NSMutableArray*)storedBulletins[appId] insertObject:bulletin atIndex:0];
-    [(NSMutableArray*)storedBulletins[appId] addObject:bulletin];
+    [(NSMutableArray*)storedBulletins[appId] addObject:[bulletin copy]];
 }
 
 +(void) launchQR:(NSString*)app
@@ -251,7 +251,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         
         // BiteSMS
         id bitesms = objc_getClass("BSQRController");
-        if (bitesms)
+        if (bitesms && NO)
         {
             success = [bitesms maybeLaunchQRFromBulletin:bulletin];
             return;
@@ -268,6 +268,15 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         }
     }
     
+    BOOL imn = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/InteractiveMessageNotifications.dylib"];
+    if (imn)
+    {
+        // https://www.reddit.com/r/jailbreak/comments/2fgne7/update_interactive_message_notifications_now_with/ck94m81
+        bulletin.publisherBulletinID = @"iOS8"; // or @"iOS8::QC"
+        [(SBBulletinBannerController*)[objc_getClass("SBBulletinBannerController") sharedInstance] _queueBulletin:bulletin];
+        return;
+    }
+
     id couria = NSClassFromString(@"Couria");
     if (couria)
     {
@@ -350,6 +359,7 @@ void refreshStatusBar(CFNotificationCenterRef center,
         [stateAggregator _resetTimeItemFormatter];
         [stateAggregator _updateTimeItems];
         
+        // Welp.
         [stateAggregator _setItem:11 enabled:NO];
         [stateAggregator updateStatusBarItem:11];
         [stateAggregator _setItem:1 enabled:NO];

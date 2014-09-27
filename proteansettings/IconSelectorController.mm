@@ -110,7 +110,8 @@ BOOL supportsQR(NSString *app)
         @"BiteSMS": @[ @"com.apple.MobileSMS" ],
         @"Twitkafly": @[ @"com.atebits.Tweetie2", @"com.tapbots.Tweetbot3" ],
         @"Couria": @[ @"com.viber", @"com.apple.MobileSMS", @"com.skype.skype" ],
-        @"MessageHeads": @[ @"com.apple.MobileSMS" ]
+        @"MessageHeads": @[ @"com.apple.MobileSMS" ],
+        @"IMN": @[ @"com.apple.MobileSMS", @"net.whatsapp.WhatsApp", @"jp.naver.line", @"com.kik.chat", @"com.apple.mobilemail", @"com.blackberry.bbm1" ],
     };
 
     BOOL auki = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/auki.dylib"];
@@ -137,6 +138,10 @@ BOOL supportsQR(NSString *app)
     if (messageHeads && [map[@"MessageHeads"] containsObject:app])
         return YES;
 
+    BOOL imn = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/InteractiveMessageNotifications.dylib"];
+    if (imn && [map[@"IMN"] containsObject:app])
+        return YES;
+
     return NO;
 }
 
@@ -148,7 +153,8 @@ NSString *associatedQRNameForApp(NSString *app)
         @"BiteSMS": @[ @"com.apple.MobileSMS" ],
         @"Twitkafly": @[ @"com.atebits.Tweetie2", @"com.tapbots.Tweetbot3" ],
         @"Couria": @[ @"com.viber", @"com.apple.MobileSMS", @"com.skype.skype" ],
-        @"MessageHeads": @[ @"com.apple.MobileSMS" ]
+        @"MessageHeads": @[ @"com.apple.MobileSMS" ],
+        @"IMN": @[ @"com.apple.MobileSMS", @"net.whatsapp.WhatsApp", @"jp.naver.line", @"com.kik.chat", @"com.apple.mobilemail", @"com.blackberry.bbm1" ],
     };
 
     BOOL auki = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/auki.dylib"];
@@ -174,6 +180,10 @@ NSString *associatedQRNameForApp(NSString *app)
     BOOL messageHeads = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/MessageHeads.dylib"];
     if (messageHeads && [map[@"MessageHeads"] containsObject:app])
         return @"MessageHeads QC";
+
+    BOOL imn = [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/InteractiveMessageNotifications.dylib"];
+    if (imn && [map[@"IMN"] containsObject:app])
+        return @"InteractiveMessageNotifications";
 
     return @"Associated Quick-Reply";
 }
