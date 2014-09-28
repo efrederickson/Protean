@@ -59,6 +59,8 @@ struct StatusBarData {
     
     NSString *customService = [Protean getOrLoadSettings][@"serviceString"] ?: serviceStr;
 
+    if ([serviceStr isEqual:NSLocalizedString(@"No Service Specified", @"")])
+        ;
     if ([customService isEqual:@" "])
         serviceStr = @"";
     else if ([customService isEqual:@""])

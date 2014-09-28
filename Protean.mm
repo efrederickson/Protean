@@ -207,7 +207,24 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 {
     if (appId == nil) return;
     // We are obviously SpringBoard
-    
+ 
+    static NSArray *apps = @[
+        @"com.kik.chat", 
+        @"com.apple.MobileSMS", 
+        @"net.whatsapp.WhatsApp",
+        @"com.atebits.Tweetie2", 
+        @"com.tapbots.Tweetbot3",
+        @"com.viber", 
+        @"com.apple.MobileSMS", 
+        @"com.skype.skype",
+        @"jp.naver.line",
+        @"com.apple.mobilemail", 
+        @"com.blackberry.bbm1",
+    ];
+
+    if ([apps containsObject:appId] == NO)
+        return;
+
     storedBulletins[appId] = storedBulletins[appId] ?: [NSMutableArray array];
     if ([storedBulletins[appId] containsObject:bulletin])
         return;

@@ -647,6 +647,9 @@ BOOL o = NO;
 {
     CGRect r = %orig;
     CHECK_ENABLED(r);
+    id overlap_ = [Protean getOrLoadSettings][@"allowOverlap"];
+    if ([overlap_ boolValue] == NO)
+        return %orig;
     
     if (arg1.item)
     {

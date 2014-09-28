@@ -16,6 +16,15 @@ NSMutableArray *removeWhenOff = [[NSMutableArray array] retain];
 BOOL isScreenOff = NO;
 int totalBadgeCount = 0;
 
+int bestCountForApp(NSString *ident, int otherCount = 0)
+{
+    if (ident == nil) return 0;
+
+    int NC = [ncData[ident] intValue];
+    int badge = [cachedBadgeCounts[ident] intValue];
+    return MAX(MAX(NC, badge), otherCount);
+}
+
 NSDictionary *settingsForItemWithName(NSString *item)
 {
     NSDictionary *prefs = [Protean getOrLoadSettings];
@@ -79,7 +88,7 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
     if (identifier == nil)
         return;
     
-    NSString *imageName = [Protean imageNameForIdentifier:identifier withBadgeCount:count];
+    NSString *imageName = [Protean imageNameForIdentifier:identifier withBadgeCount:bestCountForApp(identifier, count)];
     if (imageName == nil || [imageName isEqual:@""])
         return;
     
@@ -197,7 +206,7 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
     {
         LSStatusBarItem *item = ((LSStatusBarItem*)icons[key]);
         if ([cachedBadgeCounts.allKeys containsObject:key])
-            item.imageName = [Protean imageNameForIdentifier:key withBadgeCount:[cachedBadgeCounts[key] intValue]] ?: key;
+            item.imageName = [Protean imageNameForIdentifier:key withBadgeCount:bestCountForApp(key)] ?: key;
         else
             item.imageName = [Protean imageNameForIdentifier:key] ?: key;
         

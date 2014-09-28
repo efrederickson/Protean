@@ -8,6 +8,8 @@ NSString* const ONIconPath = @"/System/Library/Frameworks/UIKit.framework";
 static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
+static NSMutableArray* appStatusIcons;
+static NSMutableArray* tncStatusIcons;
 //NSString* const SilverIconRegexPattern = @"PR_(.*?)(?:@.*|)(?:~.*|).png";
 NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d\\d?\\d?)?(?:@.*|)(?:~.*|).png";
 static NSMutableArray* searchedIcons;
@@ -220,44 +222,90 @@ NSString *associatedQRNameForApp(NSString *app)
         defaultIcon = [[ALApplicationList sharedApplicationList] iconOfSize:ALApplicationIconSizeSmall forDisplayIdentifier:@"com.apple.WebSheet"];
 	if (!cachedIcons)
         cachedIcons = [[NSMutableDictionary alloc] init];
+
+    statusIcons = [_identifier isEqual:@"TOTAL_NOTIFICATION_COUNT"] ? tncStatusIcons : appStatusIcons;
 	if (!statusIcons)
 	{
-		statusIcons = [[NSMutableArray alloc] init];
-		NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:SilverIconRegexPattern
-                                                                               options:NSRegularExpressionCaseInsensitive error:nil];
-        
-		for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:iconPath error:nil])
-		{
-			NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
-			if (!match) continue;
-			NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
-			if (![statusIcons containsObject:name]) [statusIcons addObject:name];
-		}
-		
-        regex = [NSRegularExpression regularExpressionWithPattern:@"Black_ON_(.*?)(?:@.*|)(?:~.*|).png"
-                                                          options:NSRegularExpressionCaseInsensitive error:nil];
-        
-        NSRegularExpression *numRegex = [NSRegularExpression regularExpressionWithPattern:@"(Count\\d?\\d?_?)?(.*)"
-                                                                                  options:NSRegularExpressionCaseInsensitive error:nil];
-        
-        for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/System/Library/Frameworks/UIKit.framework" error:nil])
-		{
-			NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
-			if (!match) continue;
-			NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
+        if ([_identifier isEqual:@"TOTAL_NOTIFICATION_COUNT"] == NO)
+        {
+    		appStatusIcons = [[NSMutableArray alloc] init];
+    		NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:SilverIconRegexPattern
+                                                                                   options:NSRegularExpressionCaseInsensitive error:nil];
             
-            NSTextCheckingResult *match2 = [numRegex firstMatchInString:name options:0 range:NSMakeRange(0, name.length)];
-            if (!match2)
-                // wut
-                continue;
+    		for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:iconPath error:nil])
+    		{
+    			NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
+    			if (!match) continue;
+    			NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
+    			if (![appStatusIcons containsObject:name]) [appStatusIcons addObject:name];
+    		}
+    		
+            regex = [NSRegularExpression regularExpressionWithPattern:@"Black_ON_(.*?)(?:@.*|)(?:~.*|).png"
+                                                              options:NSRegularExpressionCaseInsensitive error:nil];
             
-            if ([match2 rangeAtIndex:2].length != 0)
-                name = [name substringWithRange:[match2 rangeAtIndex:2]];
+            NSRegularExpression *numRegex = [NSRegularExpression regularExpressionWithPattern:@"(Count\\d?\\d?_?)?(.*)"
+                                                                                      options:NSRegularExpressionCaseInsensitive error:nil];
             
-			if (![statusIcons containsObject:name])
-                [statusIcons addObject:name];
-		}
-        
+            for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/System/Library/Frameworks/UIKit.framework" error:nil])
+    		{
+    			NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
+    			if (!match) continue;
+    			NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
+                
+                NSTextCheckingResult *match2 = [numRegex firstMatchInString:name options:0 range:NSMakeRange(0, name.length)];
+                if (!match2)
+                    // wut
+                    continue;
+                
+                if ([match2 rangeAtIndex:2].length != 0)
+                    name = [name substringWithRange:[match2 rangeAtIndex:2]];
+                
+    			if (![appStatusIcons containsObject:name])
+                    [appStatusIcons addObject:name];
+    		}
+            statusIcons = appStatusIcons;
+        }
+        else
+        {
+            tncStatusIcons = [[NSMutableArray alloc] init];
+            NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"PR_(.*?)_Count_((Large)?\\d\\d?\\d?)?(?:@.*|)(?:~.*|).png"
+                                                                                   options:NSRegularExpressionCaseInsensitive error:nil];
+            
+            for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:iconPath error:nil])
+            {
+                NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
+                if (!match) continue;
+                NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
+                if (![tncStatusIcons containsObject:name]) [tncStatusIcons addObject:name];
+            }
+            
+            regex = [NSRegularExpression regularExpressionWithPattern:@"Black_ON_(.*?)(?:@.*|)(?:~.*|).png"
+                                                              options:NSRegularExpressionCaseInsensitive error:nil];
+            
+            NSRegularExpression *numRegex = [NSRegularExpression regularExpressionWithPattern:@"(Count\\d?\\d?_?)?(.*)"
+                                                                                      options:NSRegularExpressionCaseInsensitive error:nil];
+            
+            for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/System/Library/Frameworks/UIKit.framework" error:nil])
+            {
+                NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
+                if (!match) continue;
+                NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
+                
+                NSTextCheckingResult *match2 = [numRegex firstMatchInString:name options:0 range:NSMakeRange(0, name.length)];
+                if (!match2)
+                    // wut
+                    continue;
+                
+                if ([match2 rangeAtIndex:1].length != 0)
+                {
+                    name = [name substringWithRange:[match2 rangeAtIndex:2]];
+                
+                    if (![tncStatusIcons containsObject:name])
+                        [tncStatusIcons addObject:name];
+                }
+            }
+            statusIcons = tncStatusIcons;
+        }
 	}
     
     

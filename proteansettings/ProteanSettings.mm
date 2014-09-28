@@ -88,7 +88,7 @@
                  @"cell": @"PSLinkListCell",
                  @"cellClass": @"SKTintedCell",
                  @"detail": @"ProteanAppsController",
-                 @"label": @"Applications",
+                 @"label": @"App Notifications",
                  @"icon": @"applications.png"
                  },
              @{
