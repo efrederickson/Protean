@@ -24,10 +24,10 @@
 	<integer>20</integer>
 	<key>height</key>
 	<integer>20</integer>
-	<key>compositingFilter</key>
+	<!--<key>compositingFilter</key>
 	<string>plusD</string>
 	<key>compositingFilter-on</key>
-	<string></string>
+	<string></string>-->
 	<key>layers</key>
 	<array>
 		<dict>
@@ -35,14 +35,14 @@
 			<string>glyph</string>
 			<key>size</key>
 			<integer>20</integer>
-			<key>x</key>
+			<!--<key>x</key>
 			<integer>0</integer>
 			<key>y</key>
 			<integer>0</integer>
 			<key>opacity</key>
 			<integer>1</integer>
 			<key>color</key>
-			<string>#000000</string>
+			<string>#000000</string>-->
 		</dict>
 	</array>
 </dict>

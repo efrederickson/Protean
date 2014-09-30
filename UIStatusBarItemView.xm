@@ -1,5 +1,4 @@
-// The purpose of this is to help LibStatusBar search for icons
-// In Protean’s search paths/bundles too
+// The purpose of this is to help LibStatusBar search for icons in Protean’s search paths/bundles and flipswitches too
 
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
@@ -14,16 +13,7 @@ UIImage *resizeImage(UIImage *icon)
 	float maxHeight = 13.0f;
     
 	CGSize size = CGSizeMake(maxWidth, maxHeight);
-	CGFloat scale = 1.0f;
-    
-	// the scale logic below was taken from
-	// http://developer.appcelerator.com/question/133826/detecting-new-ipad-3-dpi-and-retina
-	//if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)])
-	//{
-		if ([UIScreen mainScreen].scale > 1.0f) scale = [[UIScreen mainScreen] scale];
-		UIGraphicsBeginImageContextWithOptions(size, false, scale);
-	//}
-	//else UIGraphicsBeginImageContext(size);
+	UIGraphicsBeginImageContextWithOptions(size, false, [[UIScreen mainScreen] scale]);
     
 	// Resize image to status bar size and center it
 	// make sure the icon fits within the bounds
