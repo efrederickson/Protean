@@ -14,8 +14,5 @@
 
 +(NSMutableDictionary*) getOrLoadSettings;
 
-+(void) addBulletin:(BBBulletin*)bulletin forApp:(NSString*)appId;
-+(void) clearBulletinsForApp:(NSString*)appId;
-
 +(void) reloadSettings;
 @end
