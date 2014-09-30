@@ -208,7 +208,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     if (appId == nil) return;
     // We are obviously SpringBoard
  
-    static NSArray *apps = @[
+    NSArray *apps = @[
         @"com.kik.chat", 
         @"com.apple.MobileSMS", 
         @"net.whatsapp.WhatsApp",
@@ -268,10 +268,11 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         
         // BiteSMS
         id bitesms = objc_getClass("BSQRController");
-        if (bitesms && NO)
+        if (bitesms)
         {
             success = [bitesms maybeLaunchQRFromBulletin:bulletin];
-            return;
+            if (success)
+                return;
         }
     }
     else if ([app isEqual:@"com.atebits.Tweetie2"] || [app isEqual:@"com.tapbots.Tweetbot3"])
@@ -326,7 +327,8 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
 +(void) clearBulletinsForApp:(NSString*)appId
 {
-    storedBulletins[appId] = [NSMutableArray array];
+    [storedBulletins removeObjectForKey:appId];
+    //storedBulletins[appId] = [NSMutableArray array];
 }
 
 static BOOL first = YES;

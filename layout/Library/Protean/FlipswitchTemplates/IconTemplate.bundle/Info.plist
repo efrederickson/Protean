@@ -21,9 +21,9 @@
 	<key>MinimumOSVersion</key>
 	<string>2.0</string>
 	<key>width</key>
-	<integer>60</integer>
+	<integer>20</integer>
 	<key>height</key>
-	<integer>60</integer>
+	<integer>20</integer>
 	<key>compositingFilter</key>
 	<string>plusD</string>
 	<key>compositingFilter-on</key>
@@ -34,11 +34,11 @@
 			<key>type</key>
 			<string>glyph</string>
 			<key>size</key>
-			<integer>40</integer>
+			<integer>20</integer>
 			<key>x</key>
-			<integer>10</integer>
+			<integer>0</integer>
 			<key>y</key>
-			<integer>10</integer>
+			<integer>0</integer>
 			<key>opacity</key>
 			<integer>1</integer>
 			<key>color</key>

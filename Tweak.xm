@@ -597,6 +597,8 @@ BOOL o = NO;
         }
     }
 
+    return ret;
+/*
     int type = MSHookIvar<int>(self.item, "_type");
     if (type < 33)
         return ret;
@@ -611,6 +613,7 @@ BOOL o = NO;
                 ret.size.width = 13;
 
     return ret;
+*/
 }
 
 - (void)setVisible:(BOOL)arg1 
@@ -716,26 +719,32 @@ BOOL o = NO;
     CHECK_ENABLED();
     
     int badgeCount = [self.badgeNumberOrString intValue];
+    NSString *ident = self.bundleIdentifier;
 
     if (badgeCount > 0)
     {
-        [PRStatusApps showIconFor:self.bundleIdentifier badgeCount:badgeCount];
-        [PRStatusApps updateCachedBadgeCount:self.bundleIdentifier count:badgeCount];
+        [PRStatusApps showIconFor:ident badgeCount:badgeCount];
     }
-    else
+    else // badgeCount <= 0
     {    
         id nc_ = [Protean getOrLoadSettings][@"useNC"];
         if (!nc_ || [nc_ boolValue])
         {
-            if ([PRStatusApps ncCount:self.bundleIdentifier] > 0)
-                ; // ignore
+            if ([PRStatusApps ncCount:ident] > 0)
+                [PRStatusApps updateNCStatsForIcon:ident count:[PRStatusApps ncCount:ident]]; // update with NC data
             else
-                [PRStatusApps hideIconFor:self.bundleIdentifier];
+            {
+       			[Protean clearBulletinsForApp:ident];
+                [PRStatusApps hideIconFor:ident];
+            }
         }
         else
-            [PRStatusApps hideIconFor:self.bundleIdentifier];
-        [PRStatusApps updateCachedBadgeCount:self.bundleIdentifier count:0];
+        {
+        	[Protean clearBulletinsForApp:ident];
+            [PRStatusApps hideIconFor:ident];
+        }
     }
+    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
     [PRStatusApps updateTotalNotificationCountIcon];
 }
 %end
@@ -751,7 +760,6 @@ BOOL o = NO;
     [PRStatusApps updateNCStatsForIcon:section count:bulletins.count]; // Update stats for Notification center icons
 }
 
-
 - (void)_sendRemoveBulletins:(NSSet*)arg1 toFeeds:(unsigned long long)arg2 shouldSync:(_Bool)arg3
 {
     %orig;
@@ -762,6 +770,11 @@ BOOL o = NO;
 
     NSString *section = bulletin.sectionID;
     [PRStatusApps updateNCStatsForIcon:section count:[PRStatusApps ncCount:section] - arg1.count];
+}
+
+- (void)_loadSavedSectionInfo
+{
+	%orig;
 }
 %end
 

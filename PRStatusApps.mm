@@ -149,7 +149,7 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
     }
     else
     	item.visible = YES;
-    NSString *imageName = [Protean imageNameForIdentifier:identifier];
+    NSString *imageName = [Protean imageNameForIdentifier:identifier] ?: identifier;
     
     item.imageName = [imageName isEqual:@""] ? identifier : imageName;
 }
@@ -266,14 +266,16 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
 
     if (count > 0)
     {
-        NSLog(@"[Protean] showing NC icon for %@", section);
+        //NSLog(@"[Protean] showing NC icon for %@", section);
         [PRStatusApps showIconFor:section badgeCount:count];
     }
     else
     {
-        NSLog(@"[Protean] not showing NC icon for %@", section);
+        //NSLog(@"[Protean] not showing NC icon for %@", section);
         if ([cachedBadgeCounts[section] intValue] < 1)
             [PRStatusApps hideIconFor:section];
+        else
+            [PRStatusApps showIconFor:section badgeCount:[cachedBadgeCounts[section] intValue]];
     }
 }
 

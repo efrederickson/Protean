@@ -8,26 +8,22 @@
 
 NSMutableDictionary *cache = [NSMutableDictionary dictionary];
 
-// This is... bad... 
-// But, it works. Which is what i need. 
-// TODO: better hack
-
 UIImage *resizeImage(UIImage *icon)
 {
-	float maxWidth = 20.0f;
-	float maxHeight = 20.0f;
+	float maxWidth = 13.0f;
+	float maxHeight = 13.0f;
     
 	CGSize size = CGSizeMake(maxWidth, maxHeight);
 	CGFloat scale = 1.0f;
     
 	// the scale logic below was taken from
 	// http://developer.appcelerator.com/question/133826/detecting-new-ipad-3-dpi-and-retina
-	if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)])
-	{
+	//if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)])
+	//{
 		if ([UIScreen mainScreen].scale > 1.0f) scale = [[UIScreen mainScreen] scale];
 		UIGraphicsBeginImageContextWithOptions(size, false, scale);
-	}
-	else UIGraphicsBeginImageContext(size);
+	//}
+	//else UIGraphicsBeginImageContext(size);
     
 	// Resize image to status bar size and center it
 	// make sure the icon fits within the bounds
@@ -46,6 +42,10 @@ UIImage *resizeImage(UIImage *icon)
     
 	return icon;
 }
+
+// This is... bad... 
+// But, it works. Which is what i need. 
+// TODO: better hack
 
 %hook UIImage
 +(id) kitImageNamed:(NSString*)name
@@ -76,14 +76,20 @@ UIImage *resizeImage(UIImage *icon)
     NSString *patchedName2 = patchedName;
     if ([patchedName hasPrefix:@"PR_"])
         patchedName2 = [patchedName substringFromIndex:3];
-    if ([[FSSwitchPanel sharedPanel].switchIdentifiers containsObject:patchedName2])
+
+    static NSArray *switchIdentifiers;
+    if (!switchIdentifiers) switchIdentifiers = [[[FSSwitchPanel sharedPanel].switchIdentifiers copy] retain];
+    if ([switchIdentifiers containsObject:patchedName2])
     {
-        BOOL isPad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
-        NSString *TemplatePath = isPad ? @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle" : @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle";
+        static BOOL isPad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
+        static NSString *TemplatePath = isPad ? @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle" : @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle";
         static NSBundle *templateBundle = nil;
         if (!templateBundle) templateBundle = [NSBundle bundleWithPath:TemplatePath];
-        name = [NSString stringWithFormat:@"%@-%@",patchedName2,[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2]==FSSwitchStateOn?@"on":@"off"];
-        cache[name] = resizeImage([[[FSSwitchPanel sharedPanel] imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2] controlState:UIControlStateNormal forSwitchIdentifier:patchedName2 usingTemplate:templateBundle] _flatImageWithColor:[UIColor blackColor]]);
+        name = [NSString stringWithFormat:@"%@-%@",patchedName2, [[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2]==FSSwitchStateOn?@"on":@"off"];
+        UIImage *img = [[FSSwitchPanel sharedPanel] 
+        	imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2] 
+        	controlState:UIControlStateNormal forSwitchIdentifier:patchedName2 usingTemplate:templateBundle];
+        cache[name] = resizeImage(img);
         return cache[name];
     }
 
