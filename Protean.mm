@@ -5,6 +5,10 @@
 #import <notify.h>
 #import "PRStatusApps.h"
 
+@interface BBServer (Protean_private)
++(id) PR_sharedInstance;
+@end
+
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
@@ -237,9 +241,8 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 {
     if (app == nil) return;
     
-    // Launch QR here
-    
-    if (!storedBulletins[app] || [storedBulletins[app] count] == 0)
+    NSSet *bulletins = [[objc_getClass("BBServer") PR_sharedInstance] _allBulletinsForSectionID:app];
+    if (bulletins.count == 0)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Protean" message:[NSString stringWithFormat:@"No bulletins found for app %@",app] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
@@ -247,10 +250,8 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         return;
     }
     
-    //__strong BBBulletin* bulletin = [[storedBulletins[app] objectAtIndex:0] copy];
-    //[storedBulletins[app] removeObjectAtIndex:0];
-    __strong BBBulletin *bulletin = [storedBulletins[app] objectAtIndex:[storedBulletins[app] count] - 1];
-    
+    __strong BBBulletin *bulletin = [bulletins anyObject];
+        //[storedBulletins[app] objectAtIndex:[storedBulletins[app] count] - 1];
     if (!bulletin)
         return;
 

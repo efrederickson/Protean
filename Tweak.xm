@@ -734,13 +734,11 @@ BOOL o = NO;
                 [PRStatusApps updateNCStatsForIcon:ident count:[PRStatusApps ncCount:ident]]; // update with NC data
             else
             {
-       			[Protean clearBulletinsForApp:ident];
                 [PRStatusApps hideIconFor:ident];
             }
         }
         else
         {
-        	[Protean clearBulletinsForApp:ident];
             [PRStatusApps hideIconFor:ident];
         }
     }
@@ -749,13 +747,24 @@ BOOL o = NO;
 }
 %end
 
+static BBServer *sharedServer;
 %hook BBServer
+%new +(id) PR_sharedInstance
+{
+	return sharedServer;
+}
+
+-(id) init
+{
+	sharedServer = %orig;
+	return sharedServer;
+}
+
 - (void)publishBulletin:(BBBulletin*)arg1 destinations:(unsigned long long)arg2 alwaysToLockScreen:(_Bool)arg3
 {
     %orig;
     
     NSString *section = arg1.sectionID;
-    [Protean addBulletin:arg1 forApp:section]; // Add bulletin for QR
     NSArray *bulletins = [self noticesBulletinIDsForSectionID:section];
     [PRStatusApps updateNCStatsForIcon:section count:bulletins.count]; // Update stats for Notification center icons
 }
@@ -770,11 +779,6 @@ BOOL o = NO;
 
     NSString *section = bulletin.sectionID;
     [PRStatusApps updateNCStatsForIcon:section count:[PRStatusApps ncCount:section] - arg1.count];
-}
-
-- (void)_loadSavedSectionInfo
-{
-	%orig;
 }
 %end
 
