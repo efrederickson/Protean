@@ -9,8 +9,8 @@ NSMutableDictionary *cache = [NSMutableDictionary dictionary];
 
 UIImage *resizeImage(UIImage *icon)
 {
-	float maxWidth = 13.0f;
-	float maxHeight = 13.0f;
+	CGFloat maxWidth = 13.0f;
+	CGFloat maxHeight = 13.0f;
     
 	CGSize size = CGSizeMake(maxWidth, maxHeight);
 	UIGraphicsBeginImageContextWithOptions(size, false, [[UIScreen mainScreen] scale]);

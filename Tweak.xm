@@ -537,7 +537,7 @@ NSMutableDictionary *cachedAlignments = [NSMutableDictionary dictionary];
 %end
 
 @interface UIStatusBarLayoutManager (Protean)
-- (CGRect)_frameForItemView:(id)arg1 startPosition:(float)arg2 firstView:(BOOL)arg3;
+- (CGRect)_frameForItemView:(id)arg1 startPosition:(CGFloat)arg2 firstView:(BOOL)arg3;
 @end
 
 NSMutableDictionary *storedStarts = [NSMutableDictionary dictionary];

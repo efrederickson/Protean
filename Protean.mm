@@ -49,11 +49,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     
     if (type <= 32) // System item
     {
-        if (type == 5)
-        {
-            return YES;
-        }
-        
         NSString *ident = [NSString stringWithFormat:@"%d", type];
         
         id mode1 = [Protean getOrLoadSettings][@"tapActions"][ident];
@@ -76,7 +71,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         
         id mode1 = [Protean getOrLoadSettings][@"tapActions"][ident];
         int mode = mode1 ? [mode1 intValue] : 0;
-
         if (mode == 1 || mode == 2 || mode == 3)
             return YES;
     }
@@ -105,7 +99,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
         }
         else
             NSLog(@"[Protean] invalid IconTap action for system item: %d", mode);
-            
     }
     else
     {
@@ -156,8 +149,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 
     LSBitems[[NSNumber numberWithInt:LSBitems_index++]] = [identifier retain];
     [mappedIdentifiers addObject:identifier];
-    
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/updateItems"), nil, nil, YES);
 }
 
 +(void) mapIdentifierToItem:(NSString*)identifier item:(int)type
@@ -400,24 +391,6 @@ void reloadSettings(CFNotificationCenterRef center,
     [Protean reloadSettings];
 }
 
-void requestUpdate(CFNotificationCenterRef center,
-                    void *observer,
-                    CFStringRef name,
-                    const void *object,
-                    CFDictionaryRef userInfo)
-{
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("com.efrederickson.protean/receiveItems"), nil, (__bridge CFDictionaryRef)LSBitems, YES);
-}
-
-void receiveItems(CFNotificationCenterRef center,
-                    void *observer,
-                    CFStringRef name,
-                    const void *object,
-                    CFDictionaryRef userInfo)
-{
-    LSBitems = [(__bridge NSDictionary*)userInfo mutableCopy];
-}
-
 void launchQR(CFNotificationCenterRef center,
                     void *observer,
                     CFStringRef name,
@@ -433,13 +406,9 @@ static __attribute__((constructor)) void __protean_init()
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
     {
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &refreshStatusBar, CFSTR("com.efrederickson.protean/refreshStatusBar"), NULL, 0);
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &receiveItems, CFSTR("com.efrederickson.protean/receiveItems"), NULL, 0);
-
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/updateItems"), nil, nil, YES);
     }
     else
     {
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &requestUpdate, CFSTR("com.efrederickson.protean/updateItems"), NULL, 0);
         CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &launchQR, CFSTR("com.efrederickson.protean/launchQR"), NULL, 0);
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &refreshStatusBar, CFSTR("com.efrederickson.protean/refreshStatusBar"), NULL, 0);
     }

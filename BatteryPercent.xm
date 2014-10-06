@@ -117,22 +117,26 @@ NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     {
         // "real" battery charge
 
-        double rawCurrent = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawCurrentCapacity;
-        double rawMax = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawMaxCapacity;
-        double rawActual = floor((rawCurrent / rawMax) * 100);
+        CGFloat rawCurrent = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawCurrentCapacity;
+        CGFloat rawMax = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawMaxCapacity;
+        CGFloat rawActual = floor((rawCurrent / rawMax) * 100);
         if (rawActual > 100) // uhh, what?
             rawActual = 100;
+        else if (rawActual < 0)
+        	rawActual = 0;
         batteryStr = [NSString stringWithFormat:@"%.0f%%", rawActual];
     }
     else if (changedBatteryStyle == 5)
     {
         // "real" battery charge with decimals
 
-        double rawCurrent = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawCurrentCapacity;
-        double rawMax = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawMaxCapacity;
-        double rawActual = (rawCurrent / rawMax) * 100;
+        CGFloat rawCurrent = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawCurrentCapacity;
+        CGFloat rawMax = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawMaxCapacity;
+        CGFloat rawActual = (rawCurrent / rawMax) * 100;
         if (rawActual > 100)
             rawActual = 100;
+        else if (rawActual < 0)
+        	rawActual = 0;
         batteryStr = [NSString stringWithFormat:@"%.2f%%", rawActual];
     }
 
