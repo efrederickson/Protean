@@ -212,9 +212,26 @@
 -(UIColor*) headerColor { return [UIColor colorWithRed:74/255.0f green:74/255.0f blue:74/255.0f alpha:1.0f]; }
 
 -(NSArray*) customSpecifiers {
-    BOOL supportsExtendedBattery = objc_getClass("PLBatteryPropertiesEntry") != nil;
+    BOOL supportsExtendedBattery = objc_getClass("PLBatteryPropertiesEntry") != nil; /* This would happen after BatteryPercent maybe-loads PowerlogLoggerSupport.framework on process initialization. */
+    NSNumber *defaultPadding = ((NSDictionary*)[objc_getClass("Protean") performSelector:@selector(getOrLoadSettings)])[@"defaultPadding"] ?: @6;
 
              return @[
+                @{ 
+                 @"cell": @"PSGroupCell",
+                 @"label": @"Item Spacing",
+                 @"footerText": @"Change the spacing between items."
+                 },
+                @{
+                 @"cell": @"PSSliderCell",
+                 @"default": defaultPadding,
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"padding",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 @"min": @0,
+                 @"max": @15,
+                 @"showValue": @YES,
+                 },
+
              	@{ 
         		 @"cell": @"PSGroupCell",
                  @"footerText": @"Equalizes the height of the lock screen and home screen status bar."

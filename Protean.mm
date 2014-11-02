@@ -4,6 +4,8 @@
 #import <libactivator/libactivator.h>
 #import <notify.h>
 #import "PRStatusApps.h"
+#import <dispatch/dispatch.h>
+#import <stdio.h>
 
 @interface BBServer (Protean_private)
 +(id) PR_sharedInstance;
@@ -414,5 +416,47 @@ static __attribute__((constructor)) void __protean_init()
     }
     
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &reloadSettings, CFSTR("com.efrederickson.protean/reloadSettings"), NULL, 0);
+
+    // Testing preference loader... 
+    // GCD instead of (or in addition to?) CFNotifications for iOS 8+
+/*
+    int fdes = open(PLIST_NAME.UTF8String, O_RDONLY);
+    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
+    void (^eventHandler)(void);
+    void (^cancelHandler)(void) = ^{ }; // silence warnings by dummy value as default.
+    unsigned long mask = DISPATCH_VNODE_DELETE | DISPATCH_VNODE_WRITE | DISPATCH_VNODE_EXTEND | DISPATCH_VNODE_ATTRIB | DISPATCH_VNODE_LINK | DISPATCH_VNODE_RENAME | DISPATCH_VNODE_REVOKE;
+    __block dispatch_source_t source;
+
+    eventHandler = ^{
+        unsigned long l = dispatch_source_get_data(source);
+        if (l & DISPATCH_VNODE_DELETE) {
+            printf("watched file deleted!  cancelling source\n");
+            dispatch_source_cancel(source);
+        }
+        else {
+            // handle the file has data case
+            printf("watched file has data\n");
+            [Protean reloadSettings];
+        }
+    };
+    cancelHandler = ^{
+        int fdes = dispatch_source_get_handle(source);
+        close(fdes);
+        // Wait for new file to exist.
+        //while ((fdes = open(PLIST_NAME.UTF8String, O_RDONLY)) == -1)
+        //    sleep(1);
+        printf("re-opened target file in cancel handler\n");
+        source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, fdes, mask, queue);
+        dispatch_source_set_event_handler(source, eventHandler);
+        dispatch_source_set_cancel_handler(source, cancelHandler);
+        dispatch_resume(source);
+    };
+
+  source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE,fdes, mask, queue);
+  dispatch_source_set_event_handler(source, eventHandler);
+  dispatch_source_set_cancel_handler(source, cancelHandler);
+  dispatch_resume(source);
+  dispatch_main();
+*/
     reloadSettings(NULL, NULL, NULL, NULL, NULL);
 }

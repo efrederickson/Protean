@@ -166,8 +166,10 @@ NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
         void *library = dlopen("/System/Library/PrivateFrameworks/PowerlogLoggerSupport.framework/PowerlogLoggerSupport", RTLD_LAZY);
 
         //Class powerlog = dlsym(handle, "OBJC_CLASS_$_PLBatteryPropertiesEntry");
-        if (objc_getClass("PLBatteryPropertiesEntry"))
-            NSLog(@"[Protean] welp, failed to load PLBatteryPropertiesEntry. Unsupported iOS version?");
+        if (objc_getClass("PLBatteryPropertiesEntry") == nil)
+        {
+            //NSLog(@"[Protean] welp, failed to load PLBatteryPropertiesEntry. Unsupported iOS version?");
+        }
         dlclose(library);
     }
 }

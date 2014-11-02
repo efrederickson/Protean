@@ -643,10 +643,27 @@ BOOL o = NO;
     %orig(force ? YES : arg1);
 }
 
-- (float)extraRightPadding { return 0; }
-- (float)extraLeftPadding { return 0; }
-- (float)shadowPadding { return 0; }
-- (float)standardPadding { return %orig; }
+//- (float)extraRightPadding { return 0; }
+//- (float)extraLeftPadding { return 0; }
+//- (float)shadowPadding { return 0; }
+- (CGFloat)standardPadding 
+{
+    CGFloat o = %orig; 
+
+    if ([Protean getOrLoadSettings][@"defaultPadding"] == nil)
+    {
+        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME];
+        prefs[@"defaultPadding"] = [NSNumber numberWithFloat:o];
+        //@synchronized (lockObject)
+        {
+            //[prefs writeToFile:PLIST_NAME atomically:YES];
+        }
+    }
+
+    CHECK_ENABLED(o);
+    id padding = [Protean getOrLoadSettings][@"padding"];
+    return padding ? [padding floatValue] : o;
+}
 %end
 
 %hook UIStatusBarLayoutManager
@@ -668,7 +685,7 @@ BOOL o = NO;
                 if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
                 {
                     // hmmm
-                    // layout gets screwey here, in SpringBoard...
+                    // layout gets screwey here, in SpringBoard and well, other apps...
                     
                     if ([arg1.item appearsOnRight])
                     {
