@@ -643,6 +643,10 @@ BOOL o = NO;
     %orig(force ? YES : arg1);
 }
 
+- (float)extraRightPadding { return 0; }
+- (float)extraLeftPadding { return 0; }
+- (float)shadowPadding { return 0; }
+- (float)standardPadding { return %orig; }
 %end
 
 %hook UIStatusBarLayoutManager
