@@ -212,6 +212,8 @@
 -(UIColor*) headerColor { return [UIColor colorWithRed:74/255.0f green:74/255.0f blue:74/255.0f alpha:1.0f]; }
 
 -(NSArray*) customSpecifiers {
+    BOOL supportsExtendedBattery = objc_getClass("PLBatteryPropertiesEntry") != nil;
+
              return @[
              	@{ 
         		 @"cell": @"PSGroupCell",
@@ -302,8 +304,12 @@
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"detail": @"SKListItemsController",
                  @"icon": @"batteryStyle.png",
-                 @"validTitles": @[ @"Default", @"Hide '%' sign", @"Textual", @"mAh charge", @"Actual percentage (mAh/capacity)", @"Longer actual percentage" ],
-                 @"validValues": @[ @0,         @1,               @2,         @3,            @4,                 @5]
+                 @"validTitles": 
+                    supportsExtendedBattery ? @[ @"Default", @"Hide '%' sign", @"Textual", @"mAh charge", @"Actual percentage (mAh/capacity)", @"Longer actual percentage", @"Longer actual percentage with no '%'" ]
+                    : @[ @"Default", @"Hide '%' sign", @"Textual" ],
+                 @"validValues": 
+                    supportsExtendedBattery ? @[ @0,         @1,               @2,         @3,            @4,                                @5,                             @6 ]
+                    : @[ @0, @1, @2 ],
                  },
              @{
                  @"cell": @"PSEditTextCell",

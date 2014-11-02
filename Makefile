@@ -23,7 +23,7 @@ Protean_FILES = Protean.mm \
 
 Protean_FRAMEWORKS = UIKit CoreGraphics QuartzCore
 Protean_LIBRARIES = activator flipswitch 
-Protean_PRIVATE_FRAMEWORKS = PowerlogLoggerSupport
+#Protean_PRIVATE_FRAMEWORKS = PowerlogLoggerSupport
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

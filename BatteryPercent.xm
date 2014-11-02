@@ -111,14 +111,14 @@ NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     else if (changedBatteryStyle == 3)
     {
         // mAh charge
-        batteryStr = [NSString stringWithFormat:@"%.0f mAh", [PLBatteryPropertiesEntry batteryPropertiesEntry].rawCurrentCapacity];
+        batteryStr = [NSString stringWithFormat:@"%.0f mAh", ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity];
     }
     else if (changedBatteryStyle == 4)
     {
         // "real" battery charge
 
-        CGFloat rawCurrent = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawCurrentCapacity;
-        CGFloat rawMax = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawMaxCapacity;
+        CGFloat rawCurrent = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity;
+        CGFloat rawMax = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawMaxCapacity;
         CGFloat rawActual = floor((rawCurrent / rawMax) * 100);
         if (rawActual > 100) // uhh, what?
             rawActual = 100;
@@ -130,8 +130,8 @@ NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     {
         // "real" battery charge with decimals
 
-        CGFloat rawCurrent = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawCurrentCapacity;
-        CGFloat rawMax = [PLBatteryPropertiesEntry batteryPropertiesEntry].rawMaxCapacity;
+        CGFloat rawCurrent = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity;
+        CGFloat rawMax = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawMaxCapacity;
         CGFloat rawActual = (rawCurrent / rawMax) * 100;
         if (rawActual > 100)
             rawActual = 100;
@@ -139,9 +139,35 @@ NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
         	rawActual = 0;
         batteryStr = [NSString stringWithFormat:@"%.2f%%", rawActual];
     }
+    else if (changedBatteryStyle == 6)
+    {
+        // "real" battery charge with decimals and no percent sign
+
+        CGFloat rawCurrent = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity;
+        CGFloat rawMax = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawMaxCapacity;
+        CGFloat rawActual = (rawCurrent / rawMax) * 100;
+        if (rawActual > 100)
+            rawActual = 100;
+        else if (rawActual < 0)
+            rawActual = 0;
+        batteryStr = [NSString stringWithFormat:@"%.2f", rawActual];
+    }
 
     strlcpy(arg1.rawData->batteryDetailString, [batteryStr UTF8String], sizeof(arg1.rawData->batteryDetailString));
 
     return %orig(arg1, arg2);
 }
 %end
+
+%ctor
+{
+    if ([NSFileManager.defaultManager fileExistsAtPath:@"/System/Library/PrivateFrameworks/PowerlogLoggerSupport.framework/"])
+    {
+        void *library = dlopen("/System/Library/PrivateFrameworks/PowerlogLoggerSupport.framework/PowerlogLoggerSupport", RTLD_LAZY);
+
+        //Class powerlog = dlsym(handle, "OBJC_CLASS_$_PLBatteryPropertiesEntry");
+        if (objc_getClass("PLBatteryPropertiesEntry"))
+            NSLog(@"[Protean] welp, failed to load PLBatteryPropertiesEntry. Unsupported iOS version?");
+        dlclose(library);
+    }
+}

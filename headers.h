@@ -17,6 +17,10 @@
 #import <SpringBoard/SBApplication.h>
 #import <QuartzCore/QuartzCore.h>
 
+@interface SBIconModel (iOS81)
+- (id)applicationIconForBundleIdentifier:(id)arg1;
+@end
+
 @interface SBBulletinBannerController : NSObject
 +(id)sharedInstance;
 -(void)_queueBulletin:(BBBulletin *)bulletin;

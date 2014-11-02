@@ -71,6 +71,9 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
 
     if (icons[identifier])
         return icons[identifier];
+
+    if (objc_getClass("LSStatusBarItem") == nil)
+        return nil;
     
     LSStatusBarItem *item = [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",identifier] alignment:getDefaultAlignment(identifier)];
     item = [item retain];
@@ -191,8 +194,20 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
     
     // Status Apps
     totalBadgeCount = 0;
+
     for (NSString *identifier in [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] visibleIconIdentifiers]) {
-        SBIcon *icon = (SBIcon *)[[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] applicationIconForDisplayIdentifier:identifier];
+        SBIcon *icon = nil;
+        if ([[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] respondsToSelector:@selector(applicationIconForBundleIdentifier:)])
+        {
+            // iOS 8.0+
+
+            icon = [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] applicationIconForBundleIdentifier:identifier];
+        }
+        else
+        {
+            // iOS 7.X
+            icon = [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] applicationIconForDisplayIdentifier:identifier];
+        }
         if (icon && [icon badgeNumberOrString]) {
             if (icon.badgeValue > 0)
             {
@@ -294,12 +309,12 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
 	}
 	else // screen is on
 	{
-		for (LSStatusBarItem *item in showWhenOff)
+		for (LSStatusBarItem *item in [showWhenOff copy])
             if (item && item.imageName != nil && [item.imageName isEqual:@""] == NO)
                 item.visible = YES;
 		[showWhenOff removeAllObjects];
 
-		for (NSString *ident in removeWhenOff)
+		for (NSString *ident in [removeWhenOff copy])
 			[PRStatusApps hideIconFor:ident];
 		[removeWhenOff removeAllObjects];
 	}
