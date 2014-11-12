@@ -1,6 +1,7 @@
 ARCHS = armv7 armv7s arm64
 THEOS_PACKAGE_DIR_NAME = debs
 TARGET = iphone:clang:7.1
+#CFLAGS = -fobjc-arc   Someday...
 
 include $(THEOS)/makefiles/common.mk
 

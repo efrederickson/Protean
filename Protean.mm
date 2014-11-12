@@ -175,7 +175,12 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     if ([UIImage kitImageNamed:[NSString stringWithFormat:@"PR_%@",ret]])
         return [NSString stringWithFormat:@"PR_%@",ret];
     //if ([UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",ret]])
+
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/Black_ON_%@.png",ret]])
+        return [NSString stringWithFormat:@"ON_%@",ret];
     if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/Black_ON_%@@2x.png",ret]])
+        return [NSString stringWithFormat:@"ON_%@",ret];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/Black_ON_%@@3x.png",ret]])
         return [NSString stringWithFormat:@"ON_%@",ret];
         
     return ret;

@@ -146,10 +146,10 @@ NSMutableArray *itemTypes = [NSMutableArray array];
 NSDictionary *settingsForItem(UIStatusBarItem *item)
 {
     int key = MSHookIvar<int>(item, "_type");
+    NSString *nKey = [NSString stringWithFormat:@"%d", key];
 
     if (key < 33) // System item
     {
-        NSString *nKey = [NSString stringWithFormat:@"%d", key];
 
         NSDictionary *prefs = [Protean getOrLoadSettings];
 
@@ -167,7 +167,7 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
             
         for (id key in prefs)
         {
-            if (prefs[key] && [prefs[key] isKindOfClass:[NSDictionary class]] && [prefs[key][@"identifier"] isEqual:identifier])
+            if (prefs[key] && [prefs[key] isKindOfClass:[NSDictionary class]] && ([prefs[key][@"identifier"] isEqual:identifier] || [prefs[key][@"key"] isEqual:nKey]))
             {
                 return prefs[key];
             }
@@ -534,6 +534,25 @@ NSMutableDictionary *cachedAlignments = [NSMutableDictionary dictionary];
     
     return _self;
 }
+
+- (CGFloat)standardPadding 
+{
+    CGFloat o = %orig; 
+
+    if ([Protean getOrLoadSettings][@"defaultPadding"] == nil)
+    {
+        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME];
+        prefs[@"defaultPadding"] = [NSNumber numberWithFloat:o];
+        //@synchronized (lockObject)
+        {
+            [prefs writeToFile:PLIST_NAME atomically:YES];
+        }
+    }
+
+    CHECK_ENABLED(o);
+    id padding = [Protean getOrLoadSettings][@"padding"];
+    return padding ? [padding floatValue] : o;
+}
 %end
 
 @interface UIStatusBarLayoutManager (Protean)
@@ -656,7 +675,8 @@ BOOL o = NO;
         prefs[@"defaultPadding"] = [NSNumber numberWithFloat:o];
         //@synchronized (lockObject)
         {
-            //[prefs writeToFile:PLIST_NAME atomically:YES];
+            [prefs writeToFile:PLIST_NAME atomically:YES];
+            [Protean reloadSettings];
         }
     }
 
@@ -667,9 +687,9 @@ BOOL o = NO;
 %end
 
 %hook UIStatusBarLayoutManager
-- (CGRect)_frameForItemView:(UIStatusBarItemView*)arg1 startPosition:(float)arg2 firstView:(BOOL)arg3
+- (CGRect)_frameForItemView:(UIStatusBarItemView*)arg1 startPosition:(CGFloat)arg2 firstView:(BOOL)arg3
 {
-    CGRect r = %orig;
+    CGRect r = %orig(arg1, arg2, arg3);
     CHECK_ENABLED(r);
     id overlap_ = [Protean getOrLoadSettings][@"allowOverlap"];
     if ([overlap_ boolValue] == NO)
@@ -730,6 +750,14 @@ BOOL o = NO;
     id r = %orig;
     o = NO;
     return r;
+}
+
+- (CGFloat)edgePadding 
+{
+    CGFloat o = %orig; 
+    CHECK_ENABLED(o);
+    id padding = [Protean getOrLoadSettings][@"padding"];
+    return padding ? ([padding floatValue] > o ? o : [padding floatValue]) : o;
 }
 %end
 

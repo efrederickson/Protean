@@ -20,6 +20,7 @@ BOOL wasLowercased = NO;
 		[formatter setDateFormat:format];
 
 	id lowercaseAMPM_ = [Protean getOrLoadSettings][@"lowercaseAMPM"];
+
 	if (lowercaseAMPM_ && [lowercaseAMPM_ boolValue] == YES && enabled)
 	{
 		[formatter setAMSymbol:@"am"];
@@ -37,3 +38,23 @@ BOOL wasLowercased = NO;
 	}
 }
 %end
+
+/*
+%hook UIStatusBarTimeItemView
+- (id)contentsImage
+{
+	CHECK_ENABLED(%orig);
+
+	id lowercaseAMPM_ = [Protean getOrLoadSettings][@"lowercaseAMPM"];
+	if (lowercaseAMPM_ && [lowercaseAMPM_ boolValue] == YES)
+	{
+		NSString *&time = MSHookIvar<NSString *>(self, "_timeString");
+		NSString *time2 = [[time lowercaseString] retain];
+		[time release];
+		time = time2;
+		return %orig;
+	}
+}
+%end
+*/
+

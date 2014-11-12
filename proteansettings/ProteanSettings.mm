@@ -34,7 +34,17 @@
 
 @implementation ProteanSettingsListController
 -(NSString*) headerText { return @"Protean"; }
--(NSString*) headerSubText { return NO ? @"Your status bar, your way" : @"By Elijah and Andrew\nYour status bar, your way."; }
+-(NSString*) headerSubText 
+{
+    NSArray *choices = @[ 
+        @"Your status bar, your way",
+        @"The ultimate status bar customizer",
+        @"By Elijah and Andrew",
+    ]; 
+
+    NSUInteger randomIndex = arc4random() % [choices count];
+    return choices[randomIndex];
+}
 -(NSString*) customTitle { return @""; }
 
 -(NSString*) shareMessage { return @"I'm using #Protean by @daementor and @drewplex: your status bar, your way."; }
@@ -68,7 +78,7 @@
                 },
              @{
                  @"cell": @"PSLinkListCell",
-                 @"cellClass": @"SKTintedCell",
+                 //@"cellClass": @"SKTintedCell",
                  @"detail": @"PROrganizationController",
                  @"label": @"Organization",
                  @"icon": @"organization.png"
@@ -79,35 +89,35 @@
                 },
              @{
                  @"cell": @"PSLinkListCell",
-                 @"cellClass": @"SKTintedCell",
+                 //@"cellClass": @"SKTintedCell",
                  @"action": @"pushTotalNotificationCountController",
                  @"label": @"Total Notification Count",
                  @"icon": @"tnc.png"
                  },
              @{
                  @"cell": @"PSLinkListCell",
-                 @"cellClass": @"SKTintedCell",
+                 //@"cellClass": @"SKTintedCell",
                  @"detail": @"ProteanAppsController",
                  @"label": @"App Notifications",
                  @"icon": @"applications.png"
                  },
              @{
                  @"cell": @"PSLinkListCell",
-                 @"cellClass": @"SKTintedCell",
+                 //@"cellClass": @"SKTintedCell",
                  @"detail": @"PRSystemIconsController",
                  @"label": @"System Icons",
                  @"icon": @"sysicons.png"
                  },
              @{
                @"cell": @"PSLinkListCell",
-                 @"cellClass": @"SKTintedCell",
+               //@"cellClass": @"SKTintedCell",
                @"detail": @"PRFlipswitchController",
                @"label": @"Flipswitches",
                @"icon": @"flipswitches.png"
                },
              @{
                  @"cell": @"PSLinkListCell",
-                 @"cellClass": @"SKTintedCell",
+                 //@"cellClass": @"SKTintedCell",
                  @"detail": @"PRBluetoothController",
                  @"label": @"Bluetooth Devices",
                  @"icon": @"bluetooth.png"
@@ -117,7 +127,7 @@
             @{ },
             @{
                 @"cell": @"PSLinkListCell",
-                @"cellClass": @"SKTintedCell",
+                //@"cellClass": @"SKTintedCell",
                 @"detail": @"PRAdvancedSettingsListController",
                 @"label": @"Advanced Options",
                 @"icon": @"settings.png"
@@ -129,7 +139,7 @@
                  @"detail": @"PRMakersListController",
                  @"label": @"Credits & Recommendations",
                  @"icon": @"makers.png",
-                 @"cellClass": @"SKTintedCell",
+                 //@"cellClass": @"SKTintedCell",
                  },
 
              @{ @"cell": @"PSGroupCell" },
@@ -138,7 +148,7 @@
                  @"detail": @"PRDocumentationListController",
                  @"label": @"Documentation",
                  @"icon": @"documentation.png",
-                 @"cellClass": @"SKTintedCell",
+                 //@"cellClass": @"SKTintedCell",
                  },
              
              @{ @"cell": @"PSGroupCell",
@@ -148,7 +158,7 @@
                  @"action": @"showSupportDialog",
                  @"label": @"Support",
                  @"icon": @"support.png",
-                 @"cellClass": @"SKTintedCell",
+                 //@"cellClass": @"SKTintedCell",
                  },
              ];
 }
@@ -187,7 +197,11 @@
 
 -(void)setPreferenceValue:(id)value specifier:(PSSpecifier*)specifier
 {
-    [super setPreferenceValue:value specifier:specifier];
+    //[super setPreferenceValue:value specifier:specifier];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"];
+    [dict setObject:value forKey:[specifier propertyForKey:@"key"]];
+    [dict writeToFile:@"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist" atomically:YES];
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
 }
 
@@ -389,7 +403,11 @@
 
 -(void)setPreferenceValue:(id)value specifier:(PSSpecifier*)specifier
 {
-    [super setPreferenceValue:value specifier:specifier];
+    //[super setPreferenceValue:value specifier:specifier];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"];
+    [dict setObject:value forKey:[specifier propertyForKey:@"key"]];
+    [dict writeToFile:@"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist" atomically:YES];
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
 }
 @end

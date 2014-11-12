@@ -25,38 +25,8 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
     return MAX(MAX(NC, badge), otherCount);
 }
 
-NSDictionary *settingsForItemWithName(NSString *item)
-{
-    NSDictionary *prefs = [Protean getOrLoadSettings];
-            
-    for (id key in prefs)
-    {
-        if (prefs[key] && [prefs[key] isKindOfClass:[NSDictionary class]] && [prefs[key][@"identifier"] isEqual:item])
-        {
-            return prefs[key];
-        }
-    }
-
-    return nil;
-}
-
 StatusBarAlignment getDefaultAlignment(NSString *ident)
 {
-    NSDictionary *settings = settingsForItemWithName(ident);
-    if (settings)
-    {
-        if (settings[@"alignment"])
-        {
-            int alignment = [settings[@"alignment"] intValue];
-            if (alignment == 0) 
-                return StatusBarAlignmentLeft;
-            else if (alignment == 1)
-                return StatusBarAlignmentRight;
-            // 2 = center (not supported)
-            // 3 = hidden, 4 = default, both not relevant
-        }
-    }
-
     id right_ = [Protean getOrLoadSettings][@"defaultAlignToRight"];
     if (!right_ || [right_ boolValue] == NO)
         return StatusBarAlignmentLeft;
@@ -129,7 +99,7 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
     	return;
     }
     item.visible = NO;
-    //item.imageName = @"";
+    item.imageName = @"";
     [item release];
     //[item dealloc];
     item = nil;
@@ -252,7 +222,7 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
     
     // Bluetooth
     id bt = objc_getClass("BluetoothManager");
-    [[bt sharedInstance] _connectedStatusChanged];
+	[[bt sharedInstance] _connectedStatusChanged];
 }
 
 +(void) updateTotalNotificationCountIcon

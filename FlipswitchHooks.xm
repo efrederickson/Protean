@@ -70,7 +70,7 @@ NSTimer *timer = nil;
 {
     for (id key in enabledFlipswitches())
     {
-        [[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:key];
+        [[objc_getClass("FSSwitchMainPanel") sharedPanel] stateForSwitchIdentifier:key];
     }
 }
 
