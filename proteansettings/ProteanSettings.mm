@@ -37,9 +37,10 @@
 -(NSString*) headerSubText 
 {
     NSArray *choices = @[ 
-        @"Your status bar, your way",
-        @"The ultimate status bar customizer",
+        @"Your Status Bar, Your Way",
+        @"The Ultimate Status Bar Customizer",
         @"By Elijah and Andrew",
+        @"Status Bar Is Looking Splendid, Today!",
     ]; 
 
     NSUInteger randomIndex = arc4random() % [choices count];
