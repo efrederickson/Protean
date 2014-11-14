@@ -17,6 +17,13 @@
 #import <SpringBoard/SBApplication.h>
 #import <QuartzCore/QuartzCore.h>
 
+@interface SBLockStateAggregator
++(id)sharedInstance;
+-(void)_updateLockState;
+-(BOOL)hasAnyLockState;
+-(unsigned)lockState;
+@end
+
 @interface SBIconModel (iOS81)
 - (id)applicationIconForBundleIdentifier:(id)arg1;
 @end

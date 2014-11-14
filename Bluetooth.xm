@@ -29,7 +29,9 @@
     {
         NSString *name = device.name;
         
-        if ([[[%c(BluetoothManager) sharedInstance] connectedDevices] containsObject:device])
+        NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name contains[c] %@", name];
+        //if ([[[%c(BluetoothManager) sharedInstance] connectedDevices] containsObject:device])
+        if ([[[[%c(BluetoothManager) sharedInstance] connectedDevices] filteredArrayUsingPredicate:namePredicate] count] > 0)
         {
             [PRStatusApps showIconForBluetooth:name];
         }

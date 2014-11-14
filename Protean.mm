@@ -30,17 +30,16 @@ NSMutableDictionary *LSBitems = [NSMutableDictionary dictionary];
 NSMutableArray *mappedIdentifiers = [NSMutableArray array];
 int LSBitems_index = 33;
 
-NSMutableDictionary *prefs = nil;
-NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
+__strong NSMutableDictionary *prefs = nil;
 
 @implementation Protean
 +(NSMutableDictionary*) getOrLoadSettings
 {
     if (!prefs)
     {
-        prefs = [[NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME] retain];
+        prefs = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME];
         if (prefs == nil)
-            prefs = [[NSMutableDictionary dictionary] retain];
+            prefs = [NSMutableDictionary dictionary];
     }
     return prefs;
 }
@@ -149,7 +148,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     if ([mappedIdentifiers containsObject:identifier])
         return;
 
-    LSBitems[[NSNumber numberWithInt:LSBitems_index++]] = [identifier retain];
+    LSBitems[[NSNumber numberWithInt:LSBitems_index++]] = [identifier copy];
     [mappedIdentifiers addObject:identifier];
 }
 
@@ -157,7 +156,7 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
 {
     if ([mappedIdentifiers containsObject:identifier])
         return;
-    LSBitems[[NSNumber numberWithInt:type]] = [identifier retain];
+    LSBitems[[NSNumber numberWithInt:type]] = [identifier copy];
     [mappedIdentifiers addObject:identifier];
 }
 
@@ -174,35 +173,28 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     
     if ([UIImage kitImageNamed:[NSString stringWithFormat:@"PR_%@",ret]])
         return [NSString stringWithFormat:@"PR_%@",ret];
-    //if ([UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",ret]])
 
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/Black_ON_%@.png",ret]])
+    if ([UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",ret]])
         return [NSString stringWithFormat:@"ON_%@",ret];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/Black_ON_%@@2x.png",ret]])
-        return [NSString stringWithFormat:@"ON_%@",ret];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/Black_ON_%@@3x.png",ret]])
-        return [NSString stringWithFormat:@"ON_%@",ret];
-        
     return ret;
 }
 
 +(NSString*)imageNameForIdentifier:(NSString*)identifier withBadgeCount:(int)count
 {
-    static NSBundle *imageBundle;
-    if (!imageBundle) imageBundle = [[NSBundle bundleWithPath:@"/Library/Protean/Images.bundle"] retain];
-    
-    NSString *baseName = [Protean imageNameForIdentifier:identifier];
-    if (!baseName)
-        return nil;
-    
-    if ([UIImage imageNamed:[NSString stringWithFormat:@"%@_Count_%d",baseName,count] inBundle:imageBundle])
-        return [NSString stringWithFormat:@"%@_Count_%d",baseName,count];
-    else if ([UIImage imageNamed:[NSString stringWithFormat:@"%@_Count_Large",baseName] inBundle:imageBundle])
-        return [NSString stringWithFormat:@"%@_Count_Large",baseName];
-    else if ([UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_Count%d_%@",count>9?10:count,baseName]])
-        return [NSString stringWithFormat:@"ON_Count%d_%@",count>9?10:count,baseName];
-        
-    return baseName;
+    @autoreleasepool { 
+        NSString *baseName = [Protean imageNameForIdentifier:identifier];
+        if (!baseName)
+            return nil;
+
+        if ([UIImage kitImageNamed:[NSString stringWithFormat:@"%@_Count_%d",baseName,count]])
+            return [NSString stringWithFormat:@"%@_Count_%d",baseName,count];
+        else if ([UIImage kitImageNamed:[NSString stringWithFormat:@"%@_Count_Large",baseName]])
+            return [NSString stringWithFormat:@"%@_Count_Large",baseName];
+        else if ([UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_Count%d_%@",count>9?10:count,baseName]])
+            return [NSString stringWithFormat:@"ON_Count%d_%@",count>9?10:count,baseName];
+            
+        return baseName;
+    }
 }
 
 +(void) launchQR:(NSString*)app
@@ -219,7 +211,6 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     }
     
     __strong BBBulletin *bulletin = [bulletins anyObject];
-        //[storedBulletins[app] objectAtIndex:[storedBulletins[app] count] - 1];
     if (!bulletin)
         return;
 
@@ -290,15 +281,13 @@ NSMutableDictionary *storedBulletins = [NSMutableDictionary dictionary];
     if ([app isEqual:@"com.apple.MobileSMS"])
         messagesText = @". A recommended QuickReply for Messages is BiteSMS.";
 
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Protean" message:[NSString stringWithFormat:@"No associated Quick-Reply for app %@%@",app,messagesText] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Protean" message:[NSString stringWithFormat:@"No associated Quick-Reply for %@%@",app,messagesText] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [alert show];
 }
 
 static BOOL first = YES;
 +(void) reloadSettings
 {
-    if (prefs)
-        [prefs release];
     prefs = nil;
     [Protean getOrLoadSettings];
     if (!first)
@@ -422,46 +411,5 @@ static __attribute__((constructor)) void __protean_init()
     
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &reloadSettings, CFSTR("com.efrederickson.protean/reloadSettings"), NULL, 0);
 
-    // Testing preference loader... 
-    // GCD instead of (or in addition to?) CFNotifications for iOS 8+
-/*
-    int fdes = open(PLIST_NAME.UTF8String, O_RDONLY);
-    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
-    void (^eventHandler)(void);
-    void (^cancelHandler)(void) = ^{ }; // silence warnings by dummy value as default.
-    unsigned long mask = DISPATCH_VNODE_DELETE | DISPATCH_VNODE_WRITE | DISPATCH_VNODE_EXTEND | DISPATCH_VNODE_ATTRIB | DISPATCH_VNODE_LINK | DISPATCH_VNODE_RENAME | DISPATCH_VNODE_REVOKE;
-    __block dispatch_source_t source;
-
-    eventHandler = ^{
-        unsigned long l = dispatch_source_get_data(source);
-        if (l & DISPATCH_VNODE_DELETE) {
-            printf("watched file deleted!  cancelling source\n");
-            dispatch_source_cancel(source);
-        }
-        else {
-            // handle the file has data case
-            printf("watched file has data\n");
-            [Protean reloadSettings];
-        }
-    };
-    cancelHandler = ^{
-        int fdes = dispatch_source_get_handle(source);
-        close(fdes);
-        // Wait for new file to exist.
-        //while ((fdes = open(PLIST_NAME.UTF8String, O_RDONLY)) == -1)
-        //    sleep(1);
-        printf("re-opened target file in cancel handler\n");
-        source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, fdes, mask, queue);
-        dispatch_source_set_event_handler(source, eventHandler);
-        dispatch_source_set_cancel_handler(source, cancelHandler);
-        dispatch_resume(source);
-    };
-
-  source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE,fdes, mask, queue);
-  dispatch_source_set_event_handler(source, eventHandler);
-  dispatch_source_set_cancel_handler(source, cancelHandler);
-  dispatch_resume(source);
-  dispatch_main();
-*/
     reloadSettings(NULL, NULL, NULL, NULL, NULL);
 }

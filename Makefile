@@ -1,7 +1,7 @@
 ARCHS = armv7 armv7s arm64
 THEOS_PACKAGE_DIR_NAME = debs
 TARGET = iphone:clang:7.1
-#CFLAGS = -fobjc-arc   Someday...
+CFLAGS = -fobjc-arc
 
 include $(THEOS)/makefiles/common.mk
 
@@ -21,6 +21,8 @@ Protean_FILES = Protean.mm \
 		IntroView/PRFinalViewController.m \
 		SignalRSSI.xm \
 		Carrier.xm CustomTime.xm
+
+LDFLAGS = -fobjc-arc
 
 Protean_FRAMEWORKS = UIKit CoreGraphics QuartzCore
 Protean_LIBRARIES = activator flipswitch 

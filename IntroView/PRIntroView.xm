@@ -4,13 +4,6 @@
 
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
-@interface SBLockStateAggregator
-+(id)sharedInstance;
--(void)_updateLockState;
--(BOOL)hasAnyLockState;
--(unsigned)lockState;
-@end
-
 UIWindow *window;
 
 %hook SBLockStateAggregator
@@ -50,7 +43,7 @@ UIWindow *window;
         //window.frame = CGRectMake(window.frame.origin.x, [UIScreen mainScreen].bounds.size.height,
                                       //window.frame.size.width, window.frame.size.height);
     } completion:^(BOOL finished) {  
-        [window release];
+        //[window release];
         window = nil;
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=Protean"]];
     }];

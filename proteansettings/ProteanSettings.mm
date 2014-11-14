@@ -4,6 +4,7 @@
 #import <objc/runtime.h>
 #import "IconSelectorController.h"
 #import <MessageUI/MFMailComposeViewController.h>
+#import <notify.h>
 
 @interface PSListController (SettingsKit)
 -(UIView*)view;
@@ -37,10 +38,10 @@
 -(NSString*) headerSubText 
 {
     NSArray *choices = @[ 
-        @"Your Status Bar, Your Way",
-        @"The Ultimate Status Bar Customizer",
+        @"Your status bar, your way",
+        @"The ultimate status bar customizer",
         @"By Elijah and Andrew",
-        @"Status Bar Is Looking Splendid, Today!",
+        @"Status bar is looking splendid today!",
     ]; 
 
     NSUInteger randomIndex = arc4random() % [choices count];
@@ -69,7 +70,7 @@
                  @"key": @"enabled",
                  @"label": @"Enabled",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"cellClass": @"SKTintedSwitchCell",
+                 //@"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"enabled.png",
                  },
 
@@ -258,7 +259,6 @@
                  @"key": @"normalizeLS",
                  @"label": @"Normalize Lock Screen",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"normalizeLS.png"
                  },
                  @{},
@@ -269,7 +269,6 @@
                  @"key": @"showSignalRSSI",
                  @"label": @"Show Signal RSSI",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"signalrssi.png"
                  },
              @{
@@ -278,8 +277,7 @@
                  @"defaults": @"com.apple.springboard",
                  @"key": @"SBShowRSSI",
                  @"label": @"Show Wifi/Data RSSI",
-                 @"PostNotification": @"",
-                 @"cellClass": @"SKTintedSwitchCell",
+                 @"PostNotification": @"com.apple.springboard/Prefs",
                  @"icon": @"wifirssi.png"
                  },
              
@@ -293,7 +291,6 @@
                  @"key": @"showLSTime",
                  @"label": @"Show LS Time",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"showLSTime.png"
                  },
              @{ @"cell": @"PSGroupCell",
@@ -306,7 +303,6 @@
                  @"key": @"useNC",
                  @"label": @"Use Notification Center Data",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"usenc.png"
                  },
 
@@ -320,7 +316,6 @@
                  @"key": @"defaultAlignToRight",
                  @"label": @"Default Glyphs to the Right",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"defaulttoright.png"
                  },
 
@@ -368,7 +363,6 @@
                  @"key": @"lowercaseAMPM",
                  @"label": @"Lowercase AM/PM",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"lowercaseampm.png"
                  },
 
@@ -382,7 +376,6 @@
                  @"key": @"allowOverlap",
                  @"label": @"Don't Cut Off Items",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"cellClass": @"SKTintedSwitchCell",
                  @"icon": @"allowOverlap.png"
                  },
 
@@ -402,13 +395,23 @@
     system("killall -9 SpringBoard");
 }
 
+ -(id)readPreferenceValue:(PSSpecifier*)specifier
+ {
+    NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/%@.plist",[specifier propertyForKey:@"defaults"]];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
+    return dict[[specifier propertyForKey:@"key"]]; 
+ }
+
 -(void)setPreferenceValue:(id)value specifier:(PSSpecifier*)specifier
 {
     //[super setPreferenceValue:value specifier:specifier];
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"];
+    NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/%@.plist",[specifier propertyForKey:@"defaults"]];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
     [dict setObject:value forKey:[specifier propertyForKey:@"key"]];
-    [dict writeToFile:@"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist" atomically:YES];
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+    [dict writeToFile:plistName atomically:YES];
+
+    notify_post("com.apple.springboard/Prefs");
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), (__bridge CFStringRef)[specifier propertyForKey:@"PostNotification"], nil, nil, YES);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
 }
 @end

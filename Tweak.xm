@@ -4,10 +4,11 @@
 #import <flipswitch/Flipswitch.h>
 
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
-
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
 NSObject *lockObject = [[NSObject alloc] init];
+__strong NSMutableDictionary *cachedAlignments = [NSMutableDictionary dictionary];
+__strong NSMutableArray *itemTypes = [NSMutableArray array];
 
 void updateItem(int key, NSString *identifier)
 {
@@ -142,7 +143,6 @@ NSString *nameFromItem(UIStatusBarItem *item)
     }
 }
 
-NSMutableArray *itemTypes = [NSMutableArray array];
 NSDictionary *settingsForItem(UIStatusBarItem *item)
 {
     int key = MSHookIvar<int>(item, "_type");
@@ -431,7 +431,6 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 }
 %end
 
-NSMutableDictionary *cachedAlignments = [NSMutableDictionary dictionary];
 %hook LSStatusBarItem
 - (id) initWithIdentifier:(NSString*) identifier alignment:(StatusBarAlignment) orig_alignment
 {
@@ -559,8 +558,7 @@ NSMutableDictionary *cachedAlignments = [NSMutableDictionary dictionary];
 - (CGRect)_frameForItemView:(id)arg1 startPosition:(CGFloat)arg2 firstView:(BOOL)arg3;
 @end
 
-NSMutableDictionary *storedStarts = [NSMutableDictionary dictionary];
-
+__strong NSMutableDictionary *storedStarts = [NSMutableDictionary dictionary];
 BOOL o = NO;
 
 %hook UIStatusBarItemView
@@ -795,6 +793,112 @@ BOOL o = NO;
     [PRStatusApps updateTotalNotificationCountIcon];
 }
 %end
+%hook SBIcon
+- (void)setBadge:(id)arg1
+{
+    %orig;
+    CHECK_ENABLED();
+    
+    int badgeCount = self.badgeValue;
+    if ([self respondsToSelector:@selector(applicationBundleID)] == NO || self.applicationBundleID == nil)
+        return;
+    NSString *ident = self.applicationBundleID;
+
+    if (badgeCount > 0)
+    {
+        [PRStatusApps showIconFor:ident badgeCount:badgeCount];
+    }
+    else // badgeCount <= 0
+    {    
+        id nc_ = [Protean getOrLoadSettings][@"useNC"];
+        if (!nc_ || [nc_ boolValue])
+        {
+            if ([PRStatusApps ncCount:ident] > 0)
+                [PRStatusApps updateNCStatsForIcon:ident count:[PRStatusApps ncCount:ident]]; // update with NC data
+            else
+            {
+                [PRStatusApps hideIconFor:ident];
+            }
+        }
+        else
+        {
+            [PRStatusApps hideIconFor:ident];
+        }
+    }
+    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
+    [PRStatusApps updateTotalNotificationCountIcon];
+}
+
+-(long long) badgeValue
+{
+    long long badgeCount = %orig;
+    CHECK_ENABLED(badgeCount);
+    
+    if ([self respondsToSelector:@selector(applicationBundleID)] == NO || self.applicationBundleID == nil)
+        return badgeCount;
+    NSString *ident = self.applicationBundleID;
+
+    if (badgeCount > 0)
+    {
+        [PRStatusApps showIconFor:ident badgeCount:badgeCount];
+    }
+    else // badgeCount <= 0
+    {    
+        id nc_ = [Protean getOrLoadSettings][@"useNC"];
+        if (!nc_ || [nc_ boolValue])
+        {
+            if ([PRStatusApps ncCount:ident] > 0)
+                [PRStatusApps updateNCStatsForIcon:ident count:[PRStatusApps ncCount:ident]]; // update with NC data
+            else
+            {
+                [PRStatusApps hideIconFor:ident];
+            }
+        }
+        else
+        {
+            [PRStatusApps hideIconFor:ident];
+        }
+    }
+    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
+    [PRStatusApps updateTotalNotificationCountIcon];
+
+    return badgeCount;
+}
+%end
+%hook SBApplicationIcon
+- (void)setBadge:(id)arg1
+{
+    %orig;
+    CHECK_ENABLED();
+    
+    int badgeCount = self.badgeValue;
+    NSString *ident = self.applicationBundleID;
+
+    if (badgeCount > 0)
+    {
+        [PRStatusApps showIconFor:ident badgeCount:badgeCount];
+    }
+    else // badgeCount <= 0
+    {    
+        id nc_ = [Protean getOrLoadSettings][@"useNC"];
+        if (!nc_ || [nc_ boolValue])
+        {
+            if ([PRStatusApps ncCount:ident] > 0)
+                [PRStatusApps updateNCStatsForIcon:ident count:[PRStatusApps ncCount:ident]]; // update with NC data
+            else
+            {
+                [PRStatusApps hideIconFor:ident];
+            }
+        }
+        else
+        {
+            [PRStatusApps hideIconFor:ident];
+        }
+    }
+    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
+    [PRStatusApps updateTotalNotificationCountIcon];
+}
+%end
 
 static BBServer *sharedServer;
 %hook BBServer
@@ -863,6 +967,15 @@ void launchApp(CFNotificationCenterRef center,
     %orig;
 
     [PRStatusApps updateLockState:NO];
+}
+%end
+
+%hook SBLockStateAggregator
+-(void)_updateLockState
+{
+    %orig;
+    if (![self hasAnyLockState]) 
+        [PRStatusApps reloadAllImages];
 }
 %end
 

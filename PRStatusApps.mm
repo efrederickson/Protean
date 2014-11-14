@@ -8,11 +8,11 @@
 +(void) updateTimer;
 @end
 
-NSMutableDictionary *icons = [[NSMutableDictionary dictionary] retain]; // probably should use alloc] init] retain] instead
-NSMutableDictionary *cachedBadgeCounts = [[NSMutableDictionary dictionary] retain];
-NSMutableDictionary *ncData = [[NSMutableDictionary dictionary] retain];
-NSMutableArray *showWhenOff = [[NSMutableArray array] retain];
-NSMutableArray *removeWhenOff = [[NSMutableArray array] retain];
+NSMutableDictionary *icons = [NSMutableDictionary dictionary];
+__strong NSMutableDictionary *cachedBadgeCounts = [NSMutableDictionary dictionary];
+__strong NSMutableDictionary *ncData = [NSMutableDictionary dictionary];
+__strong NSMutableArray *showWhenOff = [NSMutableArray array];
+__strong NSMutableArray *removeWhenOff = [NSMutableArray array];
 BOOL isScreenOff = NO;
 int totalBadgeCount = 0;
 
@@ -40,13 +40,14 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
     if (identifier == nil) return nil;
 
     if (icons[identifier])
+    {
         return icons[identifier];
+    }
 
     if (objc_getClass("LSStatusBarItem") == nil)
         return nil;
     
     LSStatusBarItem *item = [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",identifier] alignment:getDefaultAlignment(identifier)];
-    item = [item retain];
 
     if (!item)
         return nil;
@@ -99,11 +100,9 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
     	return;
     }
     item.visible = NO;
-    item.imageName = @"";
-    [item release];
-    //[item dealloc];
-    item = nil;
-    [icons removeObjectForKey:identifier];
+    //item.imageName = @"";
+    //item = nil;
+    //[icons removeObjectForKey:identifier];
 }
 
 +(void) showIconForFlipswitch:(NSString*)identifier
@@ -200,9 +199,7 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
         
         if (item.imageName == nil || [item.imageName isEqual:@""])
         {
-            [item release];
-            item = nil;
-            [icons removeObjectForKey:key];
+            [PRStatusApps hideIconFor:key];
         }
     }
 
@@ -271,6 +268,9 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
 
 +(void) updateLockState:(BOOL)locked
 {
+	isScreenOff = NO; 
+	return;
+
 	isScreenOff = !locked;
 
 	if (isScreenOff)
