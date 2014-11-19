@@ -4,15 +4,11 @@
 #import "Protean.h"
 #import <flipswitch/Flipswitch.h>
 
-@interface PRFSTimer
-+(void) updateTimer;
-@end
-
 NSMutableDictionary *icons = [NSMutableDictionary dictionary];
-__strong NSMutableDictionary *cachedBadgeCounts = [NSMutableDictionary dictionary];
-__strong NSMutableDictionary *ncData = [NSMutableDictionary dictionary];
-__strong NSMutableArray *showWhenOff = [NSMutableArray array];
-__strong NSMutableArray *removeWhenOff = [NSMutableArray array];
+NSMutableDictionary *cachedBadgeCounts = [NSMutableDictionary dictionary];
+NSMutableDictionary *ncData = [NSMutableDictionary dictionary];
+NSMutableArray *showWhenOff = [NSMutableArray array];
+NSMutableArray *removeWhenOff = [NSMutableArray array];
 BOOL isScreenOff = NO;
 int totalBadgeCount = 0;
 
@@ -25,7 +21,8 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
     return MAX(MAX(NC, badge), otherCount);
 }
 
-StatusBarAlignment getDefaultAlignment(NSString *ident)
+@implementation PRStatusApps
++(StatusBarAlignment) getDefaultAlignment:(NSString*)ident
 {
     id right_ = [Protean getOrLoadSettings][@"defaultAlignToRight"];
     if (!right_ || [right_ boolValue] == NO)
@@ -34,20 +31,17 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
         return StatusBarAlignmentRight;
 }
 
-@implementation PRStatusApps
 +(LSStatusBarItem*)getOrCreateItemForIdentifier:(NSString*)identifier
 {
     if (identifier == nil) return nil;
 
     if (icons[identifier])
-    {
         return icons[identifier];
-    }
 
     if (objc_getClass("LSStatusBarItem") == nil)
         return nil;
     
-    LSStatusBarItem *item = [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",identifier] alignment:getDefaultAlignment(identifier)];
+    LSStatusBarItem *item = [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",identifier] alignment:[PRStatusApps getDefaultAlignment:identifier]];
 
     if (!item)
         return nil;
@@ -58,25 +52,27 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
 
 +(void) showIconFor:(NSString*)identifier badgeCount:(int)count
 {
-    CHECK_ENABLED();
-    if (identifier == nil)
-        return;
-    
-    NSString *imageName = [Protean imageNameForIdentifier:identifier withBadgeCount:bestCountForApp(identifier, count)];
-    if (imageName == nil || [imageName isEqual:@""])
-        return;
-    
-    LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
-    if (!item)
-        return;
-    if (isScreenOff)
-    {
-    	item.visible = NO;
-    	[showWhenOff addObject:item];
+    @autoreleasepool { 
+        CHECK_ENABLED();
+        if (identifier == nil)
+            return;
+        
+        NSString *imageName = [Protean imageNameForIdentifier:identifier withBadgeCount:bestCountForApp(identifier, count)];
+        if (imageName == nil || [imageName isEqual:@""])
+            return;
+        
+        LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
+        if (!item)
+            return;
+        if (isScreenOff)
+        {
+        	item.visible = NO;
+        	[showWhenOff addObject:item];
+        }
+        else
+        	item.visible = YES;
+        item.imageName = imageName;
     }
-    else
-    	item.visible = YES;
-    item.imageName = imageName;
 }
 
 +(void) updateCachedBadgeCount:(NSString*)identifier count:(int) count
@@ -215,7 +211,6 @@ StatusBarAlignment getDefaultAlignment(NSString *ident)
     {
         [[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:key];
     }
-    //[objc_getClass("PRFSTimer") updateTimer];
     
     // Bluetooth
     id bt = objc_getClass("BluetoothManager");

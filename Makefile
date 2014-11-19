@@ -1,14 +1,14 @@
 ARCHS = armv7 armv7s arm64
 THEOS_PACKAGE_DIR_NAME = debs
-TARGET = iphone:clang:7.1
+TARGET = iphone:latest
 CFLAGS = -fobjc-arc
 
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Protean
 
-Protean_FILES = Protean.mm \
-				Tweak.xm \
+Protean_FILES = Tweak.xm \
+				Protean.mm \
                 PRStatusApps.mm \
                 UIStatusBarItemView.xm \
                 FlipswitchHooks.xm Bluetooth.xm \
@@ -25,7 +25,8 @@ Protean_FILES = Protean.mm \
 LDFLAGS = -fobjc-arc
 
 Protean_FRAMEWORKS = UIKit CoreGraphics QuartzCore
-Protean_LIBRARIES = activator flipswitch 
+Protean_LIBRARIES = activator flipswitch
+Protean_PRIVATE_FRAMEWORKS = IOKit
 #Protean_PRIVATE_FRAMEWORKS = PowerlogLoggerSupport
 
 include $(THEOS_MAKE_PATH)/tweak.mk

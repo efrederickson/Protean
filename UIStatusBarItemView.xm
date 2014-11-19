@@ -40,64 +40,66 @@ UIImage *resizeImage(UIImage *icon)
 %hook UIImage
 +(id) kitImageNamed:(NSString*)name
 {
-    CHECK_ENABLED(%orig);
-    if (name == nil)
-    	return %orig;
+    @autoreleasepool {
+        CHECK_ENABLED(%orig);
+        if (name == nil)
+        	return %orig;
 
-    if (cache[name])
-        return cache[name];
-    id _tmp = %orig;
-    if (_tmp)
-        return _tmp;
-
-    NSString *patchedName = name;
-    
-    if ([name hasPrefix:@"White_"])
-        patchedName = [name substringFromIndex:6];
-    else if ([name hasPrefix:@"Black_"])
-        patchedName = [name substringFromIndex:6];
-    else if ([name hasPrefix:@"LockScreen_"])
-        patchedName = [name substringFromIndex:11];
-        
-    if ([patchedName hasSuffix:@"_Color"])
-        return nil;
-        //patchedName = [patchedName substringToIndex:patchedName.length - 6];
-        
-    NSString *patchedName2 = patchedName;
-    if ([patchedName hasPrefix:@"PR_"])
-        patchedName2 = [patchedName substringFromIndex:3];
-
-    static __strong NSArray *switchIdentifiers;
-    if (!switchIdentifiers) 
-        switchIdentifiers = [[FSSwitchPanel sharedPanel].switchIdentifiers copy];
-    if ([switchIdentifiers containsObject:patchedName2])
-    {
-        name = [NSString stringWithFormat:@"%@-%@",patchedName2, [[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2]==FSSwitchStateOn?@"on":@"off"];
         if (cache[name])
             return cache[name];
+        id _tmp = %orig;
+        if (_tmp)
+            return _tmp;
 
-        static BOOL isPad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
-        static NSString *TemplatePath = isPad ? @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle" : @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle";
-        static __strong NSBundle *templateBundle = nil;
-        if (!templateBundle) templateBundle = [NSBundle bundleWithPath:TemplatePath];
-        UIImage *img = [[FSSwitchPanel sharedPanel] 
-        	imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2] 
-        	controlState:UIControlStateNormal forSwitchIdentifier:patchedName2 usingTemplate:templateBundle];
-        cache[name] = resizeImage(img);
-        return cache[name];
+        NSString *patchedName = name;
+        
+        if ([name hasPrefix:@"White_"])
+            patchedName = [name substringFromIndex:6];
+        else if ([name hasPrefix:@"Black_"])
+            patchedName = [name substringFromIndex:6];
+        else if ([name hasPrefix:@"LockScreen_"])
+            patchedName = [name substringFromIndex:11];
+            
+        if ([patchedName hasSuffix:@"_Color"])
+            return nil;
+            //patchedName = [patchedName substringToIndex:patchedName.length - 6];
+            
+        NSString *patchedName2 = patchedName;
+        if ([patchedName hasPrefix:@"PR_"])
+            patchedName2 = [patchedName substringFromIndex:3];
+
+        static __strong NSArray *switchIdentifiers;
+        if (!switchIdentifiers) 
+            switchIdentifiers = [[FSSwitchPanel sharedPanel].switchIdentifiers copy];
+        if ([switchIdentifiers containsObject:patchedName2])
+        {
+            name = [NSString stringWithFormat:@"%@-%@",patchedName2, [[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2]==FSSwitchStateOn?@"on":@"off"];
+            if (cache[name])
+                return cache[name];
+
+            static BOOL isPad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
+            static NSString *TemplatePath = isPad ? @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle" : @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle";
+            static __strong NSBundle *templateBundle = nil;
+            if (!templateBundle) templateBundle = [NSBundle bundleWithPath:TemplatePath];
+            UIImage *img = [[FSSwitchPanel sharedPanel] 
+            	imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2] 
+            	controlState:UIControlStateNormal forSwitchIdentifier:patchedName2 usingTemplate:templateBundle];
+            cache[name] = resizeImage(img);
+            return cache[name];
+        }
+
+        UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@.png", patchedName]];
+
+        if (!image)
+        {
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/%@.png",name]];
+        }
+
+        if (image)
+            cache[name] = image;
+
+        return image;
     }
-
-    UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@.png", patchedName]];
-
-    if (!image)
-    {
-        image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/%@.png",name]];
-    }
-
-    if (image)
-        cache[name] = image;
-
-    return image;
 }
 %end
 

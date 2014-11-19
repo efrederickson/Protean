@@ -981,14 +981,16 @@ void launchApp(CFNotificationCenterRef center,
 
 %ctor
 {
-    dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar.dylib", RTLD_NOW | RTLD_GLOBAL);
-    if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/bars.dylib"])
-        dlopen("/Library/MobileSubstrate/DynamicLibraries/bars.dylib", RTLD_NOW | RTLD_GLOBAL);
+    @autoreleasepool {
+        dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar.dylib", RTLD_NOW | RTLD_GLOBAL);
+        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/bars.dylib"])
+            dlopen("/Library/MobileSubstrate/DynamicLibraries/bars.dylib", RTLD_NOW | RTLD_GLOBAL);
 
-    %init;
+        %init;
 
-    if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
-    {
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &launchApp, CFSTR("com.efrederickson.protean/launchApp"), NULL, 0);
+        if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
+        {
+            CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &launchApp, CFSTR("com.efrederickson.protean/launchApp"), NULL, 0);
+        }
     }
 }

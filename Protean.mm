@@ -30,7 +30,7 @@ NSMutableDictionary *LSBitems = [NSMutableDictionary dictionary];
 NSMutableArray *mappedIdentifiers = [NSMutableArray array];
 int LSBitems_index = 33;
 
-__strong NSMutableDictionary *prefs = nil;
+NSMutableDictionary *prefs = nil;
 
 @implementation Protean
 +(NSMutableDictionary*) getOrLoadSettings
@@ -167,21 +167,23 @@ __strong NSMutableDictionary *prefs = nil;
 
 +(NSString*)imageNameForIdentifier:(NSString*)identifier
 {    
-    NSDictionary *dict = [Protean getOrLoadSettings];
-    NSString *ret = dict[@"images"][identifier];
-    if (ret == nil || ret.length == 0) return nil;
-    
-    if ([UIImage kitImageNamed:[NSString stringWithFormat:@"PR_%@",ret]])
-        return [NSString stringWithFormat:@"PR_%@",ret];
+    @autoreleasepool {
+        NSDictionary *dict = [Protean getOrLoadSettings];
+        NSString *ret = dict[@"images"][identifier];
+        if (ret == nil || ret.length == 0) return nil;
+        
+        if ([UIImage kitImageNamed:[NSString stringWithFormat:@"PR_%@",ret]])
+            return [NSString stringWithFormat:@"PR_%@",ret];
 
-    if ([UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",ret]])
-        return [NSString stringWithFormat:@"ON_%@",ret];
-    return ret;
+        if ([UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",ret]])
+            return [NSString stringWithFormat:@"ON_%@",ret];
+        return ret;
+    }
 }
 
 +(NSString*)imageNameForIdentifier:(NSString*)identifier withBadgeCount:(int)count
 {
-    @autoreleasepool { 
+    @autoreleasepool { // This took me hours to not only find (the cause) (which i still don't think i have), but then to also fix it. ARC can be annoying. 
         NSString *baseName = [Protean imageNameForIdentifier:identifier];
         if (!baseName)
             return nil;

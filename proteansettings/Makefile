@@ -12,8 +12,9 @@ ProteanSettings_FILES = ProteanSettings.mm \
   PRFSSelector.mm PRBluetoothController.mm PRSystemIconsController.mm \
   PRSysIconSelectorController.mm PRBTIconSelectorController.mm \
   PRMakersController.mm
+
 ProteanSettings_INSTALL_PATH = /Library/PreferenceBundles
-ProteanSettings_FRAMEWORKS = UIKit MessageUI Social QuartzCore CoreGraphics CoreBluetooth
+ProteanSettings_FRAMEWORKS = UIKit MessageUI Social QuartzCore CoreGraphics CoreBluetooth GraphicsServices
 ProteanSettings_PRIVATE_FRAMEWORKS = Preferences BluetoothManager
 ProteanSettings_LIBRARIES = applist activator flipswitch
 
