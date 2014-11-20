@@ -90,6 +90,10 @@ UIImage *resizeImage(UIImage *icon)
 
         UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@.png", patchedName]];
 
+        //NSLog(@"[Protean] %@", [NSString stringWithFormat:@"/tmp/protean/%@.png", patchedName]);
+        if (!image)
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/tmp/protean/%@.png", patchedName]];
+
         if (!image)
         {
             image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/%@.png",name]];

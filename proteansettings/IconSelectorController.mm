@@ -5,13 +5,14 @@
 
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 NSString* const ONIconPath = @"/System/Library/Frameworks/UIKit.framework";
+NSString* const vectorIconPath = @"/tmp/protean/";
 static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
 static NSMutableArray* appStatusIcons;
 static NSMutableArray* tncStatusIcons;
 //NSString* const SilverIconRegexPattern = @"PR_(.*?)(?:@.*|)(?:~.*|).png";
-NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d\\d?\\d?)?(?:@.*|)(?:~.*|).png";
+NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d?\\d?\\d?)?(?:@.*|)(?:~.*|).png";
 static NSMutableArray* searchedIcons;
 
 @interface PSViewController (Protean)
@@ -40,15 +41,19 @@ UIImage *imageFromName(NSString *name)
         imageBundle = [NSBundle bundleWithPath:iconPath];
     
     UIImage *icon = nil;
+
+    /*
     if (!icon && ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/PR_%@@2x.png",iconPath,name]] || [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/PR_%@@3x.png",iconPath,name]]))
         //icon = [UIImage imageNamed:[NSString stringWithFormat:@"PR_%@", name] inBundle:imageBundle];
         icon =  [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/PR_%@.png", iconPath, name]];
+
     if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_%@@2x.png",ONIconPath,name]])
         //icon = [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",name]];
         icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_%@@2x.png", ONIconPath, name]];
     if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_%@@3x.png",ONIconPath,name]])
         //icon = [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",name]];
         icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_%@@3x.png", ONIconPath, name]];
+
     if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@@2x.png",ONIconPath,name]])
         icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@@2x.png", ONIconPath, name]];
     if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@@3x.png",ONIconPath,name]])
@@ -61,6 +66,15 @@ UIImage *imageFromName(NSString *name)
     if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_%@.png",ONIconPath,name]])
         //icon = [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",name]];
         icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_%@.png", ONIconPath, name]];
+    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png",ONIconPath,name]])
+        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png", ONIconPath, name]];
+
+        */
+    icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/PR_%@.png", name]];
+    if (!icon)
+        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/tmp/protean/PR_%@.png", name]];
+    if (!icon)
+        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/%@.png",name]];
     if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png",ONIconPath,name]])
         icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png", ONIconPath, name]];
     
@@ -244,6 +258,14 @@ NSString *associatedQRNameForApp(NSString *app)
     			NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
     			if (![appStatusIcons containsObject:name]) [appStatusIcons addObject:name];
     		}
+
+            for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:vectorIconPath error:nil])
+            {
+                NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
+                if (!match) continue;
+                NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
+                if (![appStatusIcons containsObject:name]) [appStatusIcons addObject:name];
+            }
     		
             regex = [NSRegularExpression regularExpressionWithPattern:@"Black_ON_(.*?)(?:@.*|)(?:~.*|).png"
                                                               options:NSRegularExpressionCaseInsensitive error:nil];
@@ -268,15 +290,25 @@ NSString *associatedQRNameForApp(NSString *app)
     			if (![appStatusIcons containsObject:name])
                     [appStatusIcons addObject:name];
     		}
+
+
             statusIcons = appStatusIcons;
         }
         else
         {
             tncStatusIcons = [[NSMutableArray alloc] init];
-            NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"PR_(.*?)_Count_((Large)?\\d\\d?\\d?)?(?:@.*|)(?:~.*|).png"
+            NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"PR_(.*?)_Count_((Large)?\\d?\\d?\\d?)?(?:@.*|)(?:~.*|).png"
                                                                                    options:NSRegularExpressionCaseInsensitive error:nil];
             
             for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:iconPath error:nil])
+            {
+                NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
+                if (!match) continue;
+                NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
+                if (![tncStatusIcons containsObject:name]) [tncStatusIcons addObject:name];
+            }
+
+            for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:vectorIconPath error:nil])
             {
                 NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
                 if (!match) continue;

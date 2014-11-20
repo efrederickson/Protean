@@ -8,6 +8,7 @@
 #define iPadTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle"
 #define TemplatePath (isPad ? iPadTemplatePath : iPhoneTemplatePath)
 
+NSString* const vectorIconPath = @"/tmp/protean/";
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 NSString* const ONIconPath = @"/System/Library/Frameworks/UIKit.framework";
 static NSMutableDictionary* cachedIcons;
@@ -100,6 +101,14 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
             if (![statusIcons containsObject:name]) [statusIcons addObject:name];
         }
         
+        for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:vectorIconPath error:nil])
+        {
+            NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
+            if (!match) continue;
+            NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
+            if (![statusIcons containsObject:name]) [statusIcons addObject:name];
+        }
+
         regex = [NSRegularExpression regularExpressionWithPattern:@"Black_ON_(.*?)(?:@.*|)(?:~.*|).png"
                                                           options:NSRegularExpressionCaseInsensitive error:nil];
         

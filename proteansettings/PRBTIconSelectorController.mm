@@ -3,6 +3,7 @@
 #import <libactivator/libactivator.h>
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
+NSString* const vectorIconPath = @"/tmp/protean/";
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
@@ -77,6 +78,14 @@ extern UIImage *imageFromName(NSString *name);
 			NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
 			if (![statusIcons containsObject:name]) [statusIcons addObject:name];
 		}
+            
+        for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:vectorIconPath error:nil])
+        {
+            NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
+            if (!match) continue;
+            NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
+            if (![statusIcons containsObject:name]) [statusIcons addObject:name];
+        }
         
         regex = [NSRegularExpression regularExpressionWithPattern:@"Black_ON_(.*?)(?:@.*|)(?:~.*|).png"
                                                           options:NSRegularExpressionCaseInsensitive error:nil];

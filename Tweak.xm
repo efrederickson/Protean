@@ -2,6 +2,8 @@
 #import "Protean.h"
 #import "PRStatusApps.h"
 #import <flipswitch/Flipswitch.h>
+#import "PDFImage.h"
+#import "PDFImageOptions.h"
 
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
@@ -991,6 +993,60 @@ void launchApp(CFNotificationCenterRef center,
         if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
         {
             CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &launchApp, CFSTR("com.efrederickson.protean/launchApp"), NULL, 0);
+        }
+    }
+
+    // Load vectors
+    if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
+    {
+        NSString *vectorPath = @"/Library/Protean/Glyphs";
+        [NSFileManager.defaultManager createDirectoryAtPath:@"/tmp/protean/" withIntermediateDirectories:YES attributes:nil error:nil];
+
+        for (NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/Library/Protean/Images.bundle" error:nil])
+        {
+            NSDictionary *attr = [NSFileManager.defaultManager attributesOfItemAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@",file] error:nil];
+            if (attr && attr[@"fileType"] == NSFileTypeSymbolicLink)
+                [NSFileManager.defaultManager removeItemAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@",file] error:nil];
+        }
+
+        for (NSString *vectorFile in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:vectorPath error:nil])
+        {
+            NSString *filePath = nil;
+            if (UIScreen.mainScreen.scale > 1)
+                filePath = [NSString stringWithFormat:@"/tmp/protean/PR_%@@%.0fx.png",[vectorFile stringByDeletingPathExtension], UIScreen.mainScreen.scale];
+            else
+                filePath = [NSString stringWithFormat:@"/tmp/protean/PR_%@.png",[vectorFile stringByDeletingPathExtension]];
+
+            if ([NSFileManager.defaultManager fileExistsAtPath:filePath])
+            {
+                // link existing image & continue
+                // no need to reconvert it
+                //if (UIScreen.mainScreen.scale > 1)
+                //    [NSFileManager.defaultManager createSymbolicLinkAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/PR_%@@%.0fx.png", [vectorFile stringByDeletingPathExtension], UIScreen.mainScreen.scale] withDestinationPath:filePath error:nil];
+                //else
+                //    [NSFileManager.defaultManager createSymbolicLinkAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/PR_%@.png", [vectorFile stringByDeletingPathExtension]] withDestinationPath:filePath error:nil];
+                continue;
+            }
+
+            PDFImage *vector = [PDFImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@",vectorPath,vectorFile]];
+            if (vector)
+            {
+                CGSize size = vector.size;
+                CGFloat scale = 10 / size.height;
+                size.height *= scale;
+                size.width *= scale;
+
+                PDFImageOptions *vOptions = [PDFImageOptions optionsWithSize:size];
+                vOptions.scale = UIScreen.mainScreen.scale;
+                
+                UIImage *transformedImage = [vector imageWithOptions:vOptions];
+                [UIImagePNGRepresentation(transformedImage) writeToFile:filePath atomically:YES];
+
+                //if (UIScreen.mainScreen.scale > 1)
+                //    [NSFileManager.defaultManager createSymbolicLinkAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/PR_%@@%.0fx.png", [vectorFile stringByDeletingPathExtension], UIScreen.mainScreen.scale] withDestinationPath:filePath error:nil];
+                //else
+                //    [NSFileManager.defaultManager createSymbolicLinkAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/PR_%@.png", [vectorFile stringByDeletingPathExtension]] withDestinationPath:filePath error:nil];
+            }
         }
     }
 }

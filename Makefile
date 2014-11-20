@@ -1,6 +1,6 @@
 ARCHS = armv7 armv7s arm64
 THEOS_PACKAGE_DIR_NAME = debs
-TARGET = iphone:latest
+TARGET = iphone:7.1
 CFLAGS = -fobjc-arc
 
 include $(THEOS)/makefiles/common.mk
@@ -20,7 +20,8 @@ Protean_FILES = Tweak.xm \
 		IntroView/PRPage2ViewController.m \
 		IntroView/PRFinalViewController.m \
 		SignalRSSI.xm \
-		Carrier.xm CustomTime.xm
+		Carrier.xm CustomTime.xm \
+		PDFImage.m PDFImageOptions.m
 
 LDFLAGS = -fobjc-arc
 
