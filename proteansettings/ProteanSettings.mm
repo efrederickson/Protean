@@ -405,13 +405,18 @@
 -(void)setPreferenceValue:(id)value specifier:(PSSpecifier*)specifier
 {
     //[super setPreferenceValue:value specifier:specifier];
+
+    if ([[specifier propertyForKey:@"defaults"] isEqual:@"com.apple.springboard"])
+    {
+        [super setPreferenceValue:value specifier:specifier];
+        return;
+    }
+
     NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/%@.plist",[specifier propertyForKey:@"defaults"]];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
     [dict setObject:value forKey:[specifier propertyForKey:@"key"]];
     [dict writeToFile:plistName atomically:YES];
-
-    //if ([[specifier propertyForKey:@"defaults"] isEqual:@"com.apple.springboard"])
-    //    GSSendAppPreferencesChanged(CFSTR("com.apple.springboard"), CFSTR("SBShowRSSI"));
+    
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), (__bridge CFStringRef)[specifier propertyForKey:@"PostNotification"], nil, nil, YES);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
 }

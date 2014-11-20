@@ -999,7 +999,7 @@ void launchApp(CFNotificationCenterRef center,
     // Load vectors
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
     {
-        NSString *vectorPath = @"/Library/Protean/Glyphs";
+        NSString *vectorPath = @"/Library/Protean/Vectors";
         [NSFileManager.defaultManager createDirectoryAtPath:@"/tmp/protean/" withIntermediateDirectories:YES attributes:nil error:nil];
 
         for (NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/Library/Protean/Images.bundle" error:nil])
@@ -1019,12 +1019,6 @@ void launchApp(CFNotificationCenterRef center,
 
             if ([NSFileManager.defaultManager fileExistsAtPath:filePath])
             {
-                // link existing image & continue
-                // no need to reconvert it
-                //if (UIScreen.mainScreen.scale > 1)
-                //    [NSFileManager.defaultManager createSymbolicLinkAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/PR_%@@%.0fx.png", [vectorFile stringByDeletingPathExtension], UIScreen.mainScreen.scale] withDestinationPath:filePath error:nil];
-                //else
-                //    [NSFileManager.defaultManager createSymbolicLinkAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/PR_%@.png", [vectorFile stringByDeletingPathExtension]] withDestinationPath:filePath error:nil];
                 continue;
             }
 
@@ -1041,11 +1035,6 @@ void launchApp(CFNotificationCenterRef center,
                 
                 UIImage *transformedImage = [vector imageWithOptions:vOptions];
                 [UIImagePNGRepresentation(transformedImage) writeToFile:filePath atomically:YES];
-
-                //if (UIScreen.mainScreen.scale > 1)
-                //    [NSFileManager.defaultManager createSymbolicLinkAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/PR_%@@%.0fx.png", [vectorFile stringByDeletingPathExtension], UIScreen.mainScreen.scale] withDestinationPath:filePath error:nil];
-                //else
-                //    [NSFileManager.defaultManager createSymbolicLinkAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/PR_%@.png", [vectorFile stringByDeletingPathExtension]] withDestinationPath:filePath error:nil];
             }
         }
     }

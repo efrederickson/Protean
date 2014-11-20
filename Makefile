@@ -27,12 +27,11 @@ LDFLAGS = -fobjc-arc
 
 Protean_FRAMEWORKS = UIKit CoreGraphics QuartzCore
 Protean_LIBRARIES = activator flipswitch
-Protean_PRIVATE_FRAMEWORKS = IOKit
 #Protean_PRIVATE_FRAMEWORKS = PowerlogLoggerSupport
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
 after-install::
-	install.exec "killall -9 SpringBoard"
+	install.exec "killall -9 Preferences"
 SUBPROJECTS += proteansettings
 include $(THEOS_MAKE_PATH)/aggregate.mk

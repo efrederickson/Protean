@@ -120,7 +120,7 @@ Julian Weiss: Status bar refresh animation.\n\
 Bensge: UIStatusBar research.\n\
 n00neimp0rtant and tateu: OpenNotifier\n\
 /u/binders_of_women_: Helped out with the site.\n\
-/u/moshed: Created a few amount of glyphs.\n\
+/u/moshed: Created some of the glyphs.\n\
 \n\
 Situ Herrera, Pele Saeng-a-loon Chaengsavang, Icons8, Allan McAvoy, Alessio Atzeni, and Vincent Le Moign: Inspiration and a few icons.\n\n\
 Beta Testers:\n\
@@ -130,6 +130,9 @@ hodhr\n\
 /u/narcolepticinsomniac\n\
 Framboogle\n\
 Djaovx\n\
+\n\
+\n\
+This software uses PDFImage.framework, by Tom Perry. PDFImage.framework is under the \"Unlicense\" license.\n\
 ",
                 },
              ];
