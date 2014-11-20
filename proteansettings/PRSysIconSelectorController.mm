@@ -121,10 +121,8 @@ UIImage *resizeImage(UIImage *icon)
 
         for (NSString* path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:vectorIconPath error:nil])
         {
-            NSLog(@"[Protean] %@", path);
             NSTextCheckingResult* match = [regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
             if (!match) continue;
-            NSLog(@"[Protean] match");
             NSString* name = [path substringWithRange:[match rangeAtIndex:1]];
             if (![statusIcons containsObject:name]) [statusIcons addObject:name];
         }
