@@ -14,7 +14,7 @@
     
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor colorWithRed:210/255.0f green:86/255.0f blue:89/255.0f alpha:1.0f];
     
     self.pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
     
@@ -37,8 +37,8 @@
         if ([subview isKindOfClass:[UIPageControl class]]) {
             UIPageControl *pageControl = (UIPageControl *)subview;
             pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-            pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
-            pageControl.backgroundColor = [UIColor whiteColor];
+            pageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
+            pageControl.backgroundColor = [UIColor clearColor];
         }
     }
 }

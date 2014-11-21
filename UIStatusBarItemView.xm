@@ -92,7 +92,7 @@ UIImage *resizeImage(UIImage *icon)
 
         //NSLog(@"[Protean] %@", [NSString stringWithFormat:@"/tmp/protean/%@.png", patchedName]);
         if (!image)
-            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/tmp/protean/%@.png", patchedName]];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/TranslatedVectors~cache/%@.png", patchedName]];
 
         if (!image)
         {

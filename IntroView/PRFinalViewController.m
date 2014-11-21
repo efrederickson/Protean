@@ -5,8 +5,10 @@
 @end
 
 @interface PRFinalViewController () {
-    UIImageView *closeButton;
-    UILabel *label;
+    UILabel *mainLabel;
+    UILabel *subLabel;
+    UIButton *closeButton;
+    BOOL appeared;
 }
 @end
 
@@ -16,27 +18,37 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.view.backgroundColor = [UIColor colorWithRed:79/255.0f green:176/255.0f blue:136/255.0f alpha:1.0f];
+        appeared = NO;
+        self.view.backgroundColor = [UIColor clearColor];
 
-        closeButton = [[UIImageView alloc] init];
-        closeButton.image = [UIImage imageWithContentsOfFile:@"/Library/Protean/BowTie~large.png"];
-        //closeButton.frame = CGRectMake(20, ([UIScreen mainScreen].bounds.size.height-150)/2, [UIScreen mainScreen].bounds.size.width - 40, 150);
-        closeButton.frame = CGRectMake(110, ([UIScreen mainScreen].bounds.size.height-130)/2, [UIScreen mainScreen].bounds.size.width - (110*2), 40);
-        closeButton.userInteractionEnabled = YES;
+        mainLabel = [[UILabel alloc] init];
+        mainLabel.text = @"Welcome to...";
+        mainLabel.textColor = [UIColor whiteColor];
+        mainLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:40];
+        mainLabel.frame = CGRectMake(0, 10, [UIScreen mainScreen].bounds.size.width, 100);
+        mainLabel.textAlignment = NSTextAlignmentCenter;
+        mainLabel.alpha = 1;
+        [self.view addSubview:mainLabel];
+        
+        subLabel = [[UILabel alloc] init];
+        subLabel.text = @"Your status bar, your way.\n\nAdd Applications, Flipswitches, Bluetooth devices, and more to your status bar.\n\nCustomize organization, visibility, and layout.\n\nCustomize the battery percentage and carrier!\nAnd much more.";
+        subLabel.textColor = [UIColor whiteColor];
+        subLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:20];
+        subLabel.frame = CGRectMake(0, 55, [UIScreen mainScreen].bounds.size.width, 400);
+        subLabel.textAlignment = NSTextAlignmentCenter;
+        subLabel.alpha = 0;
+        subLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        subLabel.numberOfLines = 12;
+        [self.view addSubview:subLabel];
+        
+        closeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [closeButton setTitle:@"Get started!" forState:UIControlStateNormal];
+        closeButton.tintColor = [UIColor whiteColor];
+        closeButton.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width-200)/2, 450, 200, 20);
+        [closeButton addTarget:self action:@selector(closeMe) forControlEvents:UIControlEventTouchUpInside];
+        closeButton.alpha = 0;
+        closeButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:25];
         [self.view addSubview:closeButton];
-
-        label = [[UILabel alloc] init];
-        label.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:40];
-        label.text = @"Protean";
-        label.textColor = [UIColor whiteColor];
-        label.frame = CGRectMake(100, ([UIScreen mainScreen].bounds.size.height-100)/2, [UIScreen mainScreen].bounds.size.width - (80*2), 150);
-        [self.view addSubview:label];
-
-        UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapFrom:)];
-        [closeButton addGestureRecognizer:tapGestureRecognizer];
-
-        // Auto-close after 3 seconds
-        [self performSelector:@selector(closeMe) withObject:nil afterDelay:3];
     }
     return self;
 }
@@ -47,20 +59,31 @@
     [sb PR_HideIntro];
 }
 
-- (void) handleTapFrom: (UITapGestureRecognizer *)recognizer
-{
-    CABasicAnimation *transformAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
-    transformAnimation.toValue=[NSValue valueWithCATransform3D:CATransform3DMakeScale(1.4, 1.4, 1)];
-    //transformAnimation.fromValue=[NSValue valueWithCATransform3D:CATransform3DMakeScale(0.8, 0.8, 1)];
-    transformAnimation.duration = 0.4;
-    transformAnimation.autoreverses = YES;
-    transformAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-
-    [closeButton.layer addAnimation:transformAnimation forKey:@"kBounce"];
-}
-
 -(void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+
+    if (appeared)
+        return;
+    appeared = YES;
+
+    [UIView animateWithDuration:.4 delay:0 options:UIViewAnimationOptionCurveLinear animations: ^{
+        mainLabel.alpha = .5;
+    } completion:^(BOOL finished) {
+        mainLabel.text = @"Protean";
+        mainLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:75];
+        [UIView animateWithDuration:0.4 animations:^{
+            mainLabel.alpha = 1;
+        }];
+    }];
+
+    [UIView animateWithDuration:.4 delay:.6 options:UIViewAnimationOptionCurveLinear animations: ^{
+        subLabel.alpha = 1;
+    } completion:nil];
+     
+    [UIView animateWithDuration:.4 delay:.75 options:UIViewAnimationOptionCurveLinear animations: ^{
+            closeButton.alpha = 1;
+    } completion:nil];
+    
 }
 @end

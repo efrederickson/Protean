@@ -27,7 +27,7 @@ UIWindow *window;
     [Protean reloadSettings];
 
     window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    UIViewController *viewController = [[/*PRViewController*/PRFinalViewController alloc] init];
+    UIViewController *viewController = [[PRViewController alloc] init];
     window.rootViewController = viewController;
 
     [window makeKeyAndVisible];

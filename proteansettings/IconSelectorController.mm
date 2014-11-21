@@ -5,7 +5,7 @@
 
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 NSString* const ONIconPath = @"/System/Library/Frameworks/UIKit.framework";
-NSString* const vectorIconPath = @"/tmp/protean/";
+NSString* const vectorIconPath = @"/Library/Protean/TranslatedVectors~cache/";
 static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
@@ -72,9 +72,9 @@ UIImage *imageFromName(NSString *name)
         */
     icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/PR_%@.png", name]];
     if (!icon)
-        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/tmp/protean/PR_%@.png", name]];
+        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/PR_%@.png",vectorIconPath,name]];
     if (!icon)
-        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/%@.png",name]];
+        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/Black_ON_%@.png",name]];
     if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png",ONIconPath,name]])
         icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png", ONIconPath, name]];
     

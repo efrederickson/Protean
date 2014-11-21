@@ -1000,25 +1000,25 @@ void launchApp(CFNotificationCenterRef center,
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
     {
         NSString *vectorPath = @"/Library/Protean/Vectors";
-        [NSFileManager.defaultManager createDirectoryAtPath:@"/tmp/protean/" withIntermediateDirectories:YES attributes:nil error:nil];
+        NSString *transformedPath = @"/Library/Protean/TranslatedVectors~cache/"; // WAS: /tmp/protean
+        [NSFileManager.defaultManager createDirectoryAtPath:transformedPath withIntermediateDirectories:YES attributes:nil error:nil];
 
-        for (NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/Library/Protean/Images.bundle" error:nil])
-        {
-            NSDictionary *attr = [NSFileManager.defaultManager attributesOfItemAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@",file] error:nil];
-            if (attr && attr[@"fileType"] == NSFileTypeSymbolicLink)
-                [NSFileManager.defaultManager removeItemAtPath:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@",file] error:nil];
-        }
+        NSMutableArray *vectorCache = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:transformedPath error:nil] mutableCopy]; // for purging old images
 
         for (NSString *vectorFile in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:vectorPath error:nil])
         {
             NSString *filePath = nil;
             if (UIScreen.mainScreen.scale > 1)
-                filePath = [NSString stringWithFormat:@"/tmp/protean/PR_%@@%.0fx.png",[vectorFile stringByDeletingPathExtension], UIScreen.mainScreen.scale];
+                filePath = [NSString stringWithFormat:@"%@/PR_%@@%.0fx.png",transformedPath,[vectorFile stringByDeletingPathExtension], UIScreen.mainScreen.scale];
             else
-                filePath = [NSString stringWithFormat:@"/tmp/protean/PR_%@.png",[vectorFile stringByDeletingPathExtension]];
+                filePath = [NSString stringWithFormat:@"%@/PR_%@.png",transformedPath,[vectorFile stringByDeletingPathExtension]];
 
             if ([NSFileManager.defaultManager fileExistsAtPath:filePath])
             {
+	            if (UIScreen.mainScreen.scale > 1)
+	                [vectorCache removeObject:[NSString stringWithFormat:@"PR_%@@%.0fx.png",[vectorFile stringByDeletingPathExtension], UIScreen.mainScreen.scale]];
+	            else
+	                [vectorCache removeObject:[NSString stringWithFormat:@"PR_%@.png",[vectorFile stringByDeletingPathExtension]]];
                 continue;
             }
 
@@ -1036,6 +1036,11 @@ void launchApp(CFNotificationCenterRef center,
                 UIImage *transformedImage = [vector imageWithOptions:vOptions];
                 [UIImagePNGRepresentation(transformedImage) writeToFile:filePath atomically:YES];
             }
+        }
+
+        for (NSString *artifact in vectorCache)
+        {
+        	[NSFileManager.defaultManager removeItemAtPath:[NSString stringWithFormat:@"%@/%@",transformedPath,artifact] error:nil];
         }
     }
 }

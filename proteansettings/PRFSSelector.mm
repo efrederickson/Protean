@@ -8,7 +8,7 @@
 #define iPadTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle"
 #define TemplatePath (isPad ? iPadTemplatePath : iPhoneTemplatePath)
 
-NSString* const vectorIconPath = @"/tmp/protean/";
+NSString* const vectorIconPath = @"/Library/Protean/TranslatedVectors~cache/";
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 NSString* const ONIconPath = @"/System/Library/Frameworks/UIKit.framework";
 static NSMutableDictionary* cachedIcons;

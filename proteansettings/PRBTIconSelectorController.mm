@@ -3,7 +3,7 @@
 #import <libactivator/libactivator.h>
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
-NSString* const vectorIconPath = @"/tmp/protean/";
+NSString* const vectorIconPath = @"/Library/Protean/TranslatedVectors~cache/";
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;

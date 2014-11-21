@@ -16,7 +16,7 @@
     if (self) {
         mainLabel = [[UILabel alloc] init];
         mainLabel.text = @"Add Notifications";
-        mainLabel.textColor = [UIColor darkGrayColor];
+        mainLabel.textColor = [UIColor whiteColor];
         mainLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:40];
         mainLabel.frame = CGRectMake(0, 10, [UIScreen mainScreen].bounds.size.width, 100);
         mainLabel.textAlignment = NSTextAlignmentCenter;
@@ -25,7 +25,7 @@
         
         subLabel1 = [[UILabel alloc] init];
         subLabel1.text = @"to your status bar";
-        subLabel1.textColor = [UIColor darkGrayColor];
+        subLabel1.textColor = [UIColor whiteColor];
         subLabel1.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:25];
         subLabel1.frame = CGRectMake(0, 40, [UIScreen mainScreen].bounds.size.width, 100);
         subLabel1.textAlignment = NSTextAlignmentCenter;
@@ -34,7 +34,7 @@
         
         subLabel = [[UILabel alloc] init];
         subLabel.text = @"As well as Flipswitches,\nBluetooth devices,\nand more.";
-        subLabel.textColor = [UIColor darkGrayColor];
+        subLabel.textColor = [UIColor whiteColor];
         subLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:25];
         subLabel.frame = CGRectMake(0, 110, [UIScreen mainScreen].bounds.size.width, 100);
         subLabel.textAlignment = NSTextAlignmentCenter;
