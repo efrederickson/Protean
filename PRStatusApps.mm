@@ -9,6 +9,7 @@ NSMutableDictionary *cachedBadgeCounts = [NSMutableDictionary dictionary];
 NSMutableDictionary *ncData = [NSMutableDictionary dictionary];
 NSMutableArray *showWhenOff = [NSMutableArray array];
 NSMutableArray *removeWhenOff = [NSMutableArray array];
+NSMutableArray *spacers = [NSMutableArray array];
 BOOL isScreenOff = NO;
 int totalBadgeCount = 0;
 
@@ -22,6 +23,14 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
 }
 
 @implementation PRStatusApps
++(StatusBarAlignment) getDefaultAlignment
+{
+    id right_ = [Protean getOrLoadSettings][@"defaultAlignToRight"];
+    if (!right_ || [right_ boolValue] == NO)
+        return StatusBarAlignmentLeft;
+    else
+        return StatusBarAlignmentRight;
+}
 +(StatusBarAlignment) getDefaultAlignment:(NSString*)ident
 {
     id right_ = [Protean getOrLoadSettings][@"defaultAlignToRight"];
@@ -144,6 +153,25 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
     item.imageName = [Protean imageNameForIdentifier:identifier];
 }
 
++(void) updateSpacers
+{
+    id num_ = [Protean getOrLoadSettings][@"numSpacers"];
+    int num = num_ ? [num_ intValue] : 0;
+    if (spacers.count != num)
+        [spacers removeAllObjects];
+    for (int i = 0; i < num; i++)
+    {
+        BOOL exists = i < [spacers count] ? YES : NO;
+        LSStatusBarItem *spacer = exists ? [spacers objectAtIndex:i] : 
+            [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"spacer-%d",i] alignment:[PRStatusApps getDefaultAlignment]];
+        spacer.imageName = @"_spacer_";
+        spacer.visible = YES;
+        if (spacer.customViewClass == nil)
+            [spacer setCustomViewClass:@"UIStatusBarSpacerItemView"];
+        [spacers addObject:spacer];
+    }
+}
+
 +(void) reloadAllImages
 {
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
@@ -156,6 +184,8 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
             [PRStatusApps hideIconFor:key];
         return;
     }
+
+    [PRStatusApps updateSpacers];
     
     // Status Apps
     totalBadgeCount = 0;

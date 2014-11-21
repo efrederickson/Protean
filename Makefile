@@ -21,7 +21,8 @@ Protean_FILES = Tweak.xm \
 		IntroView/PRFinalViewController.m \
 		SignalRSSI.xm \
 		Carrier.xm CustomTime.xm \
-		PDFImage.m PDFImageOptions.m
+		PDFImage.m PDFImageOptions.m \
+		UIStatusBarSpacerItemView.xm
 
 LDFLAGS = -fobjc-arc
 
@@ -32,6 +33,6 @@ Protean_LIBRARIES = activator flipswitch
 include $(THEOS_MAKE_PATH)/tweak.mk
 
 after-install::
-	install.exec "killall -9 SpringBoard"
+	install.exec "killall -9 Preferences"
 SUBPROJECTS += proteansettings
 include $(THEOS_MAKE_PATH)/aggregate.mk

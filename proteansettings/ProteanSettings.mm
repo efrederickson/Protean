@@ -5,6 +5,8 @@
 #import "IconSelectorController.h"
 #import <MessageUI/MFMailComposeViewController.h>
 #import <notify.h>
+#import "UIDiscreteSlider.h"
+#import "../Protean.h"
 
 @interface PSListController (SettingsKit)
 -(UIView*)view;
@@ -31,6 +33,52 @@
 -(void) setTitle:(NSString*)title;
 @end
 @interface PRDocumentationListController : PSViewController <UIWebViewDelegate>
+@end
+
+@interface PSSliderTableCell : PSControlTableCell
+
+@end
+
+@interface PRDiscreteSliderCell : PSSliderTableCell
+@end
+
+@implementation PRDiscreteSliderCell
+- (id)initWithStyle:(UITableViewCellStyle)arg1 reuseIdentifier:(id)arg2 specifier:(id)arg3 
+{
+    self = [super initWithStyle:arg1 reuseIdentifier:arg2 specifier:arg3];
+    
+    if (self) 
+    {     
+        UIDiscreteSlider *actual = [[UIDiscreteSlider alloc] initWithFrame:self.control.frame];
+        [actual addTarget:self action:@selector(saveValue) forControlEvents:UIControlEventTouchUpInside];
+        actual.increment = [([self.specifier propertyForKey:@"increment"] ?: @1) floatValue];
+
+        [self setControl:actual];
+    }
+
+    return self;
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+
+    NSNumber *value = [objc_getClass("Protean") getOrLoadSettings][[self.specifier propertyForKey:@"key"]];
+    UIDiscreteSlider *slider = (UIDiscreteSlider*)self.control;
+    slider.value = value ? [value floatValue] : 0;
+}
+
+- (void)saveValue
+{
+    UIDiscreteSlider *slider = (UIDiscreteSlider*)self.control;
+    NSNumber *value = @(slider.value);
+
+    NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/%@.plist",[self.specifier propertyForKey:@"defaults"]];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
+    [dict setObject:value forKey:[self.specifier propertyForKey:@"key"]];
+    [dict writeToFile:plistName atomically:YES];
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), (__bridge CFStringRef)[self.specifier propertyForKey:@"PostNotification"], nil, nil, YES);
+}
 @end
 
 @implementation ProteanSettingsListController
@@ -239,12 +287,32 @@
                  },
                 @{
                  @"cell": @"PSSliderCell",
+                 @"cellClass": @"PRDiscreteSliderCell",
                  @"default": defaultPadding,
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"padding",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"min": @0,
+                 @"max": @10,
+                 @"increment": @0.5,
+                 @"showValue": @YES,
+                 },
+
+                @{ 
+                 @"cell": @"PSGroupCell",
+                 @"label": @"Number of Spacers",
+                 @"footerText": @"Change the number of spacers available."
+                 },
+                @{
+                 @"cell": @"PSSliderCell",
+                 @"cellClass": @"PRDiscreteSliderCell",
+                 @"default": @0,
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"numSpacers",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 @"min": @0,
                  @"max": @15,
+                 @"increment": @1,
                  @"showValue": @YES,
                  },
 

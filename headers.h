@@ -17,6 +17,11 @@
 #import <SpringBoard/SBApplication.h>
 #import <QuartzCore/QuartzCore.h>
 
+@interface LSStatusBarItem (ugh_again_this_isnt_even_a_private_api)
+- (void) setCustomViewClass: (NSString*) customViewClass;
+- (NSString*) customViewClass;
+@end
+
 @interface SBLockStateAggregator
 +(id)sharedInstance;
 -(void)_updateLockState;

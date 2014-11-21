@@ -1,5 +1,5 @@
 ARCHS = armv7 armv7s arm64
-TARGET = iPhone:clang:7.1:latest
+TARGET = iphone:7.1
 CFLAGS = -fobjc-arc
 
 include $(THEOS)/makefiles/common.mk
@@ -11,7 +11,7 @@ ProteanSettings_FILES = ProteanSettings.mm \
   IconSelectorController.mm PRFlipswitchController.mm \
   PRFSSelector.mm PRBluetoothController.mm PRSystemIconsController.mm \
   PRSysIconSelectorController.mm PRBTIconSelectorController.mm \
-  PRMakersController.mm
+  PRMakersController.mm UIDiscreteSlider.m
 
 ProteanSettings_INSTALL_PATH = /Library/PreferenceBundles
 ProteanSettings_FRAMEWORKS = UIKit MessageUI Social QuartzCore CoreGraphics CoreBluetooth GraphicsServices

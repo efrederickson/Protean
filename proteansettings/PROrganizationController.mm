@@ -79,6 +79,11 @@ NSString *nameForDescription(NSString *desc)
         
         if ([identifier isEqual:@"TOTAL_NOTIFICATION_COUNT"])
             return @"Total Notification Count";
+
+        if ([identifier hasPrefix:@"spacer-"])
+        {
+            return [NSString stringWithFormat:@"Spacer %@",[identifier substringFromIndex:7]];
+        }
         
         if ([[FSSwitchPanel sharedPanel].switchIdentifiers containsObject:identifier])
         {
@@ -89,6 +94,11 @@ NSString *nameForDescription(NSString *desc)
         ALApplicationList *al = [ALApplicationList sharedApplicationList];
         nameCache[desc] = [al.applications objectForKey:identifier] ?: identifier;
         return nameCache[desc];
+    }
+
+    if ([desc hasPrefix:@"spacer-"])
+    {
+        return [NSString stringWithFormat:@"Spacer %@",[desc substringFromIndex:7]];
     }
     
     if ([desc hasPrefix:@"opennotifier."])
