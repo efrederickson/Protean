@@ -56,7 +56,7 @@ NSString *nameForDescription(NSString *desc)
                 @"BatteryPercent": @"Battery Percent",
                 @"BluetoothBattery": @"Bluetooth Battery",
                 @"NotCharging": @"Not Charging (iPad)",
-                @"Activity": @"Loading Indicator",
+                @"Activity": @"Loading/Sync Indicator",
                 @"com.rabih96.macvolume": @"Volume Status",
                 @"TOTAL_NOTIFICATION_COUNT": @"Total Notification Count",
                 @"CallForward": @"Call Forwarding",
@@ -98,7 +98,8 @@ NSString *nameForDescription(NSString *desc)
 
     if ([desc hasPrefix:@"spacer-"])
     {
-        return [NSString stringWithFormat:@"Spacer %@",[desc substringFromIndex:7]];
+        NSString *num = [desc substringFromIndex:7];
+        return [NSString stringWithFormat:@"Spacer %d",[num intValue] + 1];
     }
     
     if ([desc hasPrefix:@"opennotifier."])

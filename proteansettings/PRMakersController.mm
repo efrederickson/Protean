@@ -130,7 +130,7 @@ hellomisterjedi\n\
 hodhr\n\
 /u/narcolepticinsomniac\n\
 Framboogle\n\
-Djaovx\n\\n\
+Djaovx\n\n\
 And thanks to all who tested \"open\" beta versions and reported feedback. \n\
 Also, thanks to those who contributed ideas, feature enhancements, bug reports, and the like. \n\
 \n\

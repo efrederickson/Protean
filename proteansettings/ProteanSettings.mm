@@ -41,7 +41,6 @@
 
 @interface PRDiscreteSliderCell : PSSliderTableCell
 @end
-
 @implementation PRDiscreteSliderCell
 - (id)initWithStyle:(UITableViewCellStyle)arg1 reuseIdentifier:(id)arg2 specifier:(id)arg3 
 {
@@ -65,7 +64,7 @@
 
     NSNumber *value = [objc_getClass("Protean") getOrLoadSettings][[self.specifier propertyForKey:@"key"]];
     UIDiscreteSlider *slider = (UIDiscreteSlider*)self.control;
-    slider.value = value ? [value floatValue] : 0;
+    slider.value = value ? [value floatValue] : [[self.specifier propertyForKey:@"default"] floatValue];
 }
 
 - (void)saveValue
@@ -75,9 +74,49 @@
 
     NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/%@.plist",[self.specifier propertyForKey:@"defaults"]];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
-    [dict setObject:value forKey:[self.specifier propertyForKey:@"key"]];
+    [dict setObject:value forKey:@"numSpacers"];
     [dict writeToFile:plistName atomically:YES];
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), (__bridge CFStringRef)[self.specifier propertyForKey:@"PostNotification"], nil, nil, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+}
+@end
+@interface PRDiscreteSliderCell2 : PSSliderTableCell
+@end
+@implementation PRDiscreteSliderCell2
+- (id)initWithStyle:(UITableViewCellStyle)arg1 reuseIdentifier:(id)arg2 specifier:(id)arg3 
+{
+    self = [super initWithStyle:arg1 reuseIdentifier:arg2 specifier:arg3];
+    
+    if (self) 
+    {     
+        UIDiscreteSlider *actual = [[UIDiscreteSlider alloc] initWithFrame:self.control.frame];
+        [actual addTarget:self action:@selector(saveValue) forControlEvents:UIControlEventTouchUpInside];
+        actual.increment = 0.5;
+
+        [self setControl:actual];
+    }
+
+    return self;
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+
+    NSNumber *value = [objc_getClass("Protean") getOrLoadSettings][[self.specifier propertyForKey:@"key"]];
+    UIDiscreteSlider *slider = (UIDiscreteSlider*)self.control;
+    slider.value = value ? [value floatValue] : [[self.specifier propertyForKey:@"default"] floatValue];
+}
+
+- (void)saveValue
+{
+    UIDiscreteSlider *slider = (UIDiscreteSlider*)self.control;
+    NSNumber *value = @(slider.value);
+
+    NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/%@.plist",[self.specifier propertyForKey:@"defaults"]];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
+    [dict setObject:value forKey:@"padding"];
+    [dict writeToFile:plistName atomically:YES];
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
 }
 @end
 
@@ -123,7 +162,7 @@
                  },
 
              @{ @"cell": @"PSGroupCell",
-                //@"footerText": @"Items do not show up until they have appeared in your status bar. Libstatusbar items cannot be in the center, and a respring will be needed to apply changes to them."
+                @"footerText": @"Items do not show up until they have appeared in your status bar.",// Libstatusbar items cannot be in the center, and a respring will be needed to apply changes to them."
                 @"footerText": @"Modify the arrangement of status bar items.",
                 },
              @{
@@ -279,7 +318,7 @@
     BOOL supportsExtendedBattery = objc_getClass("PLBatteryPropertiesEntry") != nil; /* This would happen after BatteryPercent maybe-loads PowerlogLoggerSupport.framework on process initialization. */
     NSNumber *defaultPadding = ((NSDictionary*)[objc_getClass("Protean") performSelector:@selector(getOrLoadSettings)])[@"defaultPadding"] ?: @6;
 
-             return @[
+    return @[
                 @{ 
                  @"cell": @"PSGroupCell",
                  @"label": @"Item Spacing",
@@ -287,7 +326,7 @@
                  },
                 @{
                  @"cell": @"PSSliderCell",
-                 @"cellClass": @"PRDiscreteSliderCell",
+                 @"cellClass": @"PRDiscreteSliderCell2",
                  @"default": defaultPadding,
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"padding",
@@ -448,6 +487,13 @@
                  },
 
             @{ },
+
+             @{
+                 @"cell": @"PSButtonCell",
+                 @"action": @"resetData",
+                 @"label": @"Reset All Settings & Respring",
+                 @"icon": @"respring.png"
+                 },
              @{
                  @"cell": @"PSButtonCell",
                  @"action": @"respring",
@@ -456,6 +502,12 @@
                  }
 
              ]; 
+}
+
+-(void) resetData
+{
+	[NSFileManager.defaultManager removeItemAtPath:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist" error:nil];
+	[self respring];
 }
 
 -(void)respring

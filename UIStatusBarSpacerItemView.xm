@@ -4,7 +4,7 @@
 -(id) imageWithText:(id)arg;
 @end
 
-%subclass UIStatusBarSpacerItemView : UIStatusBarItemView
+%subclass UIStatusBarSpacerItemView : UIStatusBarCustomItemView
 -(id) contentsImage
 {
 	return [((UIStatusBarItemView*)self) imageWithText:@"|"];

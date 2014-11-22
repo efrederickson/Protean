@@ -161,13 +161,20 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
         [spacers removeAllObjects];
     for (int i = 0; i < num; i++)
     {
-        BOOL exists = i < [spacers count] ? YES : NO;
-        LSStatusBarItem *spacer = exists ? [spacers objectAtIndex:i] : 
-            [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"spacer-%d",i] alignment:[PRStatusApps getDefaultAlignment]];
+        if (i < spacers.count)
+            continue;
+        LSStatusBarItem *spacer = [[objc_getClass("LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithFormat:@"spacer-%d",i] alignment:[PRStatusApps getDefaultAlignment]];
         spacer.imageName = @"_spacer_";
         spacer.visible = YES;
         if (spacer.customViewClass == nil)
             [spacer setCustomViewClass:@"UIStatusBarSpacerItemView"];
+
+        /* What in the world, libstatusbar */
+        NSMutableDictionary *d = [spacer.properties mutableCopy];
+        d[@"visible"] = @YES;
+        [spacer _setProperties:d];
+        [spacer update];
+
         [spacers addObject:spacer];
     }
 }

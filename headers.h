@@ -20,6 +20,9 @@
 @interface LSStatusBarItem (ugh_again_this_isnt_even_a_private_api)
 - (void) setCustomViewClass: (NSString*) customViewClass;
 - (NSString*) customViewClass;
+- (void) update;
+- (void) _setProperties: (NSDictionary*) dict;
+- (NSDictionary*) properties;
 @end
 
 @interface SBLockStateAggregator
