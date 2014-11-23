@@ -6,7 +6,7 @@
 #import "Protean.h"
 
 __strong NSMutableDictionary *cache = [NSMutableDictionary dictionary];
-
+/*
 UIImage *resizeImage(UIImage *icon)
 {
 	CGFloat maxWidth = 13.0f;
@@ -32,7 +32,7 @@ UIImage *resizeImage(UIImage *icon)
     
 	return icon;
 }
-
+*/
 // This is... bad... 
 // But, it works. Which is what i need. 
 // TODO: better hack
@@ -68,6 +68,16 @@ UIImage *resizeImage(UIImage *icon)
         if ([patchedName hasPrefix:@"PR_"])
             patchedName2 = [patchedName substringFromIndex:3];
 
+        NSString *fsName = [NSString stringWithFormat:@"/Library/Protean/protean-fscache/%@-%@.png",patchedName2,
+            [[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2] == FSSwitchStateOn ? @"on" : @"off"];
+        UIImage *image = [UIImage imageWithContentsOfFile:fsName];
+        if (image)
+        {
+            cache[fsName] = image;
+            return image;
+        }
+
+/*
         static __strong NSArray *switchIdentifiers;
         if (!switchIdentifiers) 
             switchIdentifiers = [[FSSwitchPanel sharedPanel].switchIdentifiers copy];
@@ -81,14 +91,17 @@ UIImage *resizeImage(UIImage *icon)
             static NSString *TemplatePath = isPad ? @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle" : @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle";
             static __strong NSBundle *templateBundle = nil;
             if (!templateBundle) templateBundle = [NSBundle bundleWithPath:TemplatePath];
+
             UIImage *img = [[FSSwitchPanel sharedPanel] 
             	imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2] 
             	controlState:UIControlStateNormal forSwitchIdentifier:patchedName2 usingTemplate:templateBundle];
+
             cache[name] = resizeImage(img);
             return cache[name];
         }
-
-        UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@.png", patchedName]];
+*/
+        if (!image)
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@.png", patchedName]];
 
         //NSLog(@"[Protean] %@", [NSString stringWithFormat:@"/tmp/protean/%@.png", patchedName]);
         if (!image)

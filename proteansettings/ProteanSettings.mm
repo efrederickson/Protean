@@ -455,6 +455,14 @@
                  @"icon": @"carriername.png",
                  },
              @{
+                 @"cell": @"PSSwitchCell",
+                 @"default": @NO,
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"serviceIsTimeString",
+                 @"label": @"Use carrier as time format",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 },
+             @{
                  @"cell": @"PSEditTextCell",
                  @"default": @"h:mm a",
                  @"defaults": @"com.efrederickson.protean.settings",

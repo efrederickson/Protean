@@ -65,6 +65,12 @@ struct StatusBarData {
         serviceStr = @"";
     else if ([customService isEqual:@""])
         ;
+    else if ([[Protean getOrLoadSettings][@"serviceIsTimeString"] boolValue])
+    {
+    	NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    	[formatter setDateFormat:customService];
+    	serviceStr = [formatter stringFromDate:[NSDate date]];
+    }
     else
         serviceStr = customService;
 

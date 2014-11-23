@@ -67,16 +67,83 @@
     }
     else
         [PRStatusApps hideIconFor:switchIdentifier];
-
-    %orig;
 }
 %end
 %end
+
+UIImage *resizeImage(UIImage *icon)
+{
+    CGSize size = icon.size;
+    CGFloat scale = (10) / size.height;
+    size.height *= scale;
+    size.width *= scale;
+
+    UIGraphicsBeginImageContextWithOptions(size, false, [[UIScreen mainScreen] scale]);
+    [icon drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    icon = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return icon;
+
+/*
+    CGFloat maxWidth = 10 * UIScreen.mainScreen.scale;
+    CGFloat maxHeight = 10 * UIScreen.mainScreen.scale;
+    
+    CGSize size = CGSizeMake(maxWidth, maxHeight);
+    UIGraphicsBeginImageContextWithOptions(size, false, [[UIScreen mainScreen] scale]);
+    
+    // Resize image to status bar size and center it
+    // make sure the icon fits within the bounds
+    CGFloat width = MIN(icon.size.width, maxWidth);
+    CGFloat height = MIN(icon.size.height, maxHeight);
+    
+    CGFloat left = MAX((maxWidth-width)/2, 0);
+    left = left > (maxWidth/2) ? maxWidth-(maxWidth/2) : left;
+    
+    CGFloat top = MAX((maxHeight-height)/2, 0);
+    top = top > (maxHeight/2) ? maxHeight-(maxHeight/2) : top;
+    
+    [icon drawInRect:CGRectMake(left, top, width, height)];
+    icon = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return icon;*/
+}
 
 %ctor
 {
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
     {
         %init(SpringBoard);
+
+        [NSFileManager.defaultManager createDirectoryAtPath:@"/Library/Protean/protean-fscache" withIntermediateDirectories:YES attributes:nil error:nil];
+        for (NSString *switchIdentifier in FSSwitchPanel.sharedPanel.switchIdentifiers)
+        {
+            BOOL isPad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
+            NSString *TemplatePath = isPad ? @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle" : @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle";
+            NSBundle *templateBundle = nil;
+            if (!templateBundle) 
+                templateBundle = [NSBundle bundleWithPath:TemplatePath];
+
+            UIImage *img = [[FSSwitchPanel sharedPanel] 
+                imageOfSwitchState:FSSwitchStateOff
+                controlState:UIControlStateNormal forSwitchIdentifier:switchIdentifier usingTemplate:templateBundle];
+            NSString *filePath = nil;
+            if (UIScreen.mainScreen.scale > 1)
+                filePath = [NSString stringWithFormat:@"/Library/Protean/protean-fscache/%@-off@%.0fx.png",switchIdentifier, UIScreen.mainScreen.scale];
+            else
+                filePath = [NSString stringWithFormat:@"/Library/Protean/protean-fscache/%@-off.png",switchIdentifier];
+
+            [UIImagePNGRepresentation(img) writeToFile:filePath atomically:YES];
+
+            img = [[FSSwitchPanel sharedPanel] 
+                imageOfSwitchState:FSSwitchStateOn
+                controlState:UIControlStateNormal forSwitchIdentifier:switchIdentifier usingTemplate:templateBundle];
+            if (UIScreen.mainScreen.scale > 1)
+                filePath = [NSString stringWithFormat:@"/Library/Protean/protean-fscache/%@-on@%.0fx.png",switchIdentifier, UIScreen.mainScreen.scale];
+            else
+                filePath = [NSString stringWithFormat:@"/Library/Protean/protean-fscache/%@-on.png",switchIdentifier];
+
+            [UIImagePNGRepresentation(img) writeToFile:filePath atomically:YES];
+        }
     }
 }

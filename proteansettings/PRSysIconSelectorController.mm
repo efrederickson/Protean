@@ -1,6 +1,8 @@
 #import "PRSysIconSelectorController.h"
 #import <AppList/AppList.h>
 #import <libactivator/libactivator.h>
+#import <SettingsKit/SKSpecifierParser.h>
+#import <Preferences/PSTableCell.h>
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
 NSString* const vectorIconPath = @"/Library/Protean/TranslatedVectors~cache/";
@@ -11,6 +13,24 @@ static NSMutableArray* statusIcons;
 NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d\\d?)?(?:@.*|)(?:~.*|).png";
 static NSMutableArray *searchedIcons;
 NSArray *canHaveImages = @[ @1, @2, @11, @12, @13, @16, @17, @19, @20, @21, @22];
+NSArray *canSupportExtendedOptions = @[ @0, // Custom time, show on LS  - 3 options
+                                        @3, // Signal RSSI, replace with number (e.g. 3) - 2 option
+                                        @5, // Wifi/Data RSSI           - 1 option
+                                        @8, // Battery Percent          - 1 option (style)
+                                        @4, // Custom Carrier and related options - 2 options
+                                        ];
+
+NSDictionary *extendedOptionsCounts = @{
+    @0: @3,
+    @3: @2,
+    @5: @1,
+    @8: @1,
+    @4: @2,  
+};
+
+@interface PSTableCell (Protean)
++(PSTableCell *)switchCellWithFrame:(CGRect)frame specifier:(PSSpecifier *)specifier;
+@end
 
 @interface PSViewController (Protean)
 -(void) viewDidLoad;
@@ -27,6 +47,7 @@ NSArray *canHaveImages = @[ @1, @2, @11, @12, @13, @16, @17, @19, @20, @21, @22]
     NSString *checkedIcon;
     int tapAction;
     int _raw_id;
+    BOOL supportsExtendedOptions;
 }
 @end
 
@@ -76,6 +97,7 @@ UIImage *resizeImage(UIImage *icon)
 	_identifier = identifier;
     _id = [NSString stringWithFormat:@"%d",id_]; // amazing names, right?
     _raw_id = id_;
+    supportsExtendedOptions = [canSupportExtendedOptions containsObject:[NSNumber numberWithInt:_raw_id]];
 	return [self init];
 }
 
@@ -203,8 +225,8 @@ UIImage *resizeImage(UIImage *icon)
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     if ([canHaveImages containsObject:[NSNumber numberWithInt:_raw_id]])
-        return isSearching ? 1 : 2;
-    return 1;
+        return isSearching ? 1 : (supportsExtendedOptions ? 3 : 2);
+    return supportsExtendedOptions ? 2 : 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -214,6 +236,8 @@ UIImage *resizeImage(UIImage *icon)
 
     if (section == 0)
         return 2;
+    else if (section == 1 && supportsExtendedOptions)
+        return [((NSNumber*)extendedOptionsCounts[[NSNumber numberWithInt:_raw_id]]) intValue];
     else
         return statusIcons.count + 1;
 }
@@ -225,6 +249,8 @@ UIImage *resizeImage(UIImage *icon)
 
     if (section == 0)
         return @"Tap Action";
+    else if (section == 1 && supportsExtendedOptions)
+        return @"Other Options";
     else
         return @"Icons";
 }
@@ -247,6 +273,46 @@ UIImage *resizeImage(UIImage *icon)
         
         cell.textLabel.text = alignmentText;
         cell.accessoryType = indexPath.row == tapAction ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+    }
+    else if (indexPath.section == 1 && supportsExtendedOptions)
+    {
+        // Extended Options for this cell
+        cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+        if (cell == nil)
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+        cell.textLabel.text = @"TODO";
+
+        if (_raw_id == 3) // Signal Strength :: RSSI, show number
+        {
+            // List view?
+            /*@{
+                 @"cell": @"PSSwitchCell",
+                 @"default": @NO,
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"showSignalRSSI",
+                 @"label": @"Show Signal RSSI",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 @"icon": @"signalrssi.png"
+                 },*/
+            cell.textLabel.text = @"Show RSSI";
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+            cell.accessoryView = switchView;
+            BOOL enabled = [[NSDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist"][@"showSignalRSSI"] boolValue];
+            [switchView setOn:enabled animated:NO];
+            [switchView addTarget:self action:@selector(toggleWifiDataRSSI:) forControlEvents:UIControlEventValueChanged];
+        }
+        if (_raw_id == 5) // Wifi/Data RSSI
+        {
+            cell.textLabel.text = @"Show RSSI";
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+            cell.accessoryView = switchView;
+            BOOL enabled = [[NSDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.apple.springboard.plist"][@"SBShowRSSI"] boolValue];
+            [switchView setOn:enabled animated:NO];
+            [switchView addTarget:self action:@selector(toggleWifiDataRSSI:) forControlEvents:UIControlEventValueChanged];
+            return cell;
+        }
     }
     else
     {
@@ -291,6 +357,8 @@ UIImage *resizeImage(UIImage *icon)
             [self.rootController pushViewController:vc animated:YES];
         }
     }
+    else if (indexPath.section == 1 && supportsExtendedOptions && isSearching == NO)
+        return;
     else
     {
         checkedIcon = cell.textLabel.text;
@@ -305,7 +373,12 @@ UIImage *resizeImage(UIImage *icon)
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if ([canHaveImages containsObject:[NSNumber numberWithInt:_raw_id]])
     {
-        if (section == 0)
+        if (section == 0 || (supportsExtendedOptions && section == 1))
+            return nil;
+    }
+    else
+    {
+        if (section == 0 && supportsExtendedOptions)
             return nil;
     }
 
@@ -314,10 +387,7 @@ UIImage *resizeImage(UIImage *icon)
     
     UILabel *lbl = [[UILabel alloc] initWithFrame:footer.frame];
     lbl.backgroundColor = [UIColor clearColor];
-    if (_raw_id == 7)
-        lbl.text = @"Sorry, this icon cannot be\nthemed with Protean.";
-    else
-        lbl.text = section == 1 ? @"\nRespring to apply changes\nto System Icons." : @"Sorry, this icon cannot be\nthemed with Protean.";
+    lbl.text = [canHaveImages containsObject:[NSNumber numberWithInt:_raw_id]] ? @"\nRespring to apply changes\nto System Icons." : @"Sorry, this icon cannot be\nthemed with Protean.";
     lbl.textAlignment = NSTextAlignmentCenter;
     lbl.numberOfLines = 3;
     lbl.font = [UIFont fontWithName:@"HelveticaNueue-UltraLight" size:5];
@@ -330,7 +400,23 @@ UIImage *resizeImage(UIImage *icon)
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if ([canHaveImages containsObject:[NSNumber numberWithInt:_raw_id]])
+    {
+        if (supportsExtendedOptions)
+        {
+            if (section == 0)
+            {
+                return 0;
+            }
+            else if (section == 1)
+                return 0;
+        }
         return section == 2 ? 80 : 0;
+    }
+    else
+    {
+        if (supportsExtendedOptions && section == 0)
+            return 0;
+    }
     return 80.0;
 }
 
@@ -379,5 +465,20 @@ UIImage *resizeImage(UIImage *icon)
     
     ((UIView*)self.view).tintColor = nil;
     self.navigationController.navigationBar.tintColor = nil;
+}
+
+-(void) toggleWifiDataRSSI:(id)sender
+{
+    UISwitch* switchControl = sender;
+    BOOL showRssi = switchControl.on;
+    [super setPreferenceValue:@(showRssi) specifier:[SKSpecifierParser specifiersFromArray:@[
+             @{
+                 @"cell": @"PSSwitchCell",
+                 @"default": @NO,
+                 @"defaults": @"com.apple.springboard",
+                 @"key": @"SBShowRSSI",
+                 @"label": @"Show Wifi/Data RSSI",
+                 @"PostNotification": @"com.apple.springboard/Prefs",
+                 }] forTarget:(PSListController*)self][0]]; // lol, needs a specifier so lets give it what it "would" be
 }
 @end

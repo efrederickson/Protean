@@ -23,6 +23,7 @@ Protean_FILES = Tweak.xm \
 		Carrier.xm CustomTime.xm \
 		PDFImage.m PDFImageOptions.m \
 		UIStatusBarSpacerItemView.xm
+#		SignalStrength.xm
 
 LDFLAGS = -fobjc-arc
 
