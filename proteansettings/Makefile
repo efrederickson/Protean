@@ -16,7 +16,7 @@ ProteanSettings_FILES = ProteanSettings.mm \
 ProteanSettings_INSTALL_PATH = /Library/PreferenceBundles
 ProteanSettings_FRAMEWORKS = UIKit MessageUI Social QuartzCore CoreGraphics CoreBluetooth GraphicsServices
 ProteanSettings_PRIVATE_FRAMEWORKS = Preferences BluetoothManager
-ProteanSettings_LIBRARIES = applist activator flipswitch
+ProteanSettings_LIBRARIES = applist flipswitch
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

@@ -1,6 +1,7 @@
 #import "IconSelectorController.h"
 #import <AppList/AppList.h>
 #import <libactivator/libactivator.h>
+#import <objc/runtime.h>
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
@@ -26,6 +27,7 @@ static NSMutableArray* searchedIcons;
 - (UIImage*) _flatImageWithColor: (UIColor*) color;
 + (UIImage*) kitImageNamed: (NSString*) name;
 @end
+
 
 NSString *checkedIcon = @"";
 int tapAction = 0;
@@ -501,7 +503,13 @@ NSString *associatedQRNameForApp(NSString *app)
         
         if (tapAction == 2) // Activator
         {
-            LAEventSettingsController *vc = [[LAEventSettingsController alloc] initWithModes:@[LAEventModeSpringBoard,LAEventModeApplication, LAEventModeLockScreen] eventName:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",_identifier]];
+            id activator = objc_getClass("LAEventSettingsController");
+            if (!activator)
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Protean" message:@"Activator must be installed to use this feature." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+            LAEventSettingsController *vc = [[objc_getClass("LAEventSettingsController") alloc] initWithModes:@[LAEventModeSpringBoard,LAEventModeApplication, LAEventModeLockScreen] eventName:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",_identifier]];
             [self.rootController pushViewController:vc animated:YES];
         }
     }

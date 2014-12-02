@@ -16,13 +16,15 @@ extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void
 
 //based on http://iphonedevwiki.net/index.php/Libactivator#Dispatching_Events
 inline LAEvent *LASendEventWithName(NSString *eventName) {
-	LAEvent *event = [LAEvent eventWithName:eventName mode:[LASharedActivator currentEventMode]];
-	[LASharedActivator sendEventToListener:event];
+	id activator = objc_getClass("LASharedActivator");
+	LAEvent *event = [objc_getClass("LAEvent") eventWithName:eventName mode:[activator currentEventMode]];
+	[activator sendEventToListener:event];
 	return event;
 }
 inline LAEvent *LASendEventToListener(NSString *listener) {
-	LAEvent *event = [LAEvent eventWithName:@"com.efrederickson.protean.dummy_event" mode:[LASharedActivator currentEventMode]];
-	[LASharedActivator sendEvent:event toListenerWithName:listener];
+	id activator = objc_getClass("LASharedActivator");
+	LAEvent *event = [objc_getClass("LAEvent") eventWithName:@"com.efrederickson.protean.dummy_event" mode:[activator currentEventMode]];
+	[activator sendEvent:event toListenerWithName:listener];
 	return event;
 }
 

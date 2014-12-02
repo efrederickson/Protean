@@ -2,6 +2,7 @@
 #import <AppList/AppList.h>
 #import <libactivator/libactivator.h>
 #import <SettingsKit/SKSpecifierParser.h>
+#import <objc/runtime.h>
 #import <Preferences/PSTableCell.h>
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 #import <objc/runtime.h>
@@ -364,7 +365,13 @@ UIImage *resizeImage(UIImage *icon)
         
         if (tapAction == 1) // Activator
         {
-            LAEventSettingsController *vc = [[LAEventSettingsController alloc] initWithModes:@[LAEventModeSpringBoard,LAEventModeApplication, LAEventModeLockScreen] eventName:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",_id]];
+            id activator = objc_getClass("LAEventSettingsController");
+            if (!activator)
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Protean" message:@"Activator must be installed to use this feature." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+            LAEventSettingsController *vc = [[objc_getClass("LAEventSettingsController") alloc] initWithModes:@[LAEventModeSpringBoard,LAEventModeApplication, LAEventModeLockScreen] eventName:[NSString stringWithFormat:@"%@%@", @"com.efrederickson.protean-",_id]];
             [self.rootController pushViewController:vc animated:YES];
         }
     }
