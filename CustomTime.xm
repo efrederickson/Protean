@@ -16,7 +16,7 @@ BOOL wasLowercased = NO;
 		return;
 	
 	NSString *format = [Protean getOrLoadSettings][@"timeFormat"];
-	if (format && enabled)
+	if (format && enabled && format.length > 0)
 		[formatter setDateFormat:format];
 
 	id lowercaseAMPM_ = [Protean getOrLoadSettings][@"lowercaseAMPM"];
@@ -39,12 +39,13 @@ BOOL wasLowercased = NO;
 }
 %end
 
-/*
+
 %hook UIStatusBarTimeItemView
 - (id)contentsImage
 {
 	CHECK_ENABLED(%orig);
 
+/*
 	id lowercaseAMPM_ = [Protean getOrLoadSettings][@"lowercaseAMPM"];
 	if (lowercaseAMPM_ && [lowercaseAMPM_ boolValue] == YES)
 	{
@@ -54,7 +55,30 @@ BOOL wasLowercased = NO;
 		time = time2;
 		return %orig;
 	}
+*/
+	id spellOut = [Protean getOrLoadSettings][@"spellOut"];
+	if ([spellOut boolValue])
+	{
+		__strong NSString *&time = MSHookIvar<NSString *>(self, "_timeString");
+		NSDate *now = [NSDate date];
+		NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+		[formatter setNumberStyle: NSNumberFormatterSpellOutStyle];
+
+		NSCalendar *calendar = [NSCalendar currentCalendar];
+		NSDateComponents *components = [calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:now];
+		NSInteger hour = [components hour];
+		NSInteger minute = [components minute];
+
+		time = [NSString stringWithFormat:@"%@ %@ %@",
+			[formatter stringFromNumber:@(hour > 12 ? hour - 12 : hour)],
+			minute == 0 ? @"o' clock"
+				: minute < 10 ? 
+					[NSString stringWithFormat:@"o' %@", [formatter stringFromNumber:@(minute)]] 
+					: [formatter stringFromNumber:@(minute)], 
+			hour > 12 ? @"pm" : @"am"];
+	}
+	return %orig;
 }
 %end
-*/
+
 

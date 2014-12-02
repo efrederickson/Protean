@@ -11,7 +11,6 @@
 NSString* const vectorIconPath = @"/Library/Protean/TranslatedVectors~cache/";
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 NSString* const ONIconPath = @"/System/Library/Frameworks/UIKit.framework";
-static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
 //NSString* const SilverIconRegexPattern = @"PR_(.*?)(?:@.*|)(?:~.*|).png";
@@ -85,8 +84,6 @@ extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
 
     if (!defaultIcon)
         defaultIcon = [[ALApplicationList sharedApplicationList] iconOfSize:ALApplicationIconSizeSmall forDisplayIdentifier:@"com.apple.WebSheet"];
-    if (!cachedIcons)
-        cachedIcons = [[NSMutableDictionary alloc] init];
     if (!statusIcons)
     {
         statusIcons = [[NSMutableArray alloc] init];

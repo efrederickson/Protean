@@ -8,6 +8,9 @@
 #import "UIDiscreteSlider.h"
 #import "../Protean.h"
 
+extern NSString *const PSControlMinimumKey;
+extern NSString *const PSControlMaximumKey;
+
 @interface PSListController (SettingsKit)
 -(UIView*)view;
 -(UINavigationController*)navigationController;
@@ -36,7 +39,63 @@
 @end
 
 @interface PSSliderTableCell : PSControlTableCell
+@end
 
+@interface PRButtonPlusMinusThingCell : PSControlTableCell
+@property (nonatomic) UIStepper *stepper;
+@end
+@implementation PRButtonPlusMinusThingCell
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    self.stepper.value = 0;
+    self.stepper.minimumValue = 0;
+    self.stepper.maximumValue = 1;
+}
+
+- (void)refreshCellContentsWithSpecifier:(PSSpecifier *)specifier {
+    [super refreshCellContentsWithSpecifier:specifier];
+    self.stepper.minimumValue = ((NSNumber *)specifier.properties[PSControlMinimumKey]).doubleValue;
+    self.stepper.maximumValue = ((NSNumber *)specifier.properties[PSControlMaximumKey]).doubleValue;
+    [self updateUI];
+}
+
+- (UIStepper *)newControl {
+    UIStepper *stepper = [[UIStepper alloc] init];
+    stepper.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    stepper.continuous = NO;
+    stepper.center = CGPointMake(stepper.center.x, self.frame.size.height / 2);
+    CGRect frame = stepper.frame;
+    frame.origin.x = self.contentView.frame.size.width - frame.size.width - 10;
+    stepper.frame = frame;
+    self.stepper = stepper;
+    return stepper;
+}
+
+- (NSNumber *)controlValue {
+    return @(self.stepper.value);
+}
+
+- (void)setValue:(NSNumber *)value {
+    [super setValue:value];
+    self.stepper.value = value.doubleValue;
+}
+
+- (void)controlChanged:(UIStepper *)stepper {
+    [super controlChanged:stepper];
+    [self updateUI];
+}
+
+- (void)updateUI {
+    if (!self.stepper) {
+        return;
+    }
+
+    if ((int)self.stepper.value == 1)
+        self.textLabel.text = [NSString stringWithFormat:@"%d Spacer", (int)self.stepper.value];
+    else
+        self.textLabel.text = [NSString stringWithFormat:@"%d Spacers", (int)self.stepper.value];
+    [self setNeedsLayout];
+}
 @end
 
 @interface PRDiscreteSliderCell : PSSliderTableCell
@@ -344,15 +403,16 @@
                  },
                 @{
                  @"cell": @"PSSliderCell",
-                 @"cellClass": @"PRDiscreteSliderCell",
+                 @"cellClass": @"PRButtonPlusMinusThingCell",
                  @"default": @0,
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"numSpacers",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"min": @0,
-                 @"max": @15,
-                 @"increment": @1,
-                 @"showValue": @YES,
+                 @"max": @50,
+                 //@"increment": @1,
+                 //@"showValue": @YES,
+                 @"label": @"%d Spacer(s)"
                  },
 
              	@{ 
@@ -368,7 +428,8 @@
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"icon": @"normalizeLS.png"
                  },
-                 @{},
+                
+                /*@{},
              @{
                  @"cell": @"PSSwitchCell",
                  @"default": @NO,
@@ -386,7 +447,7 @@
                  @"label": @"Show Wifi/Data RSSI",
                  @"PostNotification": @"com.apple.springboard/Prefs",
                  @"icon": @"wifirssi.png"
-                 },
+                 },*/
              
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Enabled by default if the time is not aligned in the center. Unlike many other tweaks, it is compatible with LockInfo7 and Forecast."
@@ -439,11 +500,11 @@
                  @"detail": @"SKListItemsController",
                  @"icon": @"batteryStyle.png",
                  @"validTitles": 
-                    supportsExtendedBattery ? @[ @"Default", @"Hide '%' sign", @"Textual", @"mAh charge", @"Actual percentage (mAh/capacity)", @"Longer actual percentage", @"Longer actual percentage with no '%'" ]
-                    : @[ @"Default", @"Hide '%' sign", @"Textual" ],
+                    supportsExtendedBattery ? @[ @"Default", @"Hide '%' sign", @"Textual", @"mAh charge", @"Actual percentage (mAh/capacity)", @"Longer actual percentage", @"Longer actual percentage with no '%'", @"Textual with Percent", ]
+                    : @[ @"Default", @"Hide '%' sign", @"Textual", @"Textual with Percent" ],
                  @"validValues": 
-                    supportsExtendedBattery ? @[ @0,         @1,               @2,         @3,            @4,                                @5,                             @6 ]
-                    : @[ @0, @1, @2 ],
+                    supportsExtendedBattery ? @[ @0,         @1,               @2,         @3,            @4,                                @5,                             @6, 									 @7 ]
+                    : @[ @0, @1, @2, @7 ],
                  },
              @{
                  @"cell": @"PSEditTextCell",
@@ -477,6 +538,15 @@
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"lowercaseAMPM",
                  @"label": @"Lowercase AM/PM",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 @"icon": @"lowercaseampm.png"
+                 },
+             @{
+                 @"cell": @"PSSwitchCell",
+                 @"default": @NO,
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"spellOut",
+                 @"label": @"Spell Out Time (12h)",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"icon": @"lowercaseampm.png"
                  },

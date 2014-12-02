@@ -5,34 +5,10 @@
 #import <flipswitch/Flipswitch.h>
 #import "Protean.h"
 
-__strong NSMutableDictionary *cache = [NSMutableDictionary dictionary];
-/*
-UIImage *resizeImage(UIImage *icon)
-{
-	CGFloat maxWidth = 13.0f;
-	CGFloat maxHeight = 13.0f;
-    
-	CGSize size = CGSizeMake(maxWidth, maxHeight);
-	UIGraphicsBeginImageContextWithOptions(size, false, [[UIScreen mainScreen] scale]);
-    
-	// Resize image to status bar size and center it
-	// make sure the icon fits within the bounds
-	CGFloat width = MIN(icon.size.width, maxWidth);
-	CGFloat height = MIN(icon.size.height, maxHeight);
-    
-	CGFloat left = MAX((maxWidth-width)/2, 0);
-	left = left > (maxWidth/2) ? maxWidth-(maxWidth/2) : left;
-    
-	CGFloat top = MAX((maxHeight-height)/2, 0);
-	top = top > (maxHeight/2) ? maxHeight-(maxHeight/2) : top;
-    
-	[icon drawInRect:CGRectMake(left, top, width, height)];
-	icon = UIGraphicsGetImageFromCurrentImageContext();
-	UIGraphicsEndImageContext();
-    
-	return icon;
-}
-*/
+//__strong NSMutableDictionary *cache = [NSMutableDictionary dictionary];
+NSCache *cache = [[NSCache alloc] init];
+
+
 // This is... bad... 
 // But, it works. Which is what i need. 
 // TODO: better hack
@@ -45,8 +21,8 @@ UIImage *resizeImage(UIImage *icon)
         if (name == nil)
         	return %orig;
 
-        if (cache[name])
-            return cache[name];
+        if ([cache objectForKey:name] != nil)
+            return [cache objectForKey:name];
         id _tmp = %orig;
         if (_tmp)
             return _tmp;
@@ -73,33 +49,10 @@ UIImage *resizeImage(UIImage *icon)
         UIImage *image = [UIImage imageWithContentsOfFile:fsName];
         if (image)
         {
-            cache[fsName] = image;
+            [cache setObject:image forKey:fsName];
             return image;
         }
 
-/*
-        static __strong NSArray *switchIdentifiers;
-        if (!switchIdentifiers) 
-            switchIdentifiers = [[FSSwitchPanel sharedPanel].switchIdentifiers copy];
-        if ([switchIdentifiers containsObject:patchedName2])
-        {
-            name = [NSString stringWithFormat:@"%@-%@",patchedName2, [[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2]==FSSwitchStateOn?@"on":@"off"];
-            if (cache[name])
-                return cache[name];
-
-            static BOOL isPad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
-            static NSString *TemplatePath = isPad ? @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle" : @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle";
-            static __strong NSBundle *templateBundle = nil;
-            if (!templateBundle) templateBundle = [NSBundle bundleWithPath:TemplatePath];
-
-            UIImage *img = [[FSSwitchPanel sharedPanel] 
-            	imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2] 
-            	controlState:UIControlStateNormal forSwitchIdentifier:patchedName2 usingTemplate:templateBundle];
-
-            cache[name] = resizeImage(img);
-            return cache[name];
-        }
-*/
         if (!image)
             image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@.png", patchedName]];
 
@@ -113,7 +66,7 @@ UIImage *resizeImage(UIImage *icon)
         }
 
         if (image)
-            cache[name] = image;
+            [cache setObject:image forKey:name];
 
         return image;
     }

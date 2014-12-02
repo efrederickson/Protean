@@ -122,6 +122,7 @@ n00neimp0rtant and tateu: OpenNotifier\n\
 /u/binders_of_women_: Helped out with the site.\n\
 /u/moshed: Created some of the glyphs.\n\
 phoenix3200/phoenixdev: libstatusbar\n\
+HASHBANG: miscellaneous ideas\n\
 \n\
 Situ Herrera, Pele Saeng-a-loon Chaengsavang, Icons8, Allan McAvoy, Alessio Atzeni, and Vincent Le Moign: Inspiration and a few icons.\n\n\
 Beta Testers:\n\

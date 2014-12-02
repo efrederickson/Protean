@@ -20,10 +20,21 @@
 
 %end
 
+/* LOL workarounds... */
+void init()
+{
+    %init;
+}
+
 %ctor
 {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(){
-        %init;
-    });
+	if ([NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/Umino.dylib"])
+	{
+    	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(){
+        	init();
+    	});
+    }
+    else
+    	init();
 }
 

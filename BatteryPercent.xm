@@ -152,6 +152,16 @@ NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
             rawActual = 0;
         batteryStr = [NSString stringWithFormat:@"%.2f", rawActual];
     }
+    else if (changedBatteryStyle == 7)
+    {
+        if ([batteryStr hasSuffix:@"%"]) // remove percent sign, for the formatter
+            batteryStr = [batteryStr substringToIndex:batteryStr.length - 1];
+
+        [stringFormatter setNumberStyle: NSNumberFormatterSpellOutStyle];
+        NSNumber *num = [numberFormatter numberFromString:batteryStr];
+        if (num)
+            batteryStr = [[stringFormatter stringFromNumber:num] stringByAppendingString:@" percent"];
+    }
 
     strlcpy(arg1.rawData->batteryDetailString, [batteryStr UTF8String], sizeof(arg1.rawData->batteryDetailString));
 

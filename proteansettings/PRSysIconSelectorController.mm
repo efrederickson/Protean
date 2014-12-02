@@ -4,20 +4,21 @@
 #import <SettingsKit/SKSpecifierParser.h>
 #import <Preferences/PSTableCell.h>
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
+#import <objc/runtime.h>
+#import "../Protean.h"
 
 NSString* const vectorIconPath = @"/Library/Protean/TranslatedVectors~cache/";
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
-static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
 NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d\\d?)?(?:@.*|)(?:~.*|).png";
 static NSMutableArray *searchedIcons;
 NSArray *canHaveImages = @[ @1, @2, @11, @12, @13, @16, @17, @19, @20, @21, @22];
-NSArray *canSupportExtendedOptions = @[ @0, // Custom time, show on LS  - 3 options
-                                        @3, // Signal RSSI, replace with number (e.g. 3) - 2 option
-                                        @5, // Wifi/Data RSSI           - 1 option
-                                        @8, // Battery Percent          - 1 option (style)
-                                        @4, // Custom Carrier and related options - 2 options
+NSArray *canSupportExtendedOptions = @[ @0, // Custom time, show on LS  - 3 options                                          - 
+                                        @3, // Signal RSSI, replace with number (TODO) (e.g. 3 for 3 bars) - 2 option        - Signal RSSI done
+                                        @5, // Wifi/Data RSSI           - 1 option                                           - Done
+                                        @8, // Battery Percent          - 1 option (style)                                   - 
+                                        @4, // Custom Carrier/carrier timestr - 2 options                                - 
                                         ];
 
 NSDictionary *extendedOptionsCounts = @{
@@ -37,10 +38,6 @@ NSDictionary *extendedOptionsCounts = @{
 -(void) viewWillDisappear:(BOOL)animated;
 -(void) setView:(id)view;
 -(void) setTitle:(NSString*)title;
-@end
-@interface UIImage (Protean)
-+ (UIImage*)imageNamed:(NSString *)imageName inBundle:(NSBundle*)bundle;
-- (UIImage*) _flatImageWithColor: (UIColor*) color;
 @end
 
 @interface PRSysIconSelectorController () {
@@ -125,8 +122,6 @@ UIImage *resizeImage(UIImage *icon)
 	
 	if (!defaultIcon)
         defaultIcon = [[ALApplicationList sharedApplicationList] iconOfSize:ALApplicationIconSizeSmall forDisplayIdentifier:@"com.apple.WebSheet"];
-	if (!cachedIcons)
-        cachedIcons = [[NSMutableDictionary alloc] init];
 	if (!statusIcons)
 	{
 		statusIcons = [[NSMutableArray alloc] init];
@@ -284,23 +279,14 @@ UIImage *resizeImage(UIImage *icon)
 
         if (_raw_id == 3) // Signal Strength :: RSSI, show number
         {
-            // List view?
-            /*@{
-                 @"cell": @"PSSwitchCell",
-                 @"default": @NO,
-                 @"defaults": @"com.efrederickson.protean.settings",
-                 @"key": @"showSignalRSSI",
-                 @"label": @"Show Signal RSSI",
-                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 @"icon": @"signalrssi.png"
-                 },*/
             cell.textLabel.text = @"Show RSSI";
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
             cell.accessoryView = switchView;
             BOOL enabled = [[NSDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist"][@"showSignalRSSI"] boolValue];
             [switchView setOn:enabled animated:NO];
-            [switchView addTarget:self action:@selector(toggleWifiDataRSSI:) forControlEvents:UIControlEventValueChanged];
+            [switchView addTarget:self action:@selector(toggleSignalRSSI:) forControlEvents:UIControlEventValueChanged];
+            return cell;
         }
         if (_raw_id == 5) // Wifi/Data RSSI
         {
@@ -312,6 +298,31 @@ UIImage *resizeImage(UIImage *icon)
             [switchView setOn:enabled animated:NO];
             [switchView addTarget:self action:@selector(toggleWifiDataRSSI:) forControlEvents:UIControlEventValueChanged];
             return cell;
+        }
+        if (_raw_id == 4)
+        {
+            if (indexPath.row == 0)
+            {
+                UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 200, 21)];
+                cell.textLabel.text = @"Custom Carrier:";
+                textField.placeholder = @"Default carrier";
+                textField.text = [objc_getClass("Protean") getOrLoadSettings][@"serviceString"];
+                cell.accessoryView = textField;
+                // TODO: save
+            }
+            else
+            {
+/*
+             @{
+                 @"cell": @"PSSwitchCell",
+                 @"default": @NO,
+                 @"defaults": @"com.efrederickson.protean.settings",
+                 @"key": @"serviceIsTimeString",
+                 @"label": @"Use carrier as time format",
+                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
+                 },
+                 */
+            }
         }
     }
     else
@@ -480,5 +491,18 @@ UIImage *resizeImage(UIImage *icon)
                  @"label": @"Show Wifi/Data RSSI",
                  @"PostNotification": @"com.apple.springboard/Prefs",
                  }] forTarget:(PSListController*)self][0]]; // lol, needs a specifier so lets give it what it "would" be
+}
+
+-(void) toggleSignalRSSI:(id)sender
+{
+    UISwitch* switchControl = sender;
+    BOOL showRssi = switchControl.on;
+    NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist"];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
+    [dict setObject:@(showRssi) forKey:@"showSignalRSSI"];
+    [dict writeToFile:plistName atomically:YES];
+
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
 }
 @end
