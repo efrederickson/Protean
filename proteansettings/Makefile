@@ -11,7 +11,8 @@ ProteanSettings_FILES = ProteanSettings.mm \
   IconSelectorController.mm PRFlipswitchController.mm \
   PRFSSelector.mm PRBluetoothController.mm PRSystemIconsController.mm \
   PRSysIconSelectorController.mm PRBTIconSelectorController.mm \
-  PRMakersController.mm UIDiscreteSlider.m
+  PRMakersController.mm UIDiscreteSlider.m \
+  $(shell find libcolorpicker -name '*.m') $(shell find libcolorpicker -name '*.mm')
 
 ProteanSettings_INSTALL_PATH = /Library/PreferenceBundles
 ProteanSettings_FRAMEWORKS = UIKit MessageUI Social QuartzCore CoreGraphics CoreBluetooth GraphicsServices

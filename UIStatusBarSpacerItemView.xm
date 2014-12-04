@@ -11,6 +11,8 @@
 }
 %end
 
+/* lol, workarounds */
+/* Can't use this in the %subclass because it uses %orig */
 %hook UIStatusBarSpacerItemView
 - (CGFloat)standardPadding 
 {

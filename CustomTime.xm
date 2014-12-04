@@ -73,7 +73,7 @@ BOOL wasLowercased = NO;
 			[formatter stringFromNumber:@(hour > 12 ? hour - 12 : hour)],
 			minute == 0 ? @"o' clock"
 				: minute < 10 ? 
-					[NSString stringWithFormat:@"o' %@", [formatter stringFromNumber:@(minute)]] 
+					[NSString stringWithFormat:@"oh %@", [formatter stringFromNumber:@(minute)]] 
 					: [formatter stringFromNumber:@(minute)], 
 			hour > 12 ? @"pm" : @"am"];
 	}

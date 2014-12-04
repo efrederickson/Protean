@@ -488,7 +488,7 @@ extern NSString *const PSControlMaximumKey;
                  },
 
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Change the battery percentage and carrier to custom string types. Space for carrier string hides it, empty is original carrier name. A time formatting guide is available in the documentation."
+                @"footerText": @"Change the battery percentage (and its color) and carrier to custom string types. Space for carrier string hides it, empty is original carrier name. A time formatting guide is available in the documentation."
                 },
              @{
                  @"cell": @"PSLinkListCell",
@@ -506,6 +506,32 @@ extern NSString *const PSControlMaximumKey;
                     supportsExtendedBattery ? @[ @0,         @1,               @2,         @3,            @4,                                @5,                             @6, 									 @7 ]
                     : @[ @0, @1, @2, @7 ],
                  },
+
+                 @{
+                    @"cell": @"PSLinkCell",
+                    @"cellClass": @"PFColorCell",
+                    @"label": @"Battery Percentage Color (charging)",
+                    @"color_defaults": @"com.efrederickson.protean.settings",
+                    @"color_key": @"chargingPercentageColor",
+                    @"title": @"Charging Color",
+                    @"color_fallback": @"#000000",
+                    @"usesRGB": @YES,
+                    @"usesAlpha": @NO,
+                    @"color_postNotification": @"com.efrederickson.protean/reloadSettings"
+                 },
+                 @{
+                    @"cell": @"PSLinkCell",
+                    @"cellClass": @"PFColorCell",
+                    @"label": @"Battery Percentage Color (not charging)",
+                    @"color_defaults": @"com.efrederickson.protean.settings",
+                    @"color_key": @"notChargingPercentageColor",
+                    @"title": @"Charging Color",
+                    @"color_fallback": @"#000000",
+                    @"usesRGB": @YES,
+                    @"usesAlpha": @NO,
+                    @"color_postNotification": @"com.efrederickson.protean/reloadSettings"
+                 },
+
              @{
                  @"cell": @"PSEditTextCell",
                  @"default": @"",
@@ -580,6 +606,13 @@ extern NSString *const PSControlMaximumKey;
                  }
 
              ]; 
+}
+
+-(void)viewWillAppear:(BOOL)animated 
+{
+    //[self clearCache];
+    [self reload];
+    [super viewWillAppear:animated]; 
 }
 
 -(void) resetData

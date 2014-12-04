@@ -1,4 +1,5 @@
 #import "Protean.h"
+#import "proteansettings/libcolorpicker/UIColor+PFColor.h"
 
 @interface PLBatteryPropertiesEntry// : PLEntry
 +(instancetype) batteryPropertiesEntry;
@@ -76,11 +77,14 @@ struct RAWDATA {
 
 NSNumberFormatter *stringFormatter = [[NSNumberFormatter alloc] init];
 NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+unsigned int batteryState; 
+
 
 %hook UIStatusBarBatteryPercentItemView
 - (BOOL)updateForNewData:(UIStatusBarComposedData*)arg1 actions:(int)arg2
 {
     CHECK_ENABLED(%orig);
+    batteryState = arg1.rawData->batteryState;
 
     char oldBattery[150];
     
@@ -166,6 +170,20 @@ NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     strlcpy(arg1.rawData->batteryDetailString, [batteryStr UTF8String], sizeof(arg1.rawData->batteryDetailString));
 
     return %orig(arg1, arg2);
+}
+
+-(_UILegibilityImageSet*) contentsImage
+{
+	CHECK_ENABLED(%orig);
+
+	BOOL charging = batteryState == 1;
+	_UILegibilityImageSet *original = %orig;
+
+	UIColor *color = [UIColor colorWithHex:[Protean getOrLoadSettings][charging ? @"chargingPercentageColor" : @"notChargingPercentageColor"]];
+	if (color)
+		original.image = [original.image _flatImageWithColor:color];
+    
+	return original;
 }
 %end
 

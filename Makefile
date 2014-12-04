@@ -22,7 +22,8 @@ Protean_FILES = Tweak.xm \
 		SignalRSSI.xm \
 		Carrier.xm CustomTime.xm \
 		PDFImage.m PDFImageOptions.m \
-		UIStatusBarSpacerItemView.xm
+		UIStatusBarSpacerItemView.xm \
+		proteansettings/libcolorpicker/UIColor+PFColor.m
 #		SignalStrength.xm
 
 LDFLAGS = -fobjc-arc
