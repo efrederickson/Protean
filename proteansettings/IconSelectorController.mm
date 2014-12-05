@@ -77,7 +77,7 @@ UIImage *imageFromName(NSString *name)
         icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/PR_%@.png",vectorIconPath,name]];
     if (!icon)
         icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/Black_ON_%@.png",name]];
-    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png",ONIconPath,name]])
+    if (!icon)// && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png",ONIconPath,name]])
         icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png", ONIconPath, name]];
     
     BOOL wasDefault = NO;
