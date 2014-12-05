@@ -100,7 +100,7 @@
 {
     NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", def]];
     //light gray fallback
-    UIColor *fallbackColor = [UIColor colorWithHex:self.fallback];
+    UIColor *fallbackColor = [UIColor PF_colorWithHex:self.fallback];
     
     if(preferencesPlist&&[preferencesPlist objectForKey:aKey]) {
         NSString *value = [preferencesPlist objectForKey:aKey];
@@ -117,7 +117,7 @@
         
         NSString *color = colorAndOrAlpha[0];
 
-        return [[UIColor colorWithHex:color] colorWithAlphaComponent:currentAlpha];
+        return [[UIColor PF_colorWithHex:color] colorWithAlphaComponent:currentAlpha];
     }
     else {
         return fallbackColor;
@@ -325,20 +325,20 @@ CGSize _size;
     UIAlertView *prompt = [[UIAlertView alloc] initWithTitle:@"Hex Color" message:@"Enter a hex color or copy it to your pasteboard." delegate:self cancelButtonTitle:@"Close" otherButtonTitles:@"Set", @"Copy", nil];
     prompt.delegate = self;
     [prompt setAlertViewStyle:UIAlertViewStylePlainTextInput];
-    [[prompt textFieldAtIndex:0] setText:[UIColor hexFromColor:_pushedView.backgroundColor]];
+    [[prompt textFieldAtIndex:0] setText:[UIColor PF_hexFromColor:_pushedView.backgroundColor]];
     [prompt show];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
-        if ([[alertView textFieldAtIndex:0].text hasPrefix:@"#"] && [UIColor colorWithHex:[alertView textFieldAtIndex:0].text]) {
-            [self pickedColor:[UIColor colorWithHex:[alertView textFieldAtIndex:0].text]];
+        if ([[alertView textFieldAtIndex:0].text hasPrefix:@"#"] && [UIColor PF_colorWithHex:[alertView textFieldAtIndex:0].text]) {
+            [self pickedColor:[UIColor PF_colorWithHex:[alertView textFieldAtIndex:0].text]];
         }
     }
     else if (buttonIndex == 2)
     {
-        [[UIPasteboard generalPasteboard] setString:[UIColor hexFromColor:_pushedView.backgroundColor]];
+        [[UIPasteboard generalPasteboard] setString:[UIColor PF_hexFromColor:_pushedView.backgroundColor]];
     }
 }
 
@@ -356,7 +356,7 @@ CGSize _size;
                                 [UIColor colorWithWhite:0 alpha:0.25].CGColor);
     CGContextSetFillColorWithColor(context, [color CGColor]);
     CGContextAddArc(context,rect.size.width/2,rect.size.width/2,size/2,size/2,2*3.1415926535898,1);
-    CGContextSetStrokeColorWithColor(context, [[UIColor colorWithHex:@"#f0f0f0"] colorWithAlphaComponent:0].CGColor);
+    CGContextSetStrokeColorWithColor(context, [[UIColor PF_colorWithHex:@"#f0f0f0"] colorWithAlphaComponent:0].CGColor);
 
     CGContextDrawPath(context, kCGPathFill);
     
@@ -457,9 +457,9 @@ CGSize _size;
         preferencesPlist = [NSMutableDictionary new];
     NSString *saveValue;
     if(self.usesAlpha)
-    saveValue = [NSString stringWithFormat:@"%@:%f", [UIColor hexFromColor:color], currentAlpha]; //should be something like @"#a1a1a1:0.5" with the the decimal being the alpha you can ge the color and alpha seperately by [value componentsSeparatedByString:@":"]
+    saveValue = [NSString stringWithFormat:@"%@:%f", [UIColor PF_hexFromColor:color], currentAlpha]; //should be something like @"#a1a1a1:0.5" with the the decimal being the alpha you can ge the color and alpha seperately by [value componentsSeparatedByString:@":"]
     else
-        saveValue = [UIColor hexFromColor:color]; // should be something like @"#a1a1a1"
+        saveValue = [UIColor PF_hexFromColor:color]; // should be something like @"#a1a1a1"
     
     if (saveValue && self.key)
     {

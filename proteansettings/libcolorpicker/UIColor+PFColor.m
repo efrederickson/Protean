@@ -10,7 +10,7 @@
 
 @implementation UIColor (PFColor)
 
-+ (UIColor*)colorWithHex:(NSString*)hexString {
++ (UIColor*)PF_colorWithHex:(NSString*)hexString {
     if (hexString == nil || hexString.length < 7)
         return nil;
     unsigned rgbValue = 0;
@@ -20,7 +20,7 @@
     return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
 }
 
-+ (NSString*)hexFromColor:(UIColor*)color {
++ (NSString*)PF_hexFromColor:(UIColor*)color {
     const CGFloat *components = CGColorGetComponents(color.CGColor);
     CGFloat r = components[0];
     CGFloat g = components[1];

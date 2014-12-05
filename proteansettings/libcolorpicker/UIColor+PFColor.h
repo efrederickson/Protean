@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface UIColor (PFColor)
-+ (UIColor*)colorWithHex:(NSString*)hexString;
-+ (NSString*)hexFromColor:(UIColor*)color;
++ (UIColor*)PF_colorWithHex:(NSString*)hexString;
++ (NSString*)PF_hexFromColor:(UIColor*)color;
 @property (nonatomic, assign, readonly) CGFloat alpha;
 @property (nonatomic, assign, readonly) CGFloat red;
 @property (nonatomic, assign, readonly) CGFloat green;
