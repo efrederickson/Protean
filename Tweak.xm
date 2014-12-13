@@ -362,6 +362,9 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
         return %orig;
 
     int centerOrder = _centerOrder == nil ? %orig : [_centerOrder intValue];
+
+    if (centerOrder == 0)
+        centerOrder = 1;
     return centerOrder;
 }
 
@@ -456,6 +459,8 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
                     new_alignment = StatusBarAlignmentLeft;
                 else if (alignment == 1)
                     new_alignment = StatusBarAlignmentRight;
+                else if (alignment == 2)
+                    new_alignment = StatusBarAlignmentCenter;
 
                 break;
             }
@@ -662,9 +667,6 @@ BOOL o = NO;
     %orig(force ? YES : arg1);
 }
 
-//- (float)extraRightPadding { return 0; }
-//- (float)extraLeftPadding { return 0; }
-//- (float)shadowPadding { return 0; }
 - (CGFloat)standardPadding 
 {
     CGFloat o = %orig; 
@@ -694,6 +696,12 @@ BOOL o = NO;
     id overlap_ = [Protean getOrLoadSettings][@"allowOverlap"];
     if ([overlap_ boolValue] == NO)
         return %orig;
+
+    if (LIBSTATUSBAR8)
+    {
+        // what what
+        return r;
+    }
     
     if (arg1.item)
     {
@@ -796,41 +804,6 @@ BOOL o = NO;
 }
 %end
 %hook SBIcon
-- (void)setBadge:(id)arg1
-{
-    %orig;
-    CHECK_ENABLED();
-    
-    int badgeCount = self.badgeValue;
-    if ([self respondsToSelector:@selector(applicationBundleID)] == NO || self.applicationBundleID == nil)
-        return;
-    NSString *ident = self.applicationBundleID;
-
-    if (badgeCount > 0)
-    {
-        [PRStatusApps showIconFor:ident badgeCount:badgeCount];
-    }
-    else // badgeCount <= 0
-    {    
-        id nc_ = [Protean getOrLoadSettings][@"useNC"];
-        if (!nc_ || [nc_ boolValue])
-        {
-            if ([PRStatusApps ncCount:ident] > 0)
-                [PRStatusApps updateNCStatsForIcon:ident count:[PRStatusApps ncCount:ident]]; // update with NC data
-            else
-            {
-                [PRStatusApps hideIconFor:ident];
-            }
-        }
-        else
-        {
-            [PRStatusApps hideIconFor:ident];
-        }
-    }
-    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
-    [PRStatusApps updateTotalNotificationCountIcon];
-}
-
 -(long long) badgeValue
 {
     long long badgeCount = %orig;
@@ -865,40 +838,6 @@ BOOL o = NO;
     [PRStatusApps updateTotalNotificationCountIcon];
 
     return badgeCount;
-}
-%end
-%hook SBApplicationIcon
-- (void)setBadge:(id)arg1
-{
-    %orig;
-    CHECK_ENABLED();
-    
-    int badgeCount = self.badgeValue;
-    NSString *ident = self.applicationBundleID;
-
-    if (badgeCount > 0)
-    {
-        [PRStatusApps showIconFor:ident badgeCount:badgeCount];
-    }
-    else // badgeCount <= 0
-    {    
-        id nc_ = [Protean getOrLoadSettings][@"useNC"];
-        if (!nc_ || [nc_ boolValue])
-        {
-            if ([PRStatusApps ncCount:ident] > 0)
-                [PRStatusApps updateNCStatsForIcon:ident count:[PRStatusApps ncCount:ident]]; // update with NC data
-            else
-            {
-                [PRStatusApps hideIconFor:ident];
-            }
-        }
-        else
-        {
-            [PRStatusApps hideIconFor:ident];
-        }
-    }
-    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
-    [PRStatusApps updateTotalNotificationCountIcon];
 }
 %end
 
@@ -943,7 +882,7 @@ static BBServer *sharedServer;
     %orig;
 
     CHECK_ENABLED();
-    [PRStatusApps reloadAllImages];
+    [PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
 }
 %end
 
@@ -960,14 +899,12 @@ void launchApp(CFNotificationCenterRef center,
 -(void) _handleDisplayTurnedOn
 {
     %orig;
-
     [PRStatusApps updateLockState:YES];
 }
 
 -(void)_handleDisplayTurnedOff
 {
     %orig;
-
     [PRStatusApps updateLockState:NO];
 }
 %end
@@ -977,23 +914,27 @@ void launchApp(CFNotificationCenterRef center,
 {
     %orig;
     if (![self hasAnyLockState]) 
-        [PRStatusApps reloadAllImages];
+        [PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
 }
 %end
 
 %ctor
 {
     @autoreleasepool {
-        dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar.dylib", RTLD_NOW | RTLD_GLOBAL);
+        if ([NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib"])
+            dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib", RTLD_NOW | RTLD_GLOBAL);
+        else if ([NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/libstatusbar.dylib"])
+            dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar.dylib", RTLD_NOW | RTLD_GLOBAL);
+        else
+            [NSException raise:NSInternalInconsistencyException format:@"Protean: neither libstatusbar8 nor libstatusbar were found"];  
+
         if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/bars.dylib"])
             dlopen("/Library/MobileSubstrate/DynamicLibraries/bars.dylib", RTLD_NOW | RTLD_GLOBAL);
 
         %init;
 
         if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
-        {
             CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &launchApp, CFSTR("com.efrederickson.protean/launchApp"), NULL, 0);
-        }
     }
 
     // Load vectors

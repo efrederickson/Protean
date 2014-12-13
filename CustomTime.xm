@@ -60,6 +60,8 @@ BOOL wasLowercased = NO;
 	if ([spellOut boolValue])
 	{
 		__strong NSString *&time = MSHookIvar<NSString *>(self, "_timeString");
+		time = nil;
+
 		NSDate *now = [NSDate date];
 		NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
 		[formatter setNumberStyle: NSNumberFormatterSpellOutStyle];
@@ -69,13 +71,18 @@ BOOL wasLowercased = NO;
 		NSInteger hour = [components hour];
 		NSInteger minute = [components minute];
 
+		BOOL am = hour < 12;
+		hour = hour > 12 ? hour - 12 : hour;
+		if (hour == 0)
+			hour = 12;
+
 		time = [NSString stringWithFormat:@"%@ %@ %@",
-			[formatter stringFromNumber:@(hour > 12 ? hour - 12 : hour)],
+			[formatter stringFromNumber:@(hour)],
 			minute == 0 ? @"o' clock"
 				: minute < 10 ? 
 					[NSString stringWithFormat:@"oh %@", [formatter stringFromNumber:@(minute)]] 
 					: [formatter stringFromNumber:@(minute)], 
-			hour > 12 ? @"pm" : @"am"];
+			!am ? @"pm" : @"am"];
 	}
 	return %orig;
 }

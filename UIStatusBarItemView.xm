@@ -35,11 +35,17 @@ NSCache *cache = [[NSCache alloc] init];
             patchedName = [name substringFromIndex:6];
         else if ([name hasPrefix:@"LockScreen_"])
             patchedName = [name substringFromIndex:11];
-            
+        
         if ([patchedName hasSuffix:@"_Color"])
-            return nil;
-            //patchedName = [patchedName substringToIndex:patchedName.length - 6];
-            
+        {
+            patchedName = [patchedName substringToIndex:patchedName.length - 6];
+
+            return //[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@.png", patchedName]]
+                //?: [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/TranslatedVectors~cache/%@.png", patchedName]]
+                //?: 
+                [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/System/Library/Frameworks/UIKit.framework/%@.png",name]];
+        }
+        
         NSString *patchedName2 = patchedName;
         if ([patchedName hasPrefix:@"PR_"])
             patchedName2 = [patchedName substringFromIndex:3];

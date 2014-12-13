@@ -28,7 +28,7 @@ extern NSString *const PSControlMaximumKey;
 @interface ProteanSettingsListController : SKTintedListController<SKListControllerProtocol, MFMailComposeViewControllerDelegate>
 @end
 
-@interface PRAdvancedSettingsListController : SKTintedListController<SKListControllerProtocol>
+@interface PRAdvancedSettingsListController : SKTintedListController<SKListControllerProtocol, UIAlertViewDelegate>
 @end
 
 @interface PSViewController ()
@@ -353,6 +353,13 @@ extern NSString *const PSControlMaximumKey;
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
 }
 
+ -(id)readPreferenceValue:(PSSpecifier*)specifier
+ {
+    NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/%@.plist",[specifier propertyForKey:@"defaults"]];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
+    return dict[[specifier propertyForKey:@"key"]]; 
+ }
+
 -(void) viewWillAppear:(BOOL) animated
 {
     [super viewWillAppear:animated];
@@ -447,7 +454,7 @@ extern NSString *const PSControlMaximumKey;
                  @"label": @"Show Wifi/Data RSSI",
                  @"PostNotification": @"com.apple.springboard/Prefs",
                  @"icon": @"wifirssi.png"
-                 },*/
+                 },
              
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Enabled by default if the time is not aligned in the center. Unlike many other tweaks, it is compatible with LockInfo7 and Forecast."
@@ -460,7 +467,7 @@ extern NSString *const PSControlMaximumKey;
                  @"label": @"Show LS Time",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"icon": @"showLSTime.png"
-                 },
+                 },*/
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"Include notification counts from the Notification Center in addition to badge counts for applications."
                 },
@@ -488,7 +495,8 @@ extern NSString *const PSControlMaximumKey;
                  },
 
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"Change the battery percentage (and its color) and carrier to custom string types. Space for carrier string hides it, empty is original carrier name. A time formatting guide is available in the documentation."
+                @"footerText": @"Change the battery percentage (and its color) and carrier to custom string types.",
+                //" Space for carrier string hides it, empty is original carrier name. A time formatting guide is available in the documentation."
                 },
              @{
                  @"cell": @"PSLinkListCell",
@@ -532,7 +540,7 @@ extern NSString *const PSControlMaximumKey;
                     @"color_postNotification": @"com.efrederickson.protean/reloadSettings"
                  },
 
-             @{
+             /*@{
                  @"cell": @"PSEditTextCell",
                  @"default": @"",
                  @"defaults": @"com.efrederickson.protean.settings",
@@ -575,7 +583,7 @@ extern NSString *const PSControlMaximumKey;
                  @"label": @"Spell Out Time (12h)",
                  @"PostNotification": @"com.efrederickson.protean/reloadSettings",
                  @"icon": @"lowercaseampm.png"
-                 },
+                 },*/
 
              @{ @"cell": @"PSGroupCell",
                 @"footerText": @"This may cause minor spacing or overlap issues if items extend pass the midline of the status bar. It is, of course, libstatusbar's fault ;P. Requires a respring to fully apply."
@@ -617,8 +625,18 @@ extern NSString *const PSControlMaximumKey;
 
 -(void) resetData
 {
-	[NSFileManager.defaultManager removeItemAtPath:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist" error:nil];
-	[self respring];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Protean" message:@"Please confirm your choice to reset all settings." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
+    [alert addButtonWithTitle:@"Yes"];
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex 
+{
+    if (buttonIndex == 1) 
+    {
+        [NSFileManager.defaultManager removeItemAtPath:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist" error:nil];
+        [self respring];
+    }
 }
 
 -(void)respring
@@ -661,7 +679,6 @@ extern NSString *const PSControlMaximumKey;
 @end
 
 @implementation PRDocumentationListController
-
 - (id)initForContentSize:(CGSize)size
 {
     if ((self = [super initForContentSize:size]))
@@ -727,8 +744,7 @@ extern NSString *const PSControlMaximumKey;
 #define WBSAddMethod(_class, _sel, _imp, _type) \
 if (![[_class class] instancesRespondToSelector:@selector(_sel)]) \
 class_addMethod([_class class], @selector(_sel), (IMP)_imp, _type)
-void $PSViewController$hideNavigationBarButtons(PSRootController *self, SEL _cmd) {
-}
+void $PSViewController$hideNavigationBarButtons(PSRootController *self, SEL _cmd) { }
 
 id $PSViewController$initForContentSize$(PSRootController *self, SEL _cmd, CGRect contentSize) {
     return [self init];

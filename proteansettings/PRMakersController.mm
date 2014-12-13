@@ -132,8 +132,8 @@ hodhr\n\
 /u/narcolepticinsomniac\n\
 Framboogle\n\
 Djaovx\n\n\
-And thanks to all who tested \"open\" beta versions and reported feedback. \n\
-Also, thanks to those who contributed ideas, feature enhancements, bug reports, and the like. \n\
+And thanks to all who tested beta versions and/or reported feedback. \n\
+Also, a special thanks goes to those who contributed ideas, feature enhancements, bug reports, and the like. \n\
 \n\
 \n\
 This software uses a modified version of PDFImage.framework, by Tom Perry. PDFImage.framework is under the \"Unlicense\" license.\n\
@@ -142,7 +142,6 @@ For more information, please refer to http://unlicense.org/\n\
 This software uses UIDiscreteSlider by Phillip Harris, Copyright 2014. \n\
 UIDiscreteSlider is under the MIT license: \n\
 The MIT License (MIT)\n\
-\n\
 Copyright (c) 2014 Phillip Harris\n\
 \n\
 Permission is hereby granted, free of charge, to any person obtaining a copy\n\
@@ -167,6 +166,7 @@ This software uses a modified libcolorpicker by PixelFireDev\n\
 libcolorpicker is under the MIT license\n\
 The MIT License (MIT)\n\
 Copyright (c) 2014 PixelFireDev\n\
+\n\
 Permission is hereby granted, free of charge, to any person obtaining a copy \n\
 of this software and associated documentation files (the \"Software\"), to deal \n\
 in the Software without restriction, including without limitation the rights \n\

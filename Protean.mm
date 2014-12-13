@@ -296,7 +296,7 @@ static BOOL first = YES;
     [Protean getOrLoadSettings];
     if (!first)
     {
-        [PRStatusApps reloadAllImages];
+        [PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
     }
     else
         first = NO;

@@ -118,11 +118,9 @@ UIImage *resizeImage(UIImage *icon)
         [NSFileManager.defaultManager createDirectoryAtPath:@"/Library/Protean/protean-fscache" withIntermediateDirectories:YES attributes:nil error:nil];
         for (NSString *switchIdentifier in FSSwitchPanel.sharedPanel.switchIdentifiers)
         {
-            BOOL isPad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
-            NSString *TemplatePath = isPad ? @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle" : @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle";
             NSBundle *templateBundle = nil;
             if (!templateBundle) 
-                templateBundle = [NSBundle bundleWithPath:TemplatePath];
+                templateBundle = [NSBundle bundleWithPath:@"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle"];
 
             UIImage *img = [[FSSwitchPanel sharedPanel] 
                 imageOfSwitchState:FSSwitchStateOff
@@ -143,7 +141,7 @@ UIImage *resizeImage(UIImage *icon)
             else
                 filePath = [NSString stringWithFormat:@"/Library/Protean/protean-fscache/%@-on.png",switchIdentifier];
 
-            [UIImagePNGRepresentation(img) writeToFile:filePath atomically:YES];
+            [UIImagePNGRepresentation(resizeImage(img)) writeToFile:filePath atomically:YES];
         }
     }
 }

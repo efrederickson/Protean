@@ -6,7 +6,7 @@
 -(void)viewWillDisappear:(BOOL)animated;
 @end
 
-@interface PRSysIconSelectorController : PSViewController <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchDisplayDelegate>
+@interface PRSysIconSelectorController : PSViewController <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate>
 {
 	NSString* _appName;
 	NSString* _identifier;

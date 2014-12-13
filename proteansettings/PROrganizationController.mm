@@ -3,10 +3,8 @@
 #import <objcipc/objcipc.h>
 #import <flipswitch/Flipswitch.h>
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
-#define isPad() ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
-#define iPhoneTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle"
-#define iPadTemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate~iPad.bundle"
-#define TemplatePath (isPad() ? iPadTemplatePath : iPhoneTemplatePath)
+#define TemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle"
+#define LIBSTATUSBAR8 ([NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib"])
 
 BOOL showedAlert = NO;
 
@@ -178,6 +176,7 @@ UIImage *iconForDescription(NSString *desc)
     if ([desc hasPrefix:@"com.efrederickson.protean-"])
     {
         NSString *identifier = [desc substringFromIndex:26];
+
         
         ALApplicationList *al = [ALApplicationList sharedApplicationList];
         if ([al.applications.allKeys containsObject:identifier])
@@ -198,6 +197,9 @@ UIImage *iconForDescription(NSString *desc)
             desc = @"TotalNotificationCount";
     }
     
+    if ([desc hasPrefix:@"spacer-"])
+        desc = @"Spacer";
+
     if ([desc hasPrefix:@"Indicator:"])
         desc = [desc substringFromIndex:10];
     
@@ -334,12 +336,15 @@ NSDictionary *mapSettings()
     if (destinationIndexPath.section == 2 && // center
         [dict[@"key"] intValue] > 32) // non-system item
     {
-        cachedSettings = nil;
-        [tableView reloadData];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops" 
-                message:@"Unfortunately, libstatusbar icons cannot be aligned to the center." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
-        return;
+        if (!LIBSTATUSBAR8)
+        {
+            cachedSettings = nil;
+            [tableView reloadData];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops" 
+                    message:@"Unfortunately, libstatusbar icons cannot be aligned to the center." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            return;
+        }
     }
 
     NSMutableDictionary *prefs = [NSMutableDictionary

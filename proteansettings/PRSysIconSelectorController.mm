@@ -15,18 +15,18 @@ static NSMutableArray* statusIcons;
 NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d\\d?)?(?:@.*|)(?:~.*|).png";
 static NSMutableArray *searchedIcons;
 NSArray *canHaveImages = @[ @1, @2, @11, @12, @13, @16, @17, @19, @20, @21, @22];
-NSArray *canSupportExtendedOptions = @[ @0, // Custom time, show on LS  - 3 options                                          - 
+NSArray *canSupportExtendedOptions = @[ @0, // Custom time, show on LS, lowercase am/pm, spell out  - 4 options              - Done
                                         @3, // Signal RSSI, replace with number (TODO) (e.g. 3 for 3 bars) - 2 option        - Signal RSSI done
                                         @5, // Wifi/Data RSSI           - 1 option                                           - Done
-                                        @8, // Battery Percent          - 1 option (style)                                   - 
-                                        @4, // Custom Carrier/carrier timestr - 2 options                                - 
+                                        @8, // Battery Percent, colors  - 3 options                                          - NOPE
+                                        @4, // Custom Carrier/carrier timestr - 2 options                                    - Done
                                         ];
 
 NSDictionary *extendedOptionsCounts = @{
-    @0: @3,
+    @0: @4,
     @3: @2,
     @5: @1,
-    @8: @1,
+    //@8: @3, <- battery percentage, TODO
     @4: @2,  
 };
 
@@ -309,20 +309,77 @@ UIImage *resizeImage(UIImage *icon)
                 textField.placeholder = @"Default carrier";
                 textField.text = [objc_getClass("Protean") getOrLoadSettings][@"serviceString"];
                 cell.accessoryView = textField;
-                // TODO: save
+                textField.delegate = self;
+                textField.tag = 0;
+                textField.keyboardType = UIKeyboardTypeDefault;
+                textField.returnKeyType = UIReturnKeyDone;
+
+                return cell;
             }
             else
             {
-/*
-             @{
-                 @"cell": @"PSSwitchCell",
-                 @"default": @NO,
-                 @"defaults": @"com.efrederickson.protean.settings",
-                 @"key": @"serviceIsTimeString",
-                 @"label": @"Use carrier as time format",
-                 @"PostNotification": @"com.efrederickson.protean/reloadSettings",
-                 },
-                 */
+                cell.textLabel.text = @"Use carrier as time format";
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+                cell.accessoryView = switchView;
+                BOOL enabled = [[objc_getClass("Protean") getOrLoadSettings][@"serviceIsTimeString"] boolValue];
+                [switchView setOn:enabled animated:NO];
+                [switchView addTarget:self action:@selector(toggleServiceIsTimeStr:) forControlEvents:UIControlEventValueChanged];
+                return cell;
+            }
+        }
+        if (_raw_id == 0) // Time
+        {
+            if (indexPath.row == 0)
+            {
+                // show on LS
+                cell.textLabel.text = @"Show LS Time";
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+                cell.accessoryView = switchView;
+                BOOL enabled = [[objc_getClass("Protean") getOrLoadSettings][@"showLSTime"] boolValue];
+                [switchView setOn:enabled animated:NO];
+                [switchView addTarget:self action:@selector(toggleShowLSTime:) forControlEvents:UIControlEventValueChanged];
+                return cell;
+            }
+            else if (indexPath.row == 1)
+            {
+                // Time format
+                UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 200, 21)];
+                cell.textLabel.text = @"Time format:";
+                textField.placeholder = @"h:mm a";
+                textField.text = [objc_getClass("Protean") getOrLoadSettings][@"timeFormat"];
+                cell.accessoryView = textField;
+                textField.delegate = self;
+                textField.tag = 1;
+                textField.keyboardType = UIKeyboardTypeDefault;
+                textField.returnKeyType = UIReturnKeyDone;
+
+                return cell;
+            }
+            else if (indexPath.row == 2)
+            {
+                // lowercase AM/PM
+                cell.textLabel.text = @"Lowercase AM/PM";
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+                cell.accessoryView = switchView;
+                BOOL enabled = [[objc_getClass("Protean") getOrLoadSettings][@"lowercaseAMPM"] boolValue];
+                [switchView setOn:enabled animated:NO];
+                [switchView addTarget:self action:@selector(toggleLowercaseAMPM:) forControlEvents:UIControlEventValueChanged];
+                return cell;
+            }
+            else if (indexPath.row == 3)
+            {
+                // spell out time
+                cell.textLabel.text = @"Spell out time (12h)";
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+                cell.accessoryView = switchView;
+                BOOL enabled = [[objc_getClass("Protean") getOrLoadSettings][@"spellOut"] boolValue];
+                [switchView setOn:enabled animated:NO];
+                [switchView addTarget:self action:@selector(toggleSpellOutTime:) forControlEvents:UIControlEventValueChanged];
+                return cell;
             }
         }
     }
@@ -358,7 +415,8 @@ UIImage *resizeImage(UIImage *icon)
 -(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
 	UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
-    
+    //[self tableView:tableView didDeselectRowAtIndexPath:indexPath];
+
     if (indexPath.section == 0 && !isSearching)
     {
         tapAction = indexPath.row;
@@ -511,5 +569,83 @@ UIImage *resizeImage(UIImage *icon)
 
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+}
+
+-(void) toggleServiceIsTimeStr:(id) sender
+{
+    UISwitch* switchControl = sender;
+    BOOL value = switchControl.on;
+    NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist"];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
+    [dict setObject:@(value) forKey:@"serviceIsTimeString"];
+    [dict writeToFile:plistName atomically:YES];
+
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+}
+
+-(void) toggleShowLSTime:(id)sender
+{
+    UISwitch* switchControl = sender;
+    BOOL value = switchControl.on;
+    NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist"];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
+    [dict setObject:@(value) forKey:@"showLSTime"];
+    [dict writeToFile:plistName atomically:YES];
+
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+
+}
+-(void) toggleSpellOutTime:(id)sender
+{
+    UISwitch* switchControl = sender;
+    BOOL value = switchControl.on;
+    NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist"];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
+    [dict setObject:@(value) forKey:@"spellOut"];
+    [dict writeToFile:plistName atomically:YES];
+
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+
+}
+-(void) toggleLowercaseAMPM:(id)sender
+{
+    UISwitch* switchControl = sender;
+    BOOL value = switchControl.on;
+    NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist"];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
+    [dict setObject:@(value) forKey:@"lowercaseAMPM"];
+    [dict writeToFile:plistName atomically:YES];
+
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if(textField.tag == 0)
+    {
+        NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist"];
+        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
+        [dict setObject:textField.text forKey:@"serviceString"];
+        [dict writeToFile:plistName atomically:YES];
+
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+    }
+    else if (textField.tag == 1)
+    {
+        NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/com.efrederickson.protean.settings.plist"];
+        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
+        [dict setObject:textField.text forKey:@"timeFormat"];
+        [dict writeToFile:plistName atomically:YES];
+
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/reloadSettings"), nil, nil, YES);
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.efrederickson.protean/refreshStatusBar"), nil, nil, YES);
+    }
+    [textField resignFirstResponder];
+    return YES;
 }
 @end

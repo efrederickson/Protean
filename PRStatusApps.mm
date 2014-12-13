@@ -197,12 +197,11 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
     // Status Apps
     totalBadgeCount = 0;
 
-    for (NSString *identifier in [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] visibleIconIdentifiers]) {
+    for (NSString *identifier in [[[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] visibleIconIdentifiers] copy]) {
         SBIcon *icon = nil;
         if ([[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] respondsToSelector:@selector(applicationIconForBundleIdentifier:)])
         {
             // iOS 8.0+
-
             icon = [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] applicationIconForBundleIdentifier:identifier];
         }
         else
@@ -211,11 +210,7 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
             icon = [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] applicationIconForDisplayIdentifier:identifier];
         }
         if (icon && [icon badgeNumberOrString]) {
-            if (icon.badgeValue > 0)
-            {
-                [PRStatusApps showIconFor:identifier badgeCount:icon.badgeValue];
-                totalBadgeCount += icon.badgeValue;
-            }
+            [icon badgeValue]; // Hooks will take care of the rest.
         }
     }
     
@@ -237,9 +232,7 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
     }
 
     for (NSString *key in [ncData copy])
-    {
         [PRStatusApps updateNCStatsForIcon:key count:[ncData[key] intValue]];
-    }
 
     [PRStatusApps updateTotalNotificationCountIcon];
     
