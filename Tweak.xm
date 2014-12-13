@@ -748,6 +748,35 @@ BOOL o = NO;
     o = NO;
     return r;
 }
+
+%group NOT_LIBSTATUSBAR8
+- (CGFloat)_startPosition
+{
+	CGFloat orig = %orig;
+	int region = MSHookIvar<int>(self, "_region");
+	NSArray *itemViews = [self _itemViewsSortedForLayout];
+	if (region == 2 && [itemViews count] > 1)
+	{
+		CGFloat width = 0;
+		//width -= [itemViews[0] frame].size.width;
+		for (UIStatusBarItemView *view in itemViews)
+			width += view.frame.size.width;
+		return orig - floor(width / 2) + UIScreen.mainScreen.scale; // ... how does that even fix it? 
+	}
+	return orig;
+}
+
+- (CGRect)rectForItems:(id)arg1
+{
+	int region = MSHookIvar<int>(self, "_region");
+
+	CGRect rect = %orig;
+	if (region == 2 && [[self _itemViewsSortedForLayout] count] > 1)
+		rect.origin.x -= [self _startPosition];
+	return rect;
+}
+%end
+
 %end
 %hook UIStatusBarForegroundView
 - (id)_computeVisibleItemsPreservingHistory:(_Bool)arg1
@@ -932,6 +961,8 @@ void launchApp(CFNotificationCenterRef center,
             dlopen("/Library/MobileSubstrate/DynamicLibraries/bars.dylib", RTLD_NOW | RTLD_GLOBAL);
 
         %init;
+	    if (!LIBSTATUSBAR8)
+	    	%init(NOT_LIBSTATUSBAR8);
 
         if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
             CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &launchApp, CFSTR("com.efrederickson.protean/launchApp"), NULL, 0);
