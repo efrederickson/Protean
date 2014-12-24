@@ -187,8 +187,9 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
     id _enabled = [Protean getOrLoadSettings][@"enabled"];
     if ((_enabled ? [_enabled boolValue] : YES) == NO)
     {
-        for (id key in icons.allKeys)
-            [PRStatusApps hideIconFor:key];
+        if (icons)
+            for (id key in icons.allKeys)
+                [PRStatusApps hideIconFor:key];
         return;
     }
 
@@ -214,20 +215,23 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
         }
     }
     
-    for (NSString* key in icons.allKeys)
+    if (icons)
     {
-        LSStatusBarItem *item = ((LSStatusBarItem*)icons[key]);
-        if ([cachedBadgeCounts.allKeys containsObject:key])
-            item.imageName = [Protean imageNameForIdentifier:key withBadgeCount:bestCountForApp(key)] ?: key;
-        else
-            item.imageName = [Protean imageNameForIdentifier:key] ?: key;
-        
-        if (cachedBadgeCounts[key] && [cachedBadgeCounts[key] intValue] > 0)
-            item.visible = YES;
-        
-        if (item.imageName == nil || [item.imageName isEqual:@""])
+        for (NSString* key in icons.allKeys)
         {
-            [PRStatusApps hideIconFor:key];
+            LSStatusBarItem *item = ((LSStatusBarItem*)icons[key]);
+            if ([cachedBadgeCounts.allKeys containsObject:key])
+                item.imageName = [Protean imageNameForIdentifier:key withBadgeCount:bestCountForApp(key)] ?: key;
+            else
+                item.imageName = [Protean imageNameForIdentifier:key] ?: key;
+            
+            if (cachedBadgeCounts[key] && [cachedBadgeCounts[key] intValue] > 0)
+                item.visible = YES;
+            
+            if (item.imageName == nil || [item.imageName isEqual:@""])
+            {
+                [PRStatusApps hideIconFor:key];
+            }
         }
     }
 

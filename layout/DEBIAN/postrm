@@ -1,5 +1,5 @@
 #!/bin/sh
 
 echo Protean: Cleaning caches...
-rm -rf /Library/Protean/protean-fscache/
-rm -rf /Library/Protean/TranslatedVectors~cache
+rm -rf /User/Library/Protean/protean-fscache/
+rm -rf /User/Library/Protean/TranslatedVectors~cache

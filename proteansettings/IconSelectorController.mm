@@ -6,7 +6,7 @@
 
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 NSString* const ONIconPath = @"/System/Library/Frameworks/UIKit.framework";
-NSString* const vectorIconPath = @"/Library/Protean/TranslatedVectors~cache/";
+NSString* const vectorIconPath = @"/User/Library/Protean/TranslatedVectors~cache/";
 static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
@@ -44,34 +44,6 @@ UIImage *imageFromName(NSString *name)
     
     UIImage *icon = nil;
 
-    /*
-    if (!icon && ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/PR_%@@2x.png",iconPath,name]] || [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/PR_%@@3x.png",iconPath,name]]))
-        //icon = [UIImage imageNamed:[NSString stringWithFormat:@"PR_%@", name] inBundle:imageBundle];
-        icon =  [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/PR_%@.png", iconPath, name]];
-
-    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_%@@2x.png",ONIconPath,name]])
-        //icon = [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",name]];
-        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_%@@2x.png", ONIconPath, name]];
-    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_%@@3x.png",ONIconPath,name]])
-        //icon = [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",name]];
-        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_%@@3x.png", ONIconPath, name]];
-
-    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@@2x.png",ONIconPath,name]])
-        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@@2x.png", ONIconPath, name]];
-    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@@3x.png",ONIconPath,name]])
-        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@@3x.png", ONIconPath, name]];
-    
-    // Non-retina
-    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/PR_%@.png",iconPath,name]])
-        //icon = [UIImage imageNamed:[NSString stringWithFormat:@"PR_%@", name] inBundle:imageBundle];
-        icon =  [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/PR_%@.png", iconPath, name]];
-    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_%@.png",ONIconPath,name]])
-        //icon = [UIImage kitImageNamed:[NSString stringWithFormat:@"Black_ON_%@",name]];
-        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_%@.png", ONIconPath, name]];
-    if (!icon && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png",ONIconPath,name]])
-        icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/Black_ON_Count1_%@.png", ONIconPath, name]];
-
-        */
     icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/PR_%@.png", name]];
     if (!icon)
         icon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/PR_%@.png",vectorIconPath,name]];

@@ -74,7 +74,10 @@ BOOL wasLowercased = NO;
 		BOOL am = hour < 12;
 		hour = hour > 12 ? hour - 12 : hour;
 		if (hour == 0)
+		{
+			am = YES;
 			hour = 12;
+		}
 
 		time = [NSString stringWithFormat:@"%@ %@ %@",
 			[formatter stringFromNumber:@(hour)],

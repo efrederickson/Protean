@@ -1,6 +1,10 @@
 #import "Protean.h"
 #import "proteansettings/libcolorpicker/UIColor+PFColor.h"
 
+@interface UIColor (Private)
+- (BOOL)_isSimilarToColor:(UIColor *)color withinPercentage:(CGFloat)percentage;
+@end
+
 @interface PLBatteryPropertiesEntry// : PLEntry
 +(instancetype) batteryPropertiesEntry;
 @property(readonly, nonatomic) BOOL draining;
@@ -180,7 +184,7 @@ unsigned int batteryState;
 	_UILegibilityImageSet *original = %orig;
 
 	UIColor *color = [UIColor PF_colorWithHex:[Protean getOrLoadSettings][charging ? @"chargingPercentageColor" : @"notChargingPercentageColor"]];
-	if (color)
+	if (color && [color _isSimilarToColor:[UIColor blackColor] withinPercentage:0.2])
 		original.image = [original.image _flatImageWithColor:color];
     
 	return original;

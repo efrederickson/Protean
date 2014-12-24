@@ -8,7 +8,7 @@
 #import <objc/runtime.h>
 #import "../Protean.h"
 
-NSString* const vectorIconPath = @"/Library/Protean/TranslatedVectors~cache/";
+NSString* const vectorIconPath = @"/User/Library/Protean/TranslatedVectors~cache/";
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;

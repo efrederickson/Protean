@@ -1,5 +1,7 @@
 ARCHS = armv7 armv7s arm64
 TARGET = iphone:7.1
+# TODO: update to iOS 8 with the new search controller
+# issues: woudn't work on iOS 7
 CFLAGS = -fobjc-arc
 
 include $(THEOS)/makefiles/common.mk

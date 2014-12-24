@@ -7,6 +7,6 @@ Version: 1.0.5
 Architecture: iphoneos-arm
 Description: Your status bar, your way.
 Depiction: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=proteanDp
-Maintainer: Elijah Frederickson
-Author: Elijah Frederickson
+Maintainer: Elijah Frederickson <elijah.frederickson@gmail.com>
+Author: Elijah Frederickson <elijah.frederickson@gmail.com>
 Section: Tweaks

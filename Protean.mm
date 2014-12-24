@@ -16,15 +16,10 @@ extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void
 
 //based on http://iphonedevwiki.net/index.php/Libactivator#Dispatching_Events
 inline LAEvent *LASendEventWithName(NSString *eventName) {
-	id activator = objc_getClass("LASharedActivator");
+	//id activator = objc_getClass("LASharedActivator");
+    id activator = [objc_getClass("LAActivator") sharedInstance];
 	LAEvent *event = [objc_getClass("LAEvent") eventWithName:eventName mode:[activator currentEventMode]];
 	[activator sendEventToListener:event];
-	return event;
-}
-inline LAEvent *LASendEventToListener(NSString *listener) {
-	id activator = objc_getClass("LASharedActivator");
-	LAEvent *event = [objc_getClass("LAEvent") eventWithName:@"com.efrederickson.protean.dummy_event" mode:[activator currentEventMode]];
-	[activator sendEvent:event toListenerWithName:listener];
 	return event;
 }
 
@@ -169,6 +164,8 @@ NSMutableDictionary *prefs = nil;
 
 +(NSString*)imageNameForIdentifier:(NSString*)identifier
 {    
+	if (identifier == nil)
+		return nil;
     @autoreleasepool {
         NSDictionary *dict = [Protean getOrLoadSettings];
         NSString *ret = dict[@"images"][identifier];
@@ -185,7 +182,7 @@ NSMutableDictionary *prefs = nil;
 
 +(NSString*)imageNameForIdentifier:(NSString*)identifier withBadgeCount:(int)count
 {
-    @autoreleasepool { // This took me hours to not only find (the cause) (which i still don't think i have), but then to also fix it. ARC can be annoying. 
+    @autoreleasepool { // This took me hours to not only find (the cause for low memory crashes) (which i still don't think i have although this is a step), but then to also fix it. ARC can be annoying. 
         NSString *baseName = [Protean imageNameForIdentifier:identifier];
         if (!baseName)
             return nil;

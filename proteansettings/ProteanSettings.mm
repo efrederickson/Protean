@@ -641,7 +641,11 @@ extern NSString *const PSControlMaximumKey;
 
 -(void)respring
 {
+    // pffft who cares if it's deprecated
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     system("killall -9 SpringBoard");
+#pragma clang diagnostic pop
 }
 
  -(id)readPreferenceValue:(PSSpecifier*)specifier

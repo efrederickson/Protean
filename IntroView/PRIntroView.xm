@@ -11,6 +11,7 @@ UIWindow *window;
 -(void)_updateLockState
 {
     %orig;
+    return;
 
     if ([self hasAnyLockState])
         return;

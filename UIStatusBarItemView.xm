@@ -50,7 +50,7 @@ NSCache *cache = [[NSCache alloc] init];
         if ([patchedName hasPrefix:@"PR_"])
             patchedName2 = [patchedName substringFromIndex:3];
 
-        NSString *fsName = [NSString stringWithFormat:@"/Library/Protean/protean-fscache/%@-%@.png",patchedName2,
+        NSString *fsName = [NSString stringWithFormat:@"/User/Library/Protean/protean-fscache/%@-%@.png",patchedName2,
             [[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:patchedName2] == FSSwitchStateOn ? @"on" : @"off"];
         UIImage *image = [UIImage imageWithContentsOfFile:fsName];
         if (image)
@@ -62,9 +62,57 @@ NSCache *cache = [[NSCache alloc] init];
         if (!image)
             image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@.png", patchedName]];
 
+        if (!image)
+        {
+            NSURL *directoryURL = [NSURL URLWithString:@"/Library/Protean/Images.bundle/"];
+            NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
+
+            NSDirectoryEnumerator *enumerator = [NSFileManager.defaultManager enumeratorAtURL:directoryURL includingPropertiesForKeys:keys options:0 errorHandler:^(NSURL *url, NSError *error) { return YES; }];
+
+            for (NSURL *url in enumerator) 
+            { 
+                NSError *error;
+                NSNumber *isDirectory = @0;
+                [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error];
+                if ([isDirectory boolValue]) 
+                {
+                    NSString *dirName =[[[url absoluteString] stringByDeletingLastPathComponent] lastPathComponent];
+
+                    if (!image)
+                        image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/Images.bundle/%@/%@.png", dirName, patchedName]];  
+                    if (image)
+                        break;
+                }
+            }
+        }
+
         //NSLog(@"[Protean] %@", [NSString stringWithFormat:@"/tmp/protean/%@.png", patchedName]);
         if (!image)
-            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/Protean/TranslatedVectors~cache/%@.png", patchedName]];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/User/Library/Protean/TranslatedVectors~cache/%@.png", patchedName]];
+
+        if (!image)
+        {
+            NSURL *directoryURL = [NSURL URLWithString:@"/User/Library/Protean/TranslatedVectors~cache/"];
+            NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
+
+            NSDirectoryEnumerator *enumerator = [NSFileManager.defaultManager enumeratorAtURL:directoryURL includingPropertiesForKeys:keys options:0 errorHandler:^(NSURL *url, NSError *error) { return YES; }];
+
+            for (NSURL *url in enumerator) 
+            { 
+                NSError *error;
+                NSNumber *isDirectory = @0;
+                [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error];
+                if ([isDirectory boolValue]) 
+                {
+                    NSString *dirName =[[[url absoluteString] stringByDeletingLastPathComponent] lastPathComponent];
+
+                    if (!image)
+                        image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/User/Library/Protean/TranslatedVectors~cache/%@/%@.png", dirName, patchedName]];  
+                    if (image)
+                        break;
+                }
+            }
+        }
 
         if (!image)
         {

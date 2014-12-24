@@ -6,7 +6,7 @@
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 #define TemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle"
 
-NSString* const vectorIconPath = @"/Library/Protean/TranslatedVectors~cache/";
+NSString* const vectorIconPath = @"/User/Library/Protean/TranslatedVectors~cache/";
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 NSString* const ONIconPath = @"/System/Library/Frameworks/UIKit.framework";
 static UIImage* defaultIcon;

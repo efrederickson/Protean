@@ -972,7 +972,7 @@ void launchApp(CFNotificationCenterRef center,
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
     {
         NSString *vectorPath = @"/Library/Protean/Vectors";
-        NSString *transformedPath = @"/Library/Protean/TranslatedVectors~cache/"; // WAS: /tmp/protean
+        NSString *transformedPath = @"/User/Library/Protean/TranslatedVectors~cache/"; // WAS: /tmp/protean
         [NSFileManager.defaultManager createDirectoryAtPath:transformedPath withIntermediateDirectories:YES attributes:nil error:nil];
 
         NSMutableArray *vectorCache = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:transformedPath error:nil] mutableCopy]; // for purging old images

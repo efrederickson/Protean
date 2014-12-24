@@ -4,7 +4,7 @@
 #import <objc/runtime.h>
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
-NSString* const vectorIconPath = @"/Library/Protean/TranslatedVectors~cache/";
+NSString* const vectorIconPath = @"/User/Library/Protean/TranslatedVectors~cache/";
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
