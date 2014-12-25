@@ -184,7 +184,7 @@ unsigned int batteryState;
 	_UILegibilityImageSet *original = %orig;
 
 	UIColor *color = [UIColor PF_colorWithHex:[Protean getOrLoadSettings][charging ? @"chargingPercentageColor" : @"notChargingPercentageColor"]];
-	if (color && [color _isSimilarToColor:[UIColor blackColor] withinPercentage:0.2])
+	if (color && [color _isSimilarToColor:[UIColor blackColor] withinPercentage:0.2] == NO)
 		original.image = [original.image _flatImageWithColor:color];
     
 	return original;

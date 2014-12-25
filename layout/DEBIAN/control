@@ -3,7 +3,7 @@ Name: Protean
 Depends: firmware (>=7.0), mobilesubstrate, libstatusbar, applist, com.a3tweaks.flipswitch, preferenceloader
 Provides: com.n00neimp0rtant.opennotifier
 Conflicts: com.n00neimp0rtant.opennotifier, net.tateu.opennotifierbeta, net.tateu.opennotifier
-Version: 1.0.5
+Version: 2.0
 Architecture: iphoneos-arm
 Description: Your status bar, your way.
 Depiction: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=proteanDp

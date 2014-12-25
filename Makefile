@@ -14,11 +14,6 @@ Protean_FILES = Tweak.xm \
                 FlipswitchHooks.xm Bluetooth.xm \
                 LockscreenStatusBar.xm LSStatusTime.xm \
   	        BatteryPercent.xm \
-		IntroView/PRIntroView.xm \
-		IntroView/PRViewController.m \
-		IntroView/PRPage1ViewController.m \
-		IntroView/PRPage2ViewController.m \
-		IntroView/PRFinalViewController.m \
 		SignalRSSI.xm \
 		Carrier.xm CustomTime.xm \
 		PDFImage.m PDFImageOptions.m \

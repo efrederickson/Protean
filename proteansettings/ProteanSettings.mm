@@ -7,6 +7,8 @@
 #import <notify.h>
 #import "UIDiscreteSlider.h"
 #import "../Protean.h"
+#include <sys/sysctl.h>
+#include <sys/utsname.h>
 
 extern NSString *const PSControlMinimumKey;
 extern NSString *const PSControlMaximumKey;
@@ -319,7 +321,14 @@ extern NSString *const PSControlMaximumKey;
         mailViewController = [[MFMailComposeViewController alloc] init];
         mailViewController.mailComposeDelegate = self;
         [mailViewController setSubject:@"Protean"];
-        [mailViewController setMessageBody:@"" isHTML:NO];
+        
+        struct utsname systemInfo;
+        uname(&systemInfo);
+        NSString *sysInfo = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+        
+        NSString *msg = [NSString stringWithFormat:@"\n\n%@ %@\nModel: %@\nProtean version: %@", [UIDevice currentDevice].systemName, [UIDevice currentDevice].systemVersion, sysInfo, 
+            PROTEAN_VERSION];
+        [mailViewController setMessageBody:msg isHTML:NO];
         [mailViewController setToRecipients:@[@"elijahandandrew@gmail.com"]];
             
         [self.rootController presentViewController:mailViewController animated:YES completion:nil];
