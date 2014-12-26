@@ -94,7 +94,7 @@ UIImage *resizeImage(UIImage *icon)
     {
         %init(SpringBoard);
 
-        [NSFileManager.defaultManager createDirectoryAtPath:@"/User/Library/Protean/protean-fscache" withIntermediateDirectories:YES attributes:nil error:nil];
+        [NSFileManager.defaultManager createDirectoryAtPath:@"/Library/Protean/protean-fscache" withIntermediateDirectories:YES attributes:nil error:nil];
         for (NSString *switchIdentifier in FSSwitchPanel.sharedPanel.switchIdentifiers)
         {
             NSBundle *templateBundle = nil;
@@ -106,9 +106,9 @@ UIImage *resizeImage(UIImage *icon)
                 controlState:UIControlStateNormal forSwitchIdentifier:switchIdentifier usingTemplate:templateBundle];
             NSString *filePath = nil;
             if (UIScreen.mainScreen.scale > 1)
-                filePath = [NSString stringWithFormat:@"/User/Library/Protean/protean-fscache/%@-off@%.0fx.png",switchIdentifier, UIScreen.mainScreen.scale];
+                filePath = [NSString stringWithFormat:@"/Library/Protean/protean-fscache/%@-off@%.0fx.png",switchIdentifier, UIScreen.mainScreen.scale];
             else
-                filePath = [NSString stringWithFormat:@"/User/Library/Protean/protean-fscache/%@-off.png",switchIdentifier];
+                filePath = [NSString stringWithFormat:@"/Library/Protean/protean-fscache/%@-off.png",switchIdentifier];
 
             [UIImagePNGRepresentation(resizeImage(img)) writeToFile:filePath atomically:YES];
 
@@ -116,9 +116,9 @@ UIImage *resizeImage(UIImage *icon)
                 imageOfSwitchState:FSSwitchStateOn
                 controlState:UIControlStateNormal forSwitchIdentifier:switchIdentifier usingTemplate:templateBundle];
             if (UIScreen.mainScreen.scale > 1)
-                filePath = [NSString stringWithFormat:@"/User/Library/Protean/protean-fscache/%@-on@%.0fx.png",switchIdentifier, UIScreen.mainScreen.scale];
+                filePath = [NSString stringWithFormat:@"/Library/Protean/protean-fscache/%@-on@%.0fx.png",switchIdentifier, UIScreen.mainScreen.scale];
             else
-                filePath = [NSString stringWithFormat:@"/User/Library/Protean/protean-fscache/%@-on.png",switchIdentifier];
+                filePath = [NSString stringWithFormat:@"/Library/Protean/protean-fscache/%@-on.png",switchIdentifier];
 
             [UIImagePNGRepresentation(resizeImage(img)) writeToFile:filePath atomically:YES];
         }

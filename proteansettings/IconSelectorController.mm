@@ -6,7 +6,7 @@
 
 NSString* const iconPath = @"/Library/Protean/Images.bundle";
 NSString* const ONIconPath = @"/System/Library/Frameworks/UIKit.framework";
-NSString* const vectorIconPath = @"/User/Library/Protean/TranslatedVectors~cache/";
+NSString* const vectorIconPath = @"/Library/Protean/TranslatedVectors~cache/";
 static NSMutableDictionary* cachedIcons;
 static UIImage* defaultIcon;
 static NSMutableArray* statusIcons;
