@@ -119,53 +119,139 @@ unsigned int batteryState;
     else if (changedBatteryStyle == 3)
     {
         // mAh charge
-        batteryStr = [NSString stringWithFormat:@"%.0f mAh", ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity];
+        if (%c(PLBatteryPropertiesEntry))
+            batteryStr = [NSString stringWithFormat:@"%.0f mAh", ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity];
+        else
+        {
+            int rawCurrentCapacity = -100;
+            io_service_t powerSource = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPMPowerSource"));
+
+            CFNumberRef rawCurrentCapacityNum = (CFNumberRef)IORegistryEntryCreateCFProperty(powerSource, CFSTR("AppleRawCurrentCapacity"), kCFAllocatorDefault, 0);
+            CFNumberGetValue(rawCurrentCapacityNum, kCFNumberIntType, &rawCurrentCapacity);
+            CFRelease(rawCurrentCapacityNum);
+            batteryStr = [NSString stringWithFormat:@"%.0d mAh", rawCurrentCapacity];
+        }
     }
     else if (changedBatteryStyle == 4)
     {
         // "real" battery charge
 
-        CGFloat rawCurrent = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity;
-        CGFloat rawMax = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawMaxCapacity;
-        CGFloat rawActual = floor((rawCurrent / rawMax) * 100);
-        if (rawActual > 100) // uhh, what?
-            rawActual = 100;
-        else if (rawActual < 0)
-        	rawActual = 0;
-        batteryStr = [NSString stringWithFormat:@"%.0f%%", rawActual];
+        if (%c(PLBatteryPropertiesEntry))
+        {
+            CGFloat rawCurrent = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity;
+            CGFloat rawMax = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawMaxCapacity;
+            CGFloat rawActual = floor((rawCurrent / rawMax) * 100);
+            if (rawActual > 100) // uhh, what?
+                rawActual = 100;
+            else if (rawActual < 0)
+            	rawActual = 0;
+            batteryStr = [NSString stringWithFormat:@"%.0f%%", rawActual];
+        }
+        else
+        {
+            CGFloat rawCurrentCapacity = -100;
+            CGFloat rawMaxCapacity = -100;
+            io_service_t powerSource = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPMPowerSource"));
+
+            CFNumberRef rawCurrentCapacityNum = (CFNumberRef)IORegistryEntryCreateCFProperty(powerSource, CFSTR("AppleRawCurrentCapacity"), kCFAllocatorDefault, 0);
+            CFNumberGetValue(rawCurrentCapacityNum, kCFNumberCGFloatType, &rawCurrentCapacity);
+            CFRelease(rawCurrentCapacityNum);
+
+            CFNumberRef rawMaxCapacityNum = (CFNumberRef)IORegistryEntryCreateCFProperty(powerSource, CFSTR("AppleRawMaxCapacity"), kCFAllocatorDefault, 0);
+            CFNumberGetValue(rawMaxCapacityNum, kCFNumberCGFloatType, &rawMaxCapacity);
+            CFRelease(rawMaxCapacityNum);
+            CGFloat rawActual = floor((rawCurrentCapacity / rawMaxCapacity) * 100);
+            if (rawActual > 100)
+                rawActual = 100;
+            else if (rawActual < 0)
+                rawActual = 0;
+            if (rawCurrentCapacity == -100 || rawMaxCapacity == -100)
+                rawActual = NAN;
+            batteryStr = [NSString stringWithFormat:@"%.0f%%", rawActual];
+        }
     }
     else if (changedBatteryStyle == 5)
     {
         // "real" battery charge with decimals
 
-        CGFloat rawCurrent = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity;
-        CGFloat rawMax = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawMaxCapacity;
-        CGFloat rawActual = (rawCurrent / rawMax) * 100;
-        if (rawActual > 100)
-            rawActual = 100;
-        else if (rawActual < 0)
-        	rawActual = 0;
-        batteryStr = [NSString stringWithFormat:@"%.2f%%", rawActual];
+        if (%c(PLBatteryPropertiesEntry))
+        {
+            CGFloat rawCurrent = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity;
+            CGFloat rawMax = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawMaxCapacity;
+            CGFloat rawActual = (rawCurrent / rawMax) * 100;
+            if (rawActual > 100)
+                rawActual = 100;
+            else if (rawActual < 0)
+            	rawActual = 0;
+            batteryStr = [NSString stringWithFormat:@"%.2f%%", rawActual];
+        }
+        else
+        {
+            CGFloat rawCurrentCapacity = -100;
+            CGFloat rawMaxCapacity = -100;
+            io_service_t powerSource = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPMPowerSource"));
+
+            CFNumberRef rawCurrentCapacityNum = (CFNumberRef)IORegistryEntryCreateCFProperty(powerSource, CFSTR("AppleRawCurrentCapacity"), kCFAllocatorDefault, 0);
+            CFNumberGetValue(rawCurrentCapacityNum, kCFNumberCGFloatType, &rawCurrentCapacity);
+            CFRelease(rawCurrentCapacityNum);
+
+            CFNumberRef rawMaxCapacityNum = (CFNumberRef)IORegistryEntryCreateCFProperty(powerSource, CFSTR("AppleRawMaxCapacity"), kCFAllocatorDefault, 0);
+            CFNumberGetValue(rawMaxCapacityNum, kCFNumberCGFloatType, &rawMaxCapacity);
+            CFRelease(rawMaxCapacityNum);
+            CGFloat rawActual = floor((rawCurrentCapacity / rawMaxCapacity) * 100);
+            if (rawActual > 100)
+                rawActual = 100;
+            else if (rawActual < 0)
+                rawActual = 0;
+            if (rawCurrentCapacity == -100 || rawMaxCapacity == -100)
+                rawActual = NAN;
+            batteryStr = [NSString stringWithFormat:@"%.2f%%", rawActual];
+        }
     }
     else if (changedBatteryStyle == 6)
     {
         // "real" battery charge with decimals and no percent sign
 
-        CGFloat rawCurrent = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity;
-        CGFloat rawMax = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawMaxCapacity;
-        CGFloat rawActual = (rawCurrent / rawMax) * 100;
-        if (rawActual > 100)
-            rawActual = 100;
-        else if (rawActual < 0)
-            rawActual = 0;
-        batteryStr = [NSString stringWithFormat:@"%.2f", rawActual];
+        if (%c(PLBatteryPropertiesEntry))
+        {
+            CGFloat rawCurrent = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity;
+            CGFloat rawMax = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawMaxCapacity;
+            CGFloat rawActual = (rawCurrent / rawMax) * 100;
+            if (rawActual > 100)
+                rawActual = 100;
+            else if (rawActual < 0)
+                rawActual = 0;
+            batteryStr = [NSString stringWithFormat:@"%.2f", rawActual];
+        }
+        else
+        {
+            CGFloat rawCurrentCapacity = -100;
+            CGFloat rawMaxCapacity = -100;
+            io_service_t powerSource = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPMPowerSource"));
+
+            CFNumberRef rawCurrentCapacityNum = (CFNumberRef)IORegistryEntryCreateCFProperty(powerSource, CFSTR("AppleRawCurrentCapacity"), kCFAllocatorDefault, 0);
+            CFNumberGetValue(rawCurrentCapacityNum, kCFNumberCGFloatType, &rawCurrentCapacity);
+            CFRelease(rawCurrentCapacityNum);
+
+            CFNumberRef rawMaxCapacityNum = (CFNumberRef)IORegistryEntryCreateCFProperty(powerSource, CFSTR("AppleRawMaxCapacity"), kCFAllocatorDefault, 0);
+            CFNumberGetValue(rawMaxCapacityNum, kCFNumberCGFloatType, &rawMaxCapacity);
+            CFRelease(rawMaxCapacityNum);
+            CGFloat rawActual = floor((rawCurrentCapacity / rawMaxCapacity) * 100);
+            if (rawActual > 100)
+                rawActual = 100;
+            else if (rawActual < 0)
+                rawActual = 0;
+            if (rawCurrentCapacity == -100 || rawMaxCapacity == -100)
+                rawActual = NAN;
+            batteryStr = [NSString stringWithFormat:@"%.2f", rawActual];
+        }
     }
     else if (changedBatteryStyle == 7)
     {
         if ([batteryStr hasSuffix:@"%"]) // remove percent sign, for the formatter
             batteryStr = [batteryStr substringToIndex:batteryStr.length - 1];
 
-        [stringFormatter setNumberStyle: NSNumberFormatterSpellOutStyle];
+        [stringFormatter setNumberStyle:NSNumberFormatterSpellOutStyle];
         NSNumber *num = [numberFormatter numberFromString:batteryStr];
         if (num)
             batteryStr = [[stringFormatter stringFromNumber:num] stringByAppendingString:@" percent"];

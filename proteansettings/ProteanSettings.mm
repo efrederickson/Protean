@@ -390,7 +390,7 @@ extern NSString *const PSControlMaximumKey;
 -(UIColor*) headerColor { return [UIColor colorWithRed:74/255.0f green:74/255.0f blue:74/255.0f alpha:1.0f]; }
 
 -(NSArray*) customSpecifiers {
-    BOOL supportsExtendedBattery = objc_getClass("PLBatteryPropertiesEntry") != nil; /* This would happen after BatteryPercent maybe-loads PowerlogLoggerSupport.framework on process initialization. */
+    BOOL supportsExtendedBattery = YES; // objc_getClass("PLBatteryPropertiesEntry") != nil; /* This would happen after BatteryPercent maybe-loads PowerlogLoggerSupport.framework on process initialization. */
     NSNumber *defaultPadding = ((NSDictionary*)[objc_getClass("Protean") performSelector:@selector(getOrLoadSettings)])[@"defaultPadding"] ?: @6;
 
     return @[
@@ -482,7 +482,7 @@ extern NSString *const PSControlMaximumKey;
                 },
              @{
                  @"cell": @"PSSwitchCell",
-                 @"default": @YES,
+                 @"default": @NO,
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"useNC",
                  @"label": @"Use Notification Center Data",

@@ -814,7 +814,7 @@ BOOL o = NO;
     else // badgeCount <= 0
     {    
         id nc_ = [Protean getOrLoadSettings][@"useNC"];
-        if (!nc_ || [nc_ boolValue])
+        if (nc_ && [nc_ boolValue])
         {
             if ([PRStatusApps ncCount:ident] > 0)
                 [PRStatusApps updateNCStatsForIcon:ident count:[PRStatusApps ncCount:ident]]; // update with NC data
@@ -849,7 +849,7 @@ BOOL o = NO;
     else // badgeCount <= 0
     {    
         id nc_ = [Protean getOrLoadSettings][@"useNC"];
-        if (!nc_ || [nc_ boolValue])
+        if (nc_ && [nc_ boolValue])
         {
             if ([PRStatusApps ncCount:ident] > 0)
                 [PRStatusApps updateNCStatsForIcon:ident count:[PRStatusApps ncCount:ident]]; // update with NC data
