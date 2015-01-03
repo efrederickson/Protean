@@ -211,7 +211,7 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
             icon = [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] applicationIconForDisplayIdentifier:identifier];
         }
         if (icon && [icon badgeNumberOrString]) {
-            [icon badgeValue]; // Hooks will take care of the rest.
+            totalBadgeCount += [icon badgeValue]; // Hooks will take care of the rest.
         }
     }
     
