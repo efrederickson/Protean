@@ -11,6 +11,7 @@
 +(id) PR_sharedInstance;
 @end
 
+extern const char *__progname; 
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
@@ -293,7 +294,8 @@ static BOOL first = YES;
     [Protean getOrLoadSettings];
     if (!first)
     {
-        [PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
+        [PRStatusApps reloadAllImages];
+        //[PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
     }
     else
         first = NO;
@@ -400,6 +402,8 @@ void launchQR(CFNotificationCenterRef center,
 
 static __attribute__((constructor)) void __protean_init()
 {
+    if (strcmp(__progname, "filecoordinationd") == 0 || strcmp(__progname, "securityd") == 0)
+        return;
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
     {
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &refreshStatusBar, CFSTR("com.efrederickson.protean/refreshStatusBar"), NULL, 0);

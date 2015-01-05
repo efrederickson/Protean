@@ -302,7 +302,7 @@ extern NSString *const PSControlMaximumKey;
                  },
              
              @{ @"cell": @"PSGroupCell",
-                @"footerText": @"© 2014 Elijah Frederickson & Andrew Abosh" },
+                @"footerText": [NSString stringWithFormat:@"© 2014-2015 Elijah Frederickson & Andrew Abosh.\n%@", LIBSTATUSBAR8 ? @"LibStatusBar8 support is in use." : @"" ] },
              @{
                  @"cell": @"PSLinkCell",
                  @"action": @"showSupportDialog",
@@ -326,8 +326,8 @@ extern NSString *const PSControlMaximumKey;
         uname(&systemInfo);
         NSString *sysInfo = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
         
-        NSString *msg = [NSString stringWithFormat:@"\n\n%@ %@\nModel: %@\nProtean version: %@", [UIDevice currentDevice].systemName, [UIDevice currentDevice].systemVersion, sysInfo, 
-            PROTEAN_VERSION];
+        NSString *msg = [NSString stringWithFormat:@"\n\n%@ %@\nModel: %@\nProtean version: %@\nLibstatusbar8: %@", [UIDevice currentDevice].systemName, [UIDevice currentDevice].systemVersion, sysInfo, 
+            PROTEAN_VERSION, LIBSTATUSBAR8 ? @"Yes" : @"No"];
         [mailViewController setMessageBody:msg isHTML:NO];
         [mailViewController setToRecipients:@[@"elijahandandrew@gmail.com"]];
             

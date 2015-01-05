@@ -12,7 +12,7 @@ x; \
 return;\
 }
 
-#define LIBSTATUSBAR8 ([NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib"])
+#define LIBSTATUSBAR8 (objc_getClass("LibStatusBar8") != nil)
 
 #define SYSTEM_VERSION_EQUAL_TO(_gVersion)                  ( fabsf(NSFoundationVersionNumber - _gVersion) < DBL_EPSILON )
 #define SYSTEM_VERSION_GREATER_THAN(_gVersion)              ( NSFoundationVersionNumber >  _gVersion )
@@ -21,4 +21,4 @@ return;\
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(_gVersion)     ( NSFoundationVersionNumber < _gVersion || SYSTEM_VERSION_EQUAL_TO(_gVersion)  )
 
 
-#define PROTEAN_VERSION @"2.0"
+#define PROTEAN_VERSION @"2.0-52"

@@ -87,6 +87,7 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
 +(void) updateCachedBadgeCount:(NSString*)identifier count:(int) count
 {
     cachedBadgeCounts[identifier] = [NSNumber numberWithInt:count];
+    //badgeCount += count;
     [PRStatusApps updateTotalNotificationCountIcon];
 }
 
@@ -297,8 +298,8 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
 
 +(void) updateLockState:(BOOL)locked
 {
-	isScreenOff = NO; 
-	return;
+	//isScreenOff = NO; 
+	//return;
 
 	isScreenOff = !locked;
 

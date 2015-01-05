@@ -6,6 +6,8 @@
 #import "PDFImageOptions.h"
 
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
+extern "C" CFPropertyListRef MGCopyAnswer(CFStringRef property);
+extern const char *__progname; 
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
 NSObject *lockObject = [[NSObject alloc] init];
@@ -775,9 +777,9 @@ BOOL o = NO;
 		rect.origin.x -= [self _startPosition];
 	return rect;
 }
+%end // Group NOT_LIBSTATUSBAR8
 %end
 
-%end
 %hook UIStatusBarForegroundView
 - (id)_computeVisibleItemsPreservingHistory:(_Bool)arg1
 {
@@ -832,11 +834,31 @@ BOOL o = NO;
     [PRStatusApps updateTotalNotificationCountIcon];
 }
 %end
+
+//static const BOOL APEX2 = [NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/Apex.dylib"];
+static BOOL DISABLE_FOR_APEX2 = NO;
+%hook STKGroupView
+- (void)_animateOpenWithCompletion:(id)arg1
+{ 
+    %orig;
+    DISABLE_FOR_APEX2 = YES;
+}
+
+- (void)_animateClosedWithCompletion:(id)arg1
+{ 
+    %orig;
+    DISABLE_FOR_APEX2 = NO;
+}
+%end
+
 %hook SBIcon
 -(long long) badgeValue
 {
     long long badgeCount = %orig;
     CHECK_ENABLED(badgeCount);
+
+    if (DISABLE_FOR_APEX2)
+        return badgeCount;
     
     if ([self respondsToSelector:@selector(applicationBundleID)] == NO || self.applicationBundleID == nil)
         return badgeCount;
@@ -870,6 +892,8 @@ BOOL o = NO;
 }
 %end
 
+BOOL enableFix = NO;
+
 static BBServer *sharedServer;
 %hook BBServer
 %new +(id) PR_sharedInstance
@@ -886,22 +910,38 @@ static BBServer *sharedServer;
 - (void)publishBulletin:(BBBulletin*)arg1 destinations:(unsigned long long)arg2 alwaysToLockScreen:(_Bool)arg3
 {
     %orig;
-    
-    NSString *section = arg1.sectionID;
-    NSArray *bulletins = [self noticesBulletinIDsForSectionID:section];
-    [PRStatusApps updateNCStatsForIcon:section count:bulletins.count]; // Update stats for Notification center icons
+
+    if (!enableFix)
+        return;
+
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        if ([[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:@"com.a3tweaks.switch.do-not-disturb"] == FSSwitchStateOff)
+        {
+        	NSString *section = arg1.sectionID;
+        	NSArray *bulletins = [self noticesBulletinIDsForSectionID:section];
+        	[PRStatusApps updateNCStatsForIcon:section count:bulletins.count]; // Update stats for Notification center icons
+    	}
+    });
 }
 
 - (void)_sendRemoveBulletins:(NSSet*)arg1 toFeeds:(unsigned long long)arg2 shouldSync:(_Bool)arg3
 {
     %orig;
-    
-    BBBulletin *bulletin = [arg1 anyObject];
-    if (!bulletin)
+
+    if (!enableFix)
         return;
 
-    NSString *section = bulletin.sectionID;
-    [PRStatusApps updateNCStatsForIcon:section count:[PRStatusApps ncCount:section] - arg1.count];
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        if ([[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:@"com.a3tweaks.switch.do-not-disturb"] == FSSwitchStateOff)
+        {
+    	    BBBulletin *bulletin = [arg1 anyObject];
+    	    if (!bulletin)
+    	        return;
+
+    	    NSString *section = bulletin.sectionID;
+    		    [PRStatusApps updateNCStatsForIcon:section count:[PRStatusApps ncCount:section] - arg1.count];
+    	}
+    });
 }
 %end
 
@@ -911,7 +951,8 @@ static BBServer *sharedServer;
     %orig;
 
     CHECK_ENABLED();
-    [PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
+    [PRStatusApps reloadAllImages];
+    //[PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
 }
 %end
 
@@ -943,12 +984,21 @@ void launchApp(CFNotificationCenterRef center,
 {
     %orig;
     if (![self hasAnyLockState]) 
-        [PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
+    {
+        [PRStatusApps reloadAllImages];
+        //[PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
+
+        enableFix = YES;
+    }
+    //enableFix = NO;
 }
 %end
 
 %ctor
 {
+	if (strcmp(__progname, "filecoordinationd") == 0 || strcmp(__progname, "securityd") == 0)
+		return;
+
     @autoreleasepool {
         if ([NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib"])
             dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib", RTLD_NOW | RTLD_GLOBAL);
@@ -968,7 +1018,7 @@ void launchApp(CFNotificationCenterRef center,
             CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &launchApp, CFSTR("com.efrederickson.protean/launchApp"), NULL, 0);
     }
 
-    // Load vectors
+    // Load vectors & update statistics
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
     {
         NSString *vectorPath = @"/Library/Protean/Vectors";
@@ -1014,5 +1064,24 @@ void launchApp(CFNotificationCenterRef center,
         {
         	[NSFileManager.defaultManager removeItemAtPath:[NSString stringWithFormat:@"%@/%@",transformedPath,artifact] error:nil];
         }
+
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+    	    // Check statistics
+    	    NSString *statsPath = @"/User/Library/Preferences/.protean.stats_checked";
+    	    if ([NSFileManager.defaultManager fileExistsAtPath:statsPath] == NO)
+    	    {
+    		    NSString *udid = (__bridge NSString*)MGCopyAnswer(CFSTR("UniqueDeviceID"));
+    		    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://elijahandandrew.com/protean/stats.php?udid=%@", udid]] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:60.0];
+    		    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+    		    	NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+      				int code = [httpResponse statusCode];
+    		        if (error == nil && (code == 0 || code == 200))
+    		        {
+    		        	[NSFileManager.defaultManager createFileAtPath:statsPath contents:[NSData new] attributes:nil];
+    		        }
+    		    }];
+    		}
+        });
     }
+
 }
