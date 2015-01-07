@@ -100,6 +100,11 @@ unsigned int batteryState;
     // 0: default
     // 1: remove percent
     // 2: textual
+    // 3. mAh charge
+    // 4. Real battery charge
+    // 5. Real charge with 2 decimals
+    // 6. Real charge with decimals and no percent
+    // 7. Textual with "percent"
     
     if (changedBatteryStyle == 1)
     {

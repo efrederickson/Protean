@@ -7,13 +7,9 @@
 NSMutableDictionary *icons = [NSMutableDictionary dictionary];
 NSMutableDictionary *cachedBadgeCounts = [NSMutableDictionary dictionary];
 NSMutableDictionary *ncData = [NSMutableDictionary dictionary];
-NSMutableArray *showWhenOff = [NSMutableArray array];
-NSMutableArray *removeWhenOff = [NSMutableArray array];
 NSMutableArray *spacers = [NSMutableArray array];
-BOOL isScreenOff = NO;
-int totalBadgeCount = 0;
 
-int bestCountForApp(NSString *ident, int otherCount = 0)
+inline int bestCountForApp(NSString *ident, int otherCount = 0)
 {
     if (ident == nil) return 0;
 
@@ -73,13 +69,7 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
         LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
         if (!item)
             return;
-        if (isScreenOff)
-        {
-        	item.visible = NO;
-        	[showWhenOff addObject:item];
-        }
-        else
-        	item.visible = YES;
+        item.visible = YES;
         item.imageName = imageName;
     }
 }
@@ -100,15 +90,10 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
     if (!item)
         return;
 
-    if (isScreenOff)
-    {
-    	[removeWhenOff addObject:identifier];
-    	return;
-    }
     item.visible = NO;
-    //item.imageName = @"";
-    //item = nil;
-    //[icons removeObjectForKey:identifier];
+    item.imageName = @"";
+    item = nil;
+    [icons removeObjectForKey:identifier];
 }
 
 +(void) showIconForFlipswitch:(NSString*)identifier
@@ -120,13 +105,8 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
     if (!item)
         return;
-    if (isScreenOff)
-    {
-    	item.visible = NO;
-    	[showWhenOff addObject:item];
-    }
-    else
-    	item.visible = YES;
+
+    item.visible = YES;
     NSString *imageName = [Protean imageNameForIdentifier:identifier] ?: identifier;
     
     item.imageName = [imageName isEqual:@""] ? identifier : imageName;
@@ -144,13 +124,7 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
     LSStatusBarItem *item = [PRStatusApps getOrCreateItemForIdentifier:identifier];
     if (!item)
         return;
-    if (isScreenOff)
-    {
-    	item.visible = NO;
-    	[showWhenOff addObject:item];
-    }
-    else
-    	item.visible = YES;
+    item.visible = YES;
     item.imageName = [Protean imageNameForIdentifier:identifier];
 }
 
@@ -197,8 +171,6 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
     [PRStatusApps updateSpacers];
     
     // Status Apps
-    totalBadgeCount = 0;
-
     for (NSString *identifier in [[[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] visibleIconIdentifiers] copy]) {
         SBIcon *icon = nil;
         if ([[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] respondsToSelector:@selector(applicationIconForBundleIdentifier:)])
@@ -212,7 +184,7 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
             icon = [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] applicationIconForDisplayIdentifier:identifier];
         }
         if (icon && [icon badgeNumberOrString]) {
-            totalBadgeCount += [icon badgeValue]; // Hooks will take care of the rest.
+            [icon badgeValue]; // Hooks will take care of the rest.
         }
     }
     
@@ -254,6 +226,7 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
 
 +(void) updateTotalNotificationCountIcon
 {
+	int totalBadgeCount = [[cachedBadgeCounts.allValues valueForKeyPath:@"@sum.self"] intValue];
     if (totalBadgeCount > 0)
     {
         [PRStatusApps showIconFor:@"TOTAL_NOTIFICATION_COUNT" badgeCount:totalBadgeCount];
@@ -295,30 +268,5 @@ int bestCountForApp(NSString *ident, int otherCount = 0)
 {
     return [ncData.allKeys containsObject:identifier] ? [ncData[identifier] intValue] : 0;
 }
-
-+(void) updateLockState:(BOOL)locked
-{
-	//isScreenOff = NO; 
-	//return;
-
-	isScreenOff = !locked;
-
-	if (isScreenOff)
-	{
-
-	}
-	else // screen is on
-	{
-		for (LSStatusBarItem *item in [showWhenOff copy])
-            if (item && item.imageName != nil && [item.imageName isEqual:@""] == NO)
-                item.visible = YES;
-		[showWhenOff removeAllObjects];
-
-		for (NSString *ident in [removeWhenOff copy])
-			[PRStatusApps hideIconFor:ident];
-		[removeWhenOff removeAllObjects];
-	}
-}
-
 @end
 

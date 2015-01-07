@@ -809,6 +809,7 @@ BOOL o = NO;
     int badgeCount = [self.badgeNumberOrString intValue];
     NSString *ident = self.bundleIdentifier;
 
+    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
     if (badgeCount > 0)
     {
         [PRStatusApps showIconFor:ident badgeCount:badgeCount];
@@ -830,11 +831,11 @@ BOOL o = NO;
             [PRStatusApps hideIconFor:ident];
         }
     }
-    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
     [PRStatusApps updateTotalNotificationCountIcon];
 }
 %end
 
+/*
 //static const BOOL APEX2 = [NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/Apex.dylib"];
 static BOOL DISABLE_FOR_APEX2 = NO;
 %hook STKGroupView
@@ -891,6 +892,7 @@ static BOOL DISABLE_FOR_APEX2 = NO;
     return badgeCount;
 }
 %end
+*/
 
 BOOL enableFix = NO;
 
@@ -914,14 +916,12 @@ static BBServer *sharedServer;
     if (!enableFix)
         return;
 
-    dispatch_async(dispatch_get_main_queue(), ^(void){
-        if ([[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:@"com.a3tweaks.switch.do-not-disturb"] == FSSwitchStateOff)
-        {
-        	NSString *section = arg1.sectionID;
-        	NSArray *bulletins = [self noticesBulletinIDsForSectionID:section];
-        	[PRStatusApps updateNCStatsForIcon:section count:bulletins.count]; // Update stats for Notification center icons
-    	}
-    });
+    if ([[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:@"com.a3tweaks.switch.do-not-disturb"] == FSSwitchStateOff)
+    {
+    	NSString *section = arg1.sectionID;
+    	NSArray *bulletins = [self noticesBulletinIDsForSectionID:section];
+    	[PRStatusApps updateNCStatsForIcon:section count:bulletins.count]; // Update stats for Notification center icons
+	}
 }
 
 - (void)_sendRemoveBulletins:(NSSet*)arg1 toFeeds:(unsigned long long)arg2 shouldSync:(_Bool)arg3
@@ -931,17 +931,15 @@ static BBServer *sharedServer;
     if (!enableFix)
         return;
 
-    dispatch_async(dispatch_get_main_queue(), ^(void){
-        if ([[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:@"com.a3tweaks.switch.do-not-disturb"] == FSSwitchStateOff)
-        {
-    	    BBBulletin *bulletin = [arg1 anyObject];
-    	    if (!bulletin)
-    	        return;
+    if ([[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:@"com.a3tweaks.switch.do-not-disturb"] == FSSwitchStateOff)
+    {
+	    BBBulletin *bulletin = [arg1 anyObject];
+	    if (!bulletin)
+	        return;
 
-    	    NSString *section = bulletin.sectionID;
-    		    [PRStatusApps updateNCStatsForIcon:section count:[PRStatusApps ncCount:section] - arg1.count];
-    	}
-    });
+	    NSString *section = bulletin.sectionID;
+		    [PRStatusApps updateNCStatsForIcon:section count:[PRStatusApps ncCount:section] - arg1.count];
+	}
 }
 %end
 
@@ -965,27 +963,13 @@ void launchApp(CFNotificationCenterRef center,
     [(SpringBoard*)[UIApplication sharedApplication] launchApplicationWithIdentifier:((__bridge NSDictionary*)userInfo)[@"appId"] suspended:NO];
 }
 
-%hook SBLockScreenViewController
--(void) _handleDisplayTurnedOn
-{
-    %orig;
-    [PRStatusApps updateLockState:YES];
-}
-
--(void)_handleDisplayTurnedOff
-{
-    %orig;
-    [PRStatusApps updateLockState:NO];
-}
-%end
-
 %hook SBLockStateAggregator
 -(void)_updateLockState
 {
     %orig;
     if (![self hasAnyLockState]) 
     {
-        [PRStatusApps reloadAllImages];
+        //[PRStatusApps reloadAllImages];
         //[PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
 
         enableFix = YES;

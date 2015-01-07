@@ -4,7 +4,7 @@
 #import <flipswitch/Flipswitch.h>
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 #define TemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle"
-#define LIBSTATUSBAR8 ([NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib"])
+#import "../common.h"
 
 BOOL showedAlert = NO;
 
@@ -12,10 +12,7 @@ BOOL showedAlert = NO;
 -(void) setView:(id)view;
 -(void) setTitle:(NSString*)title;
 @end
-@interface UIApplication (Protean)
--(id) statusBar;
-@end
-@interface UIStatusBar
+@interface UIStatusBar (Protean)
 - (void)_setStyle:(id)arg1;
 - (int)legibilityStyle;
 - (id)initWithFrame:(CGRect)arg1 showForegroundView:(BOOL)arg2 inProcessStateProvider:(id)arg3;
@@ -31,10 +28,6 @@ BOOL showedAlert = NO;
 -(id) superview;
 -(CGRect)frame;
 -(void) setFrame:(CGRect)frame;
-@end
-@interface UIImage (Protean)
-+ (UIImage*)imageNamed:(NSString *)imageName inBundle:(NSBundle*)bundle;
-- (UIImage*) _flatImageWithColor: (UIColor*) color;
 @end
 
 NSMutableDictionary *nameCache = [NSMutableDictionary dictionary];

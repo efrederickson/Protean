@@ -26,7 +26,7 @@ NSDictionary *extendedOptionsCounts = @{
     @0: @4,
     @3: @2,
     @5: @1,
-    //@8: @3, <- battery percentage, TODO
+    @8: @0, // <- battery percentage, TODO
     @4: @2,  
 };
 
