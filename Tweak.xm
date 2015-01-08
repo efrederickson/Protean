@@ -750,8 +750,10 @@ BOOL o = NO;
     o = NO;
     return r;
 }
+%end // hook UIStatusBarLayoutManager
 
 %group NOT_LIBSTATUSBAR8
+%hook UIStatusBarLayoutManager
 - (CGFloat)_startPosition
 {
 	CGFloat orig = %orig;
@@ -777,8 +779,8 @@ BOOL o = NO;
 		rect.origin.x -= [self _startPosition];
 	return rect;
 }
+%end // hook UIStatusBarLayoutManager
 %end // Group NOT_LIBSTATUSBAR8
-%end
 
 %hook UIStatusBarForegroundView
 - (id)_computeVisibleItemsPreservingHistory:(_Bool)arg1
@@ -831,7 +833,6 @@ BOOL o = NO;
             [PRStatusApps hideIconFor:ident];
         }
     }
-    [PRStatusApps updateTotalNotificationCountIcon];
 }
 %end
 
@@ -865,6 +866,7 @@ static BOOL DISABLE_FOR_APEX2 = NO;
         return badgeCount;
     NSString *ident = self.applicationBundleID;
 
+    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
     if (badgeCount > 0)
     {
         [PRStatusApps showIconFor:ident badgeCount:badgeCount];
@@ -886,8 +888,6 @@ static BOOL DISABLE_FOR_APEX2 = NO;
             [PRStatusApps hideIconFor:ident];
         }
     }
-    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
-    [PRStatusApps updateTotalNotificationCountIcon];
 
     return badgeCount;
 }
