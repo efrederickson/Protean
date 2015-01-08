@@ -18,13 +18,13 @@ NSArray *canHaveImages = @[ @1, @2, @11, @12, @13, @16, @17, @19, @20, @21, @22]
 NSArray *canSupportExtendedOptions = @[ @0, // Custom time, show on LS, lowercase am/pm, spell out  - 4 options              - Done
                                         @3, // Signal RSSI, replace with number (TODO) (e.g. 3 for 3 bars) - 2 option        - Signal RSSI done
                                         @5, // Wifi/Data RSSI           - 1 option                                           - Done
-                                        @8, // Battery Percent, colors  - 3 options                                          - NOPE
+                                        //@8, // Battery Percent, colors  - 3 options                                          - NOPE
                                         @4, // Custom Carrier/carrier timestr - 2 options                                    - Done
                                         ];
 
 NSDictionary *extendedOptionsCounts = @{
     @0: @4,
-    @3: @2,
+    @3: @1,
     @5: @1,
     @8: @0, // <- battery percentage, TODO
     @4: @2,  
