@@ -215,6 +215,16 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
     id _alignment = settingsForItem(self)[@"alignment"];
     int alignment = _alignment == nil ? 4 : [_alignment intValue];
 
+    if ([self type] == 0)
+    {
+        id _showLSTime = [Protean getOrLoadSettings][@"showLSTime"];
+        BOOL showLSTime = _showLSTime ? [_showLSTime boolValue] : YES;
+        BOOL isLSVisible = [[%c(SBLockScreenManager) sharedInstance] isUILocked];
+
+        if (isLSVisible && !showLSTime)
+            return NO;
+    }
+
     if (alignment == arg1) // 0, 1, 2 :: left, right, ?center
         return YES;
     else if (alignment == 3) // hide
@@ -231,13 +241,13 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 
     id _alignment = settingsForItem(self)[@"alignment"];
     int alignment = _alignment == nil ? 4 : [_alignment intValue];
-
-    id _centerOrder = settingsForItem(self)[@"order"];
     
     if (alignment != 2)
         return %orig;
 
+    id _centerOrder = settingsForItem(self)[@"order"];
     int centerOrder = _centerOrder == nil ? %orig : [_centerOrder intValue];
+
     return centerOrder;
 }
 
@@ -247,12 +257,11 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 
     id _alignment = settingsForItem(self)[@"alignment"];
     int alignment = _alignment == nil ? 4 : [_alignment intValue];
-
-    id _rightOrder = settingsForItem(self)[@"order"];
     
     if (alignment != 1)
         return %orig;
 
+    id _rightOrder = settingsForItem(self)[@"order"];
     int rightOrder = _rightOrder == nil ? %orig : [_rightOrder intValue];
 
     return rightOrder;

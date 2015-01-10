@@ -25,6 +25,10 @@
 - (NSDictionary*) properties;
 @end
 
+@interface SBLockScreenManager
+@property(readonly) BOOL isUILocked; // @synthesize isUILocked=_isUILocked;
+@end
+
 @interface SBLockStateAggregator
 +(id)sharedInstance;
 -(void)_updateLockState;
