@@ -215,6 +215,16 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
     id _alignment = settingsForItem(self)[@"alignment"];
     int alignment = _alignment == nil ? 4 : [_alignment intValue];
 
+    if ([self type] == 0)
+    {
+        id _showLSTime = [Protean getOrLoadSettings][@"showLSTime"];
+        BOOL showLSTime = _showLSTime ? [_showLSTime boolValue] : YES;
+        BOOL isLSVisible = [[%c(SBLockScreenManager) sharedInstance] isUILocked];
+
+        if (isLSVisible && !showLSTime)
+            return NO;
+    }
+
     if (alignment == arg1) // 0, 1, 2 :: left, right, ?center
         return YES;
     else if (alignment == 3) // hide
@@ -231,13 +241,13 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 
     id _alignment = settingsForItem(self)[@"alignment"];
     int alignment = _alignment == nil ? 4 : [_alignment intValue];
-
-    id _centerOrder = settingsForItem(self)[@"order"];
     
     if (alignment != 2)
         return %orig;
 
+    id _centerOrder = settingsForItem(self)[@"order"];
     int centerOrder = _centerOrder == nil ? %orig : [_centerOrder intValue];
+
     return centerOrder;
 }
 
@@ -247,12 +257,11 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 
     id _alignment = settingsForItem(self)[@"alignment"];
     int alignment = _alignment == nil ? 4 : [_alignment intValue];
-
-    id _rightOrder = settingsForItem(self)[@"order"];
     
     if (alignment != 1)
         return %orig;
 
+    id _rightOrder = settingsForItem(self)[@"order"];
     int rightOrder = _rightOrder == nil ? %orig : [_rightOrder intValue];
 
     return rightOrder;
@@ -750,8 +759,10 @@ BOOL o = NO;
     o = NO;
     return r;
 }
+%end // hook UIStatusBarLayoutManager
 
 %group NOT_LIBSTATUSBAR8
+%hook UIStatusBarLayoutManager
 - (CGFloat)_startPosition
 {
 	CGFloat orig = %orig;
@@ -777,8 +788,8 @@ BOOL o = NO;
 		rect.origin.x -= [self _startPosition];
 	return rect;
 }
+%end // hook UIStatusBarLayoutManager
 %end // Group NOT_LIBSTATUSBAR8
-%end
 
 %hook UIStatusBarForegroundView
 - (id)_computeVisibleItemsPreservingHistory:(_Bool)arg1
@@ -831,7 +842,6 @@ BOOL o = NO;
             [PRStatusApps hideIconFor:ident];
         }
     }
-    [PRStatusApps updateTotalNotificationCountIcon];
 }
 %end
 
@@ -865,6 +875,7 @@ static BOOL DISABLE_FOR_APEX2 = NO;
         return badgeCount;
     NSString *ident = self.applicationBundleID;
 
+    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
     if (badgeCount > 0)
     {
         [PRStatusApps showIconFor:ident badgeCount:badgeCount];
@@ -886,8 +897,6 @@ static BOOL DISABLE_FOR_APEX2 = NO;
             [PRStatusApps hideIconFor:ident];
         }
     }
-    [PRStatusApps updateCachedBadgeCount:ident count:badgeCount > 0 ? badgeCount : 0];
-    [PRStatusApps updateTotalNotificationCountIcon];
 
     return badgeCount;
 }
