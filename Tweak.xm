@@ -992,36 +992,6 @@ void launchApp(CFNotificationCenterRef center,
 	if (strcmp(__progname, "filecoordinationd") == 0 || strcmp(__progname, "securityd") == 0)
 		return;
 
-	NSString *bundleIdentifier = [NSBundle mainBundle].bundleIdentifier;
-	if (bundleIdentifier == nil
-		|| [bundleIdentifier isEqualToString:@"(null)"]
-		|| [bundleIdentifier isEqualToString:@"${PRODUCT_NAME}"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.AdSheetPhone"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.AssistantServices"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.atwakeup"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.backupd"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.cfnetwork.CFNetworkAgent"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.CloudDocsDaemon.container-metadata-extractor"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.idsfoundation.IDSRemoteURLConnectionAgent"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.imdmessageservices.IMDMessageServicesAgent"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.imfoundation.IMRemoteURLConnectionAgent"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.InCallService"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.lakitu"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.mobilesms.notification"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.sbd"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.Search.framework"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.SiriViewService"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.StreamingUnzipService"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.syncdefaultsd"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.SystemConfiguration"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.ubd"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.WebKit.Networking"]
-		|| [bundleIdentifier isEqualToString:@"com.apple.WebKit.WebContent"]
-		)
-	{
-		return;
-	}
-
     @autoreleasepool {
         if ([NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib"])
             dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib", RTLD_NOW | RTLD_GLOBAL);
