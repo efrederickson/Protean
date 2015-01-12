@@ -261,6 +261,44 @@ unsigned int batteryState;
         if (num)
             batteryStr = [[stringFormatter stringFromNumber:num] stringByAppendingString:@" percent"];
     }
+    else if (changedBatteryStyle == 8)
+    {
+        // "real" battery charge w/ no percent sign
+
+        if (%c(PLBatteryPropertiesEntry))
+        {
+            CGFloat rawCurrent = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawCurrentCapacity;
+            CGFloat rawMax = ((PLBatteryPropertiesEntry*)[%c(PLBatteryPropertiesEntry) batteryPropertiesEntry]).rawMaxCapacity;
+            CGFloat rawActual = floor((rawCurrent / rawMax) * 100);
+            if (rawActual > 100) // uhh, what?
+                rawActual = 100;
+            else if (rawActual < 0)
+                rawActual = 0;
+            batteryStr = [NSString stringWithFormat:@"%.0f%%", rawActual];
+        }
+        else
+        {
+            CGFloat rawCurrentCapacity = -100;
+            CGFloat rawMaxCapacity = -100;
+            io_service_t powerSource = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPMPowerSource"));
+
+            CFNumberRef rawCurrentCapacityNum = (CFNumberRef)IORegistryEntryCreateCFProperty(powerSource, CFSTR("AppleRawCurrentCapacity"), kCFAllocatorDefault, 0);
+            CFNumberGetValue(rawCurrentCapacityNum, kCFNumberCGFloatType, &rawCurrentCapacity);
+            CFRelease(rawCurrentCapacityNum);
+
+            CFNumberRef rawMaxCapacityNum = (CFNumberRef)IORegistryEntryCreateCFProperty(powerSource, CFSTR("AppleRawMaxCapacity"), kCFAllocatorDefault, 0);
+            CFNumberGetValue(rawMaxCapacityNum, kCFNumberCGFloatType, &rawMaxCapacity);
+            CFRelease(rawMaxCapacityNum);
+            CGFloat rawActual = floor((rawCurrentCapacity / rawMaxCapacity) * 100);
+            if (rawActual > 100)
+                rawActual = 100;
+            else if (rawActual < 0)
+                rawActual = 0;
+            if (rawCurrentCapacity == -100 || rawMaxCapacity == -100)
+                rawActual = NAN;
+            batteryStr = [NSString stringWithFormat:@"%.0f", rawActual];
+        }
+    }
 
     strlcpy(arg1.rawData->batteryDetailString, [batteryStr UTF8String], sizeof(arg1.rawData->batteryDetailString));
 

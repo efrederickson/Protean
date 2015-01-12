@@ -4163,7 +4163,7 @@
                 var url = clicked.attr('href');
                 var isLink = clicked[0].nodeName.toLowerCase() === 'a';
 
-                if (url.indexOf("internal://") > -1)
+                if (url.indexOf("internal://back-to-settings") > -1)
                 {
                     return;
                 }

@@ -16,8 +16,210 @@
       <div class="content-block">
 		<div class="content-block-title-pages">Introduction</div>
 		<div class="content-block-inner">
-	  <p>Do you ever wish you could assign an activator action to a specific status bar icon? Well, with Protean you're able to do exactly that.</p>
+	  <p>Protean not only gives you the ability to move system icons in your status bar, it also let's you customize them.</p>
 	  </div>
+
+	<div class="content-block-title-pages">Time</div>
+		<div class="content-block-inner">
+        <div>
+	  		<p><img src="http://i.imgur.com/sK5Zgyj.png" width="35%" style="display: block; margin-left:12.5px; margin-right:3%; border:solid; border-width:1px; border-color:#c4c4c4; vertical-align: middle" align="right"/>Additional options for the Time in the status bar include showing the time in the status bar, custom time format, lowercase AM/PM, and spelling out the time.</p>
+            
+            <p><img src="http://i.imgur.com/xbjLOaV.png?2" width="30%" style="display: block; margin-left:12.5px; margin-right:3%; border:solid; border-width:1px; border-color:#c4c4c4; vertical-align: middle" align="right"/> Lowercase AM/PM</p><br>
+             <p><img src="http://i.imgur.com/TTBLtQ0.png?1" width="30%" style="display: block; margin-left:12.5px; margin-right:3%; border:solid; border-width:1px; border-color:#c4c4c4; vertical-align: middle" align="right"/> Spelling out time (requires 12 hour time format)</p><br></div>
+<p>Using Protean's Custom Time Format, you're able to add a number of variables to the Time system icon. The table below includes a number of possible time formats.</p>
+	    <table border="1" bordercolor="#c4c4c4" align="center" cellpadding="1px">
+	      <thead>
+  <tr>
+  <th><strong>Preview</strong></th>
+  <th><strong>Date Format</strong></th>
+  </tr>
+  </thead><tbody>
+  <tr>
+  <td>Mon Apr 1 · 3:56 PM</td>
+  <td>E MMM d · h:mm a</td>
+  </tr>
+  <tr>
+  <td>Mon Apr 1st · 3:56 PM</td>
+  <td>E MMM d'st' · h:mm a</td>
+  </tr>
+  <tr>
+  <td>Monday Apr 1st · 3:56 PM</td>
+  <td>EEEE MMM d'st' · h:mm a</td>
+  </tr>
+  <tr>
+  <td>Monday April 1 · 15:56 PM</td>
+  <td>EEEE MMMM d · H:mm a</td>
+  </tr>
+  <tr>
+  <td>Monday April 1 · 3:56:17 PM</td>
+  <td>EEEE MMMM d · h:mm:s a</td>
+  </tr>
+  <tr>
+  <td>Apr 1st, 2013 · 3:56 PM EST</td>
+  <td>MMMM d'st', y · h:mm a z</td>
+  </tr>
+  <tr>
+  <td>Apr 1st, '13 · 3:56 PM</td>
+  <td>MMMM d'st', ''yy · h:mm a</td>
+  </tr>
+  <tr>
+  <td>91st day of 2013</td>
+  <td>D'st day of' y</td>
+  </tr>
+  <tr>
+  <td>Day 91 of 365</td>
+  <td>'Day' D 'of 365'</td>
+  </tr>
+  <tr>
+  <td>14th week of the year</td>
+  <td>w'th week of the year'</td>
+  </tr>
+  <tr>
+  <td>Eastern Daylight Time</td>
+  <td>zzzz</td>
+  </tr>
+  <tr>
+  <td>Mon 4/1 · 3:56</td>
+  <td>E M/d · h:mm</td>
+  </tr>
+  </tbody></table>
+
+<p>If you'd prefer to make your own layout you can mix-and-match fields using the code below.</p>
+<div align="center">
+  <table border="1" bordercolor="#c4c4c4" align="center" style="display:inline-table">
+    <thead>
+      <tr>
+	<th>Input</th>
+	<th>Output</th>
+	</tr>
+      </thead><tbody>
+	<tr>
+	  <td>a</td>
+	  <td>AM or PM</td>
+	  </tr>
+	<tr>
+	  <td>d</td>
+	  <td>day of the month</td>
+	  </tr>
+	<tr>
+	  <td>D</td>
+	  <td>day of the year</td>
+	  </tr>
+	<tr>
+	  <td>w</td>
+	  <td>week of the year</td>
+	  </tr>
+	<tr>
+	  <td>W</td>
+	  <td>week of the month</td>
+	  </tr>
+	<tr>
+	  <td>h</td>
+	  <td>hour (12-hour time)</td>
+	  </tr>
+	<tr>
+	  <td>H</td>
+	  <td>hour (24-hour time)</td>
+	  </tr>
+	<tr>
+	  <td>m</td>
+	  <td>minute</td>
+	  </tr>
+	<tr>
+	  <td>s</td>
+	  <td>second</td>
+	  </tr>
+	<tr>
+	  <td>z</td>
+	  <td>abbreviated time zone</td>
+	  </tr>
+	<tr>
+	  <td>zzzz</td>
+	  <td>full time zone</td>
+	  </tr>
+	<tr>
+	  <td>FM</td>
+	  <td>free memory</td>
+	  </tr>
+      </tbody></table>
+  
+<table border="1" bordercolor="#c4c4c4" style="display:inline-table; margin-left:12.5px;"><thead>
+<tr>
+<th>Input</th>
+<th>Output</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>E</td>
+<td>Mon</td>
+</tr>
+<tr>
+<td>EE</td>
+<td>Mon</td>
+</tr>
+<tr>
+<td>EEE</td>
+<td>Mon</td>
+</tr>
+<tr>
+<td>EEEE</td>
+<td>Monday</td>
+</tr>
+<tr>
+<td>'st'</td>
+<td>date suffix</td>
+</tr>
+<tr>
+<td>M</td>
+<td>4</td>
+</tr>
+<tr>
+<td>MM</td>
+<td>04</td>
+</tr>
+<tr>
+<td>MMM</td>
+<td>Apr</td>
+</tr>
+<tr>
+<td>MMMM</td>
+<td>April</td>
+</tr>
+<tr>
+<td>y</td>
+<td>2013</td>
+</tr>
+<tr>
+<td>yy</td>
+<td>13</td>
+</tr>
+<tr>
+<td>''yy</td>
+<td>'13</td>
+</tr>
+</tbody></table>
+</div>
+<p>You can view the complete list of data format codes at <a href="internal://open?http://unicode.org/reports/tr35/tr35-6.html#Date_Format_Patterns">this page.</a></p>
+             </div>
+      
+	<div class="content-block-title-pages">Signal Strength</div>
+		<div class="content-block-inner">
+	  <p>This option will change the graphical cellular strength indicator into an RSSI indicator (useful if you're trying to avoid asking "Can you hear me now?". RSSI (received signal strength indication) is the standard metric used by the telecommunications industry to measure power in a received radio signal (measured in decibels, dB). The closer the number is to zero, the better your reception, so -80 is a stronger signal than -90.</p>
+	  <p>The dB range for signal RSSI is -47 to -130 with -47 indicating the strongest signal.</p>
+	  </div>
+
+	<div class="content-block-title-pages">Carrier</div>
+		<div class="content-block-inner">
+        <div>
+	  <p style="display:inline-block"><img src="http://i.imgur.com/Z4mWm6x.png?1" width="35%" style="display: block; margin-left:12.5px; margin-right:3%; border:solid; border-width:1px; border-color:#c4c4c4; vertical-align: middle" align="right"/>Other options that allow you to further customize your carrier icon include <em>Custom Carrier text</em> and using the carrier as your time format.</p></div>
+	  </div>
+            
+	<div class="content-block-title-pages">Data/Wifi</div>
+		<div class="content-block-inner">
+	  <p>This option will change the graphical wifi/data strength indicator into an RSSI indicator (useful if you're trying to avoid asking "Can you hear me now?". RSSI (received signal strength indication) is the standard metric used by the telecommunications industry to measure power in a received radio signal (measured in decibels, dB). The closer the number is to zero, the better your reception, so -80 is a stronger signal than -90.</p>
+	  <p>The dB range for WiFi/Data RSSI is 0 to -100 with 0 indicating the strongest possible signal.</p>
+	  </div>      
+            
 	  <div class="content-block-title-pages">Assigning Activator Actions</div>
 	<div class="content-block-inner">
 	<p><img src="http://i.imgur.com/xOrqHc5.png" width="30%" style="display: block; margin-left:12.5px; margin-right:3%; border:solid; border-width:1px; border-color:#c4c4c4;" align="right"/>Protean gives you the ability to trigger an activator action by simply tapping one of the system icons. In our example we are going to assign the tweak <em>BatteryPeek</em> to the Battery system icon.</p><br />

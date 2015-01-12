@@ -15,4 +15,10 @@
     text-transform: uppercase;
     white-space: nowrap;
 }
-
+.content-block-inner2 {
+	background:#fff;
+	padding:10px 15px;
+	padding-bottom:10px;
+	margin-left:-15px;
+	width:100%;
+}

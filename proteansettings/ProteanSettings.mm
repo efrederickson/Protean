@@ -517,10 +517,10 @@ extern NSString *const PSControlMaximumKey;
                  @"detail": @"SKListItemsController",
                  @"icon": @"batteryStyle.png",
                  @"validTitles": 
-                    supportsExtendedBattery ? @[ @"Default", @"Hide '%' sign", @"Textual", @"mAh charge", @"Actual percentage (mAh/capacity)", @"Longer actual percentage", @"Longer actual percentage with no '%'", @"Textual with Percent", ]
+                    supportsExtendedBattery ? @[ @"Default", @"Hide '%' sign", @"Textual", @"mAh charge", @"Actual percentage (mAh/capacity)", @"Longer actual percentage", @"Longer actual percentage with no '%'", @"Textual with Percent", @"Actual with no percent" ]
                     : @[ @"Default", @"Hide '%' sign", @"Textual", @"Textual with Percent" ],
                  @"validValues": 
-                    supportsExtendedBattery ? @[ @0,         @1,               @2,         @3,            @4,                                @5,                             @6, 									 @7 ]
+                    supportsExtendedBattery ? @[ @0,         @1,               @2,         @3,            @4,                                @5,                             @6, 									 @7, @8 ]
                     : @[ @0, @1, @2, @7 ],
                  },
 
