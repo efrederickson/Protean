@@ -20,5 +20,14 @@ return;\
 #define SYSTEM_VERSION_LESS_THAN(_gVersion)                 ( NSFoundationVersionNumber <  _gVersion )
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(_gVersion)     ( NSFoundationVersionNumber < _gVersion || SYSTEM_VERSION_EQUAL_TO(_gVersion)  )
 
+#if DEBUG
 
+#ifndef RELEASE
+#define PROTEAN_VERSION @"2.0-52+debug"
+#else
 #define PROTEAN_VERSION @"2.0-52"
+#endif
+
+#else
+#define PROTEAN_VERSION @"2.0-52"
+#endif

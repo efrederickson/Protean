@@ -2,6 +2,9 @@ ARCHS = armv7 armv7s arm64
 THEOS_PACKAGE_DIR_NAME = debs
 TARGET = iphone:7.1
 CFLAGS = -fobjc-arc
+LDFLAGS = -fobjc-arc
+
+DEBUG=1
 
 include $(THEOS)/makefiles/common.mk
 
@@ -21,7 +24,6 @@ Protean_FILES = Tweak.xm \
 		proteansettings/libcolorpicker/UIColor+PFColor.m
 #		SignalStrength.xm
 
-LDFLAGS = -fobjc-arc
 
 Protean_FRAMEWORKS = UIKit CoreGraphics QuartzCore
 Protean_LIBRARIES = flipswitch IOKit MobileGestalt
@@ -32,4 +34,5 @@ include $(THEOS_MAKE_PATH)/tweak.mk
 after-install::
 	install.exec "killall -9 SpringBoard"
 SUBPROJECTS += proteansettings
+SUBPROJECTS += proteanbb
 include $(THEOS_MAKE_PATH)/aggregate.mk

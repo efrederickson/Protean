@@ -2,8 +2,11 @@
 #import <AppList/AppList.h>
 #import <objcipc/objcipc.h>
 #import <flipswitch/Flipswitch.h>
+
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 #define TemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle"
+#define BUNDLE_PATH @"/Library/Protean/OrganizeIcons.bundle"
+
 #import "../common.h"
 
 BOOL showedAlert = NO;
@@ -55,7 +58,8 @@ NSString *nameForDescription(NSString *desc)
                 @"jzplusplus.OkSiri": @"OkSiri",
                 @"phantom.coke": @"Phantom",
                 @"com.lablabla.muteicon": @"MuteIcon",
-                @"ws.hbang.typestatus.icon": @"TypeStatus",
+                @"ws.hbang.typestatus.icon": @"TypeStatus (Typing)",
+                @"ws.hbang.typestatus.readicon": @"TypeStatus (Read)",
                 @"com.sassoty.bulb": @"Bulb",
                 @"statusmodifier.mute": @"Mute (StatusModifier)",
                 @"com.malcolmhall.insomnia": @"Insomnia",
@@ -117,10 +121,10 @@ NSString *nameForDescription(NSString *desc)
     return nameCache[desc];
 }
 
-UIImage *resizeFSImage(UIImage *icon, float max = 30.0f)
+UIImage *resizeFSImage(UIImage *icon, CGFloat max = 30.0f)
 {
-	float maxWidth = max;
-	float maxHeight = max;
+	CGFloat maxWidth = max;
+	CGFloat maxHeight = max;
     
 	CGSize size = CGSizeMake(maxWidth, maxHeight);
 	CGFloat scale = 1.0f;
@@ -155,6 +159,47 @@ UIImage *resizeFSImage(UIImage *icon, float max = 30.0f)
 NSMutableDictionary *cachedImages = [NSMutableDictionary dictionary];
 UIImage *iconForDescription(NSString *desc)
 {
+	static __strong NSDictionary *map;
+    if (!map) {
+        map = @{
+                @"MSNowPlayingItem": @"now playing",
+                @"SignalStrength": @"signal",
+                @"RotationLock": @"rotation lock",
+                @"BatteryPercent": @"battery percent",
+                @"BluetoothBattery": @"bluetooth battery",
+                @"NotCharging": @"not charging",
+                @"Activity": @"load",
+                @"com.rabih96.macvolume": @"volume status",
+                @"TOTAL_NOTIFICATION_COUNT": @"total notification count",
+                @"CallForward": @"call forwarding",
+                @"Service": @"carrier",
+                @"jzplusplus.OkSiri": @"siri",
+                @"phantom.coke": @"phantom",
+                @"com.lablabla.muteicon": @"mute icon",
+                @"ws.hbang.typestatus.icon": @"type status",
+                @"ws.hbang.typestatus.readicon": @"type status",
+                @"com.sassoty.bulb": @"bulb",
+                @"statusmodifier.mute": @"mute",
+                @"com.malcolmhall.insomnia": @"insomnia",
+                @"com.malcolmhall.insomniapro": @"insomnia",
+                @"TetherStatus.icon": @"TetherStatus",
+                @"Time": @"time",
+                @"Bluetooth": @"bluetooth",
+                @"AirPlay": @"airplay",
+                @"PersonalHotspot": @"personal hotspot",
+                @"AirplaneMode": @"airplane mode",
+                @"Alarm": @"alarm",
+                @"Battery": @"battery",
+                @"TTY": @"tty",
+				@"DND": @"do not disturb",
+				@"DataNetwork": @"wifi",
+				@"Location": @"location",
+				@"VPN": @"vpn",
+
+                };
+    }
+
+
     if (desc == nil)
         desc = @"";
 
@@ -179,46 +224,47 @@ UIImage *iconForDescription(NSString *desc)
         }
         if ([[FSSwitchPanel sharedPanel].switchIdentifiers containsObject:identifier])
         {
-            cachedImages[desc] = resizeFSImage([[[FSSwitchPanel sharedPanel] imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:identifier] controlState:UIControlStateNormal forSwitchIdentifier:identifier usingTemplate:templateBundle] _flatImageWithColor:[UIColor blackColor]]);
+        	UIImage *img = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/flipswitches/%@/Icon.png",BUNDLE_PATH,identifier]];
+        	if (!img && ![map.allKeys containsObject:identifier])
+        		img = resizeFSImage([[[FSSwitchPanel sharedPanel] imageOfSwitchState:[[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:identifier] controlState:UIControlStateNormal forSwitchIdentifier:identifier usingTemplate:templateBundle] _flatImageWithColor:[UIColor blackColor]]);
+            cachedImages[desc] = img;
             return cachedImages[desc];
         }
         
         if ([identifier hasPrefix:@"Pebble"])
-            desc = @"Pebble";
+            desc = @"pebble";
         
         if ([identifier isEqual:@"TOTAL_NOTIFICATION_COUNT"])
-            desc = @"TotalNotificationCount";
+            desc = @"total notification count";
     }
     
     if ([desc hasPrefix:@"spacer-"])
-        desc = @"Spacer";
+        desc = @"spacer";
 
     if ([desc hasPrefix:@"Indicator:"])
         desc = [desc substringFromIndex:10];
     
     if ([desc hasPrefix:@"QuietMode"])
-        desc = @"DND";
+        desc = @"do not disturb";
     if ([desc hasPrefix:@"AirplaneMode"])
-        desc = @"AirplaneMode";
+        desc = @"airplane mode";
     
     if ([desc isEqual:@"com.rabih96.macvolume"])
-        desc = @"Volume Status";
+        desc = @"volume status";
     else if ([desc isEqual:@"jzplusplus.OkSiri"])
-        desc = @"Siri";
+        desc = @"siri";
     else if ([desc isEqual:@"phantom.coke"])
-        desc = @"Phantom";
+        desc = @"phantom";
     else if ([desc isEqual:@"com.lablabla.muteicon"])
-        desc = @"MuteIcon";
+        desc = @"mute icon";
     else if ([desc isEqual:@"com.sassoty.bulb"])
-        desc = @"Bulb";
+        desc = @"bulb";
     else if ([desc isEqual:@"ws.hbang.typestatus.icon"])
-        desc = @"TypeStatus";
-    
-    static __strong NSBundle *imageBundle = nil;
-    if (imageBundle == nil)
-        imageBundle = [NSBundle bundleWithPath:@"/Library/Protean/OrganizeIcons.bundle"];
-    
-    cachedImages[desc] = [UIImage imageNamed:desc inBundle:imageBundle] ?: [UIImage imageNamed:@"Unknown" inBundle:imageBundle];
+        desc = @"type status";
+
+    desc = [map.allKeys containsObject:desc] ? map[desc] : desc;
+
+    cachedImages[desc] = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/icons/%@/Icon.png",BUNDLE_PATH,desc]] ?: [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/icons/unknown/Icon.png",BUNDLE_PATH]]; 
     return cachedImages[desc];
 }
 
@@ -258,7 +304,9 @@ NSDictionary *mapSettings()
         NSNumber *defaultOrder = [NSNumber numberWithInt:[mapped[alignment] count]];
         NSNumber *order = d[@"order"] == nil ? defaultOrder : d[@"order"];
         while (mapped[alignment][order] != nil)
-            order = [NSNumber numberWithInt:[order intValue] + 1];
+            order = @(order.intValue + 1);
+        //while ([mapped[alignment] objectForKey:@(order.intValue - 1)] == nil && order.intValue > 0)
+        //    order = @(order.intValue - 1);
         mapped[alignment][order] = d;
     }
     
@@ -297,7 +345,7 @@ NSDictionary *mapSettings()
 
     if (!cachedSettings)
         cachedSettings = mapSettings();
-    NSString *desc = [cachedSettings objectForKey:[NSNumber numberWithInt:indexPath.section]][[NSNumber numberWithInt:indexPath.row]][@"identifier"];
+    NSString *desc = [cachedSettings objectForKey:@(indexPath.section)][@(indexPath.row)][@"identifier"];
 
     cell.textLabel.text = nameForDescription(desc);
     cell.imageView.image = iconForDescription(desc);

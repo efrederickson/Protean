@@ -158,7 +158,7 @@ inline int bestCountForApp(NSString *ident, int otherCount = 0)
 {
     if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"] == NO)
         return;
-    
+
     id _enabled = [Protean getOrLoadSettings][@"enabled"];
     if ((_enabled ? [_enabled boolValue] : YES) == NO)
     {
@@ -169,30 +169,22 @@ inline int bestCountForApp(NSString *ident, int otherCount = 0)
     }
 
     [PRStatusApps updateSpacers];
-    
+       
     // Status Apps
-    for (NSString *identifier in [[[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] visibleIconIdentifiers] copy]) {
-        SBIcon *icon = nil;
-        if ([[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] respondsToSelector:@selector(applicationIconForBundleIdentifier:)])
-        {
-            // iOS 8.0+
-            icon = [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] applicationIconForBundleIdentifier:identifier];
-        }
-        else
-        {
-            // iOS 7.X
-            icon = [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] applicationIconForDisplayIdentifier:identifier];
-        }
-        if (icon && [icon badgeNumberOrString]) {
-            [icon badgeValue]; // Hooks will take care of the rest.
-        }
+    NSArray *appIcons = [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] visibleIconIdentifiers];
+    for (NSString *identifier in appIcons) {
+        SBApplication *app = [[objc_getClass("SBApplicationController") sharedInstance] applicationWithBundleIdentifier:identifier];
+        [app setBadge:app.badgeNumberOrString];
     }
-    
+
     if (icons)
     {
         for (NSString* key in icons.allKeys)
         {
             LSStatusBarItem *item = ((LSStatusBarItem*)icons[key]);
+            if (!item)
+                continue;
+
             if ([cachedBadgeCounts.allKeys containsObject:key])
                 item.imageName = [Protean imageNameForIdentifier:key withBadgeCount:bestCountForApp(key)] ?: key;
             else
@@ -207,9 +199,10 @@ inline int bestCountForApp(NSString *ident, int otherCount = 0)
             }
         }
     }
-
-    for (NSString *key in [ncData copy])
-        [PRStatusApps updateNCStatsForIcon:key count:[ncData[key] intValue]];
+ 
+    NSDictionary *tmpData = [ncData copy];
+    for (NSString *key in tmpData)
+        [PRStatusApps updateNCStatsForIcon:key count:[tmpData[key] intValue]];
 
     [PRStatusApps updateTotalNotificationCountIcon];
     
@@ -221,7 +214,8 @@ inline int bestCountForApp(NSString *ident, int otherCount = 0)
     
     // Bluetooth
     id bt = objc_getClass("BluetoothManager");
-	[[bt sharedInstance] _connectedStatusChanged];
+    if (bt)
+    	[[bt sharedInstance] _connectedStatusChanged];
 }
 
 +(void) updateTotalNotificationCountIcon
@@ -243,7 +237,7 @@ inline int bestCountForApp(NSString *ident, int otherCount = 0)
     if (count < 0) count = 0;
     
     //NSLog(@"[Protean] updating nc stats for icon %@", section);
-    ncData[section] = [NSNumber numberWithInt:count];
+    ncData[section] = @(count);
 
     id nc_ = [Protean getOrLoadSettings][@"useNC"];
     if (nc_ && [nc_ boolValue] == NO)

@@ -115,9 +115,7 @@ NSMutableDictionary *prefs = nil;
         else if (mode == 1)
         {
             // Open application
-            
-            __strong NSDictionary *userInfo = @{@"appId": ident};
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("com.efrederickson.protean/launchApp"), nil, (__bridge CFDictionaryRef)userInfo, YES);
+            [[UIApplication sharedApplication] launchApplicationWithIdentifier:ident suspended:NO];
         }
         else if (mode == 2)
         {

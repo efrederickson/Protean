@@ -49,11 +49,18 @@
                  @"height": @100,
                  @"action": @"openAndrewTwitter"
                  },
+
              @{ @"cell": @"PSGroupCell" },
              @{
                  @"cell": @"PSLinkCell",
                  @"label": @"Source Code",
                  @"action": @"openGithub",
+                 @"icon": @"github.png"
+                 },
+             @{
+                 @"cell": @"PSLinkCell",
+                 @"label": @"libstatusbar (efrederickson)",
+                 @"action": @"openGithub2",
                  @"icon": @"github.png"
                  },
              
@@ -256,6 +263,11 @@ THE SOFTWARE. \n\
 -(void) openGithub
 {
     [SKSharedHelper openGitHub:@"mlnlover11/Protean"];
+}
+
+-(void) openGithub2
+{
+    [SKSharedHelper openGitHub:@"mlnlover11/libstatusbar"];
 }
 
 -(void) openElijahTwitter

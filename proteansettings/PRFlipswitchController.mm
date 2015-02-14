@@ -4,7 +4,10 @@
 #import <flipswitch/Flipswitch.h>
 
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
+#define BUNDLE_PATH @"/Library/Protean/OrganizeIcons.bundle"
 #define TemplatePath @"/Library/Protean/FlipswitchTemplates/IconTemplate.bundle"
+
+extern UIImage *resizeFSImage(UIImage *in, CGFloat size = 30);
 
 @interface PSViewController (Protean)
 -(void) viewDidLoad;
@@ -23,18 +26,25 @@
 }
 @end
 
+static UIImage *iconForFlipswitch(NSString *identifier)
+{
+    NSBundle *templateBundle = [NSBundle bundleWithPath:TemplatePath];
+    
+    UIImage *img = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/flipswitches/%@/Icon.png",BUNDLE_PATH,identifier]];
+    return img ?: resizeFSImage([[[FSSwitchPanel sharedPanel] imageOfSwitchState:FSSwitchStateOn controlState:UIControlStateNormal forSwitchIdentifier:identifier usingTemplate:templateBundle] _flatImageWithColor:[UIColor blackColor]]);
+}
+
 NSMutableArray *flipswitches;
 
 void updateFlipswitches()
 {
     flipswitches = [NSMutableArray array];
     FSSwitchPanel *fsp = [FSSwitchPanel sharedPanel];
-    NSBundle *templateBundle = [NSBundle bundleWithPath:TemplatePath];
     
     for (NSString *identifier in fsp.sortedSwitchIdentifiers) {
         [flipswitches addObject:@{
                                   @"title": [[FSSwitchPanel sharedPanel] titleForSwitchIdentifier:identifier],
-                                  @"icon": [[[FSSwitchPanel sharedPanel] imageOfSwitchState:FSSwitchStateOn controlState:UIControlStateNormal forSwitchIdentifier:identifier usingTemplate:templateBundle] _flatImageWithColor:[UIColor blackColor]],
+                                  @"icon": iconForFlipswitch(identifier),
                                   @"identifier": identifier
                                   }];
     }

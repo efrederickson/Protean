@@ -5,9 +5,7 @@
 #import <flipswitch/Flipswitch.h>
 #import "Protean.h"
 
-//__strong NSMutableDictionary *cache = [NSMutableDictionary dictionary];
 NSCache *cache = [[NSCache alloc] init];
-
 
 // This is... bad... 
 // But, it works. Which is what i need. 

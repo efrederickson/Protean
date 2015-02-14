@@ -11,8 +11,6 @@ extern const char *__progname;
 #define PLIST_NAME @"/var/mobile/Library/Preferences/com.efrederickson.protean.settings.plist"
 
 NSObject *lockObject = [[NSObject alloc] init];
-__strong NSMutableDictionary *cachedAlignments = [NSMutableDictionary dictionary];
-__strong NSMutableArray *itemTypes = [NSMutableArray array];
 
 void updateItem(int key, NSString *identifier)
 {
@@ -188,22 +186,18 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
  
     CHECK_ENABLED(item)
 
-    if ([itemTypes containsObject:[NSNumber numberWithInt:arg1]] == NO)
+    NSString *name = @"";
+
+    if ([item isKindOfClass:[%c(UIStatusBarCustomItem) class]])
     {
-        NSString *name = @"";
-
-        if ([item isKindOfClass:[%c(UIStatusBarCustomItem) class]])
-        {
-            //name = [%c(Protean) mappedIdentifierForItem:(arg1 - 33)]; // 32 is number of default items (LSB starts from there)
-            name = nil;
-        }
-        else
-            name = nameFromItem(item);
-
-        [itemTypes addObject:[NSNumber numberWithInt:arg1]];
-        if (name != nil)
-            updateItem(arg1, name);
+        //name = [%c(Protean) mappedIdentifierForItem:(arg1 - 33)]; // 32 is number of default items (LSB starts from there)
+        name = nil;
     }
+    else
+        name = nameFromItem(item);
+
+    if (name != nil)
+        updateItem(arg1, name);
 
     return item;
 }
@@ -323,22 +317,18 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
  
     CHECK_ENABLED(item)
 
-    if ([itemTypes containsObject:[NSNumber numberWithInt:arg1]] == NO)
+    NSString *name = @"";
+
+    if ([item isKindOfClass:[%c(UIStatusBarCustomItem) class]])
     {
-        NSString *name = @"";
-
-        if ([item isKindOfClass:[%c(UIStatusBarCustomItem) class]])
-        {
-            //name = [%c(Protean) mappedIdentifierForItem:(arg1 - 33)]; // 32 is number of default items (LSB starts from there)
-            name = nil;
-        }
-        else
-            name = nameFromItem(item);
-
-        [itemTypes addObject:[NSNumber numberWithInt:arg1]];
-        if (name != nil)
-            updateItem(arg1, name);
+        //name = [%c(Protean) mappedIdentifierForItem:(arg1 - 33)]; // 32 is number of default items (LSB starts from there)
+        name = nil;
     }
+    else
+        name = nameFromItem(item);
+
+    if (name != nil)
+        updateItem(arg1, name);
 
     return item;
 }
@@ -453,30 +443,22 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
     CHECK_ENABLED(%orig);
     StatusBarAlignment new_alignment = orig_alignment;
 
-    if (cachedAlignments[identifier])
+    NSDictionary *prefs = [Protean getOrLoadSettings];
+    for (id key in prefs)
     {
-        new_alignment = (StatusBarAlignment)[cachedAlignments[identifier] intValue];
-    }
-    else
-    {
-        NSDictionary *prefs = [Protean getOrLoadSettings];
-        for (id key in prefs)
+        if (prefs[key] && [prefs[key] isKindOfClass:[NSDictionary class]] && [prefs[key][@"identifier"] isEqual:identifier])
         {
-            if (prefs[key] && [prefs[key] isKindOfClass:[NSDictionary class]] && [prefs[key][@"identifier"] isEqual:identifier])
-            {
-                id _alignment = prefs[key][@"alignment"];
-                int alignment = _alignment == nil ? 4 : [_alignment intValue];
-                if (alignment == 0)
-                    new_alignment = StatusBarAlignmentLeft;
-                else if (alignment == 1)
-                    new_alignment = StatusBarAlignmentRight;
-                else if (alignment == 2)
-                    new_alignment = StatusBarAlignmentCenter;
+            id _alignment = prefs[key][@"alignment"];
+            int alignment = _alignment == nil ? 4 : [_alignment intValue];
+            if (alignment == 0)
+                new_alignment = StatusBarAlignmentLeft;
+            else if (alignment == 1)
+                new_alignment = StatusBarAlignmentRight;
+            else if (alignment == 2)
+                new_alignment = StatusBarAlignmentCenter;
 
-                break;
-            }
+            break;
         }
-        cachedAlignments[identifier] = [NSNumber numberWithInt:(int)new_alignment];
     }
 
     // 0 = left, 1 = right
@@ -774,11 +756,13 @@ BOOL o = NO;
 		//width -= [itemViews[0] frame].size.width;
 		for (UIStatusBarItemView *view in itemViews)
 			width += view.frame.size.width;
-		return orig - floor(width / 2) + UIScreen.mainScreen.scale; // ... how does that even fix it? 
+		return orig - floor(width / 2) 
+            + UIScreen.mainScreen.scale; // ... how does that even fix it? 
 	}
 	return orig;
 }
 
+/*
 - (CGRect)rectForItems:(id)arg1
 {
 	int region = MSHookIvar<int>(self, "_region");
@@ -788,6 +772,7 @@ BOOL o = NO;
 		rect.origin.x -= [self _startPosition];
 	return rect;
 }
+*/
 %end // hook UIStatusBarLayoutManager
 %end // Group NOT_LIBSTATUSBAR8
 
@@ -846,30 +831,11 @@ BOOL o = NO;
 %end
 
 /*
-//static const BOOL APEX2 = [NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/Apex.dylib"];
-static BOOL DISABLE_FOR_APEX2 = NO;
-%hook STKGroupView
-- (void)_animateOpenWithCompletion:(id)arg1
-{ 
-    %orig;
-    DISABLE_FOR_APEX2 = YES;
-}
-
-- (void)_animateClosedWithCompletion:(id)arg1
-{ 
-    %orig;
-    DISABLE_FOR_APEX2 = NO;
-}
-%end
-
 %hook SBIcon
 -(long long) badgeValue
 {
     long long badgeCount = %orig;
     CHECK_ENABLED(badgeCount);
-
-    if (DISABLE_FOR_APEX2)
-        return badgeCount;
     
     if ([self respondsToSelector:@selector(applicationBundleID)] == NO || self.applicationBundleID == nil)
         return badgeCount;
@@ -903,56 +869,8 @@ static BOOL DISABLE_FOR_APEX2 = NO;
 %end
 */
 
-BOOL enableFix = NO;
-
-static BBServer *sharedServer;
-%hook BBServer
-%new +(id) PR_sharedInstance
-{
-	return sharedServer;
-}
-
--(id) init
-{
-	sharedServer = %orig;
-	return sharedServer;
-}
-
-- (void)publishBulletin:(BBBulletin*)arg1 destinations:(unsigned long long)arg2 alwaysToLockScreen:(_Bool)arg3
-{
-    %orig;
-
-    if (!enableFix)
-        return;
-
-    if ([[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:@"com.a3tweaks.switch.do-not-disturb"] == FSSwitchStateOff)
-    {
-    	NSString *section = arg1.sectionID;
-    	NSArray *bulletins = [self noticesBulletinIDsForSectionID:section];
-    	[PRStatusApps updateNCStatsForIcon:section count:bulletins.count]; // Update stats for Notification center icons
-	}
-}
-
-- (void)_sendRemoveBulletins:(NSSet*)arg1 toFeeds:(unsigned long long)arg2 shouldSync:(_Bool)arg3
-{
-    %orig;
-
-    if (!enableFix)
-        return;
-
-    if ([[FSSwitchPanel sharedPanel] stateForSwitchIdentifier:@"com.a3tweaks.switch.do-not-disturb"] == FSSwitchStateOff)
-    {
-	    BBBulletin *bulletin = [arg1 anyObject];
-	    if (!bulletin)
-	        return;
-
-	    NSString *section = bulletin.sectionID;
-		    [PRStatusApps updateNCStatsForIcon:section count:[PRStatusApps ncCount:section] - arg1.count];
-	}
-}
-%end
-
 %hook SpringBoard
+//- (void)_performDeferredLaunchWork;
 -(void)applicationDidFinishLaunching:(id)application
 {
     %orig;
@@ -963,25 +881,19 @@ static BBServer *sharedServer;
 }
 %end
 
-void launchApp(CFNotificationCenterRef center,
-                    void *observer,
-                    CFStringRef name,
-                    const void *object,
-                    CFDictionaryRef userInfo)
-{
-    [(SpringBoard*)[UIApplication sharedApplication] launchApplicationWithIdentifier:((__bridge NSDictionary*)userInfo)[@"appId"] suspended:NO];
-}
-
+BOOL hasLoaded = NO;
 %hook SBLockStateAggregator
 -(void)_updateLockState
 {
     %orig;
     if (![self hasAnyLockState]) 
     {
-        //[PRStatusApps reloadAllImages];
-        //[PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
-
-        enableFix = YES;
+        if (!hasLoaded)
+        {
+            //[PRStatusApps reloadAllImages];
+            hasLoaded = YES;
+        }
+        //enableFix = YES;
     }
     //enableFix = NO;
 }
@@ -993,7 +905,7 @@ void launchApp(CFNotificationCenterRef center,
 		return;
 
     @autoreleasepool {
-        if ([NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib"])
+        if ([NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib"]) // Old, not used anymore. In here for "compatibility". 
             dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar8.dylib", RTLD_NOW | RTLD_GLOBAL);
         else if ([NSFileManager.defaultManager fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/libstatusbar.dylib"])
             dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar.dylib", RTLD_NOW | RTLD_GLOBAL);
@@ -1006,9 +918,9 @@ void launchApp(CFNotificationCenterRef center,
         %init;
 	    if (!LIBSTATUSBAR8)
 	    	%init(NOT_LIBSTATUSBAR8);
-
-        if ([[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"])
-            CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, &launchApp, CFSTR("com.efrederickson.protean/launchApp"), NULL, 0);
+        else
+            if ([%c(LibStatusBar8) respondsToSelector:@selector(addExtension:identifier:version:)])
+                [%c(LibStatusBar8) addExtension:@"Protean" identifier:@"com.efrederickson.protean" version:PROTEAN_VERSION];
     }
 
     // Load vectors & update statistics
@@ -1058,6 +970,7 @@ void launchApp(CFNotificationCenterRef center,
         	[NSFileManager.defaultManager removeItemAtPath:[NSString stringWithFormat:@"%@/%@",transformedPath,artifact] error:nil];
         }
 
+        // statistics
         dispatch_async(dispatch_get_main_queue(), ^(void){
     	    // Check statistics
     	    NSString *statsPath = @"/User/Library/Preferences/.protean.stats_checked";

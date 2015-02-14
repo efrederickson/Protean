@@ -15,7 +15,7 @@ static NSMutableArray* statusIcons;
 NSString* const SilverIconRegexPattern = @"PR_(.*?)(_Count_(Large)?\\d\\d?\\d?)?(?:@.*|)(?:~.*|).png";
 static NSMutableArray* searchedIcons;
 extern UIImage *imageFromName(NSString *name);
-extern UIImage *resizeFSImage(UIImage *icon, float max = 30.0f);
+extern UIImage *resizeFSImage(UIImage *icon, CGFloat max = 30.0f);
 
 @interface PSViewController (Protean)
 -(void) viewDidLoad;

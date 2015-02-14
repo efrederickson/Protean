@@ -17,6 +17,18 @@
 #import <SpringBoard/SBApplication.h>
 #import <QuartzCore/QuartzCore.h>
 
+@interface LibStatusBar8 : NSObject
++(BOOL) supported;
++(void) addExtension:(NSString*)name identifier:(NSString*)identifier version:(NSString*)version;
++(NSArray*) getCurrentExtensions;
++(NSString*) getCurrentExtensionsString;
+@end
+
+@interface SBApplicationController 
++ (id)sharedInstance;
+- (id)applicationWithBundleIdentifier:(id)arg1;
+@end
+
 @interface LSStatusBarItem (ugh_again_this_isnt_even_a_private_api)
 - (void) setCustomViewClass: (NSString*) customViewClass;
 - (NSString*) customViewClass;
@@ -25,7 +37,12 @@
 - (NSDictionary*) properties;
 @end
 
+@interface SBLockScreenViewController
+- (_Bool)isInScreenOffMode;
+@end
+
 @interface SBLockScreenManager
+-(SBLockScreenViewController*) lockScreenViewController;
 @property(readonly) BOOL isUILocked; // @synthesize isUILocked=_isUILocked;
 @end
 
@@ -182,7 +199,7 @@
 @interface SBUIBannerContext
 -(SBBulletinBannerItem*)item;
 @end
-@interface SpringBoard (Protean)
+@interface UIApplication (Protean_launch_apps)
 -(BOOL)launchApplicationWithIdentifier:(id)identifier suspended:(BOOL)suspended;
 @end
 @interface SBIconController (Protean)

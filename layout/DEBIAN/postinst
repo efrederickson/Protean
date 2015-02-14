@@ -1,0 +1,6 @@
+#!/bin/sh
+
+chown -R mobile /Library/Protean
+chgrp -R mobile /Library/Protean
+
+echo "Thanks for using Protean!"

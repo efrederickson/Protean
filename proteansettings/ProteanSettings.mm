@@ -302,13 +302,14 @@ extern NSString *const PSControlMaximumKey;
                  },
              
              @{ @"cell": @"PSGroupCell",
-                @"footerText": [NSString stringWithFormat:@"© 2014-2015 Elijah Frederickson & Andrew Abosh.\n%@", LIBSTATUSBAR8 ? @"LibStatusBar8 support is in use." : @"" ] },
+                @"footerText": [NSString stringWithFormat:@"© 2014-2015 Elijah Frederickson & Andrew Abosh.%@%@", 
+                    LIBSTATUSBAR8 ? @"\nLibStatusBar8 support is in use." : @"",
+                    [objc_getClass("LibStatusBar8") respondsToSelector:@selector(getCurrentExtensions)] ? [NSString stringWithFormat:@"\n%ld Current LibStatusBar8 extension(s) in use.",(unsigned long)[objc_getClass("LibStatusBar8") getCurrentExtensions].count] : @"" ] },
              @{
                  @"cell": @"PSLinkCell",
                  @"action": @"showSupportDialog",
                  @"label": @"Support",
                  @"icon": @"support.png",
-                 //@"cellClass": @"SKTintedCell",
                  },
              ];
 }
