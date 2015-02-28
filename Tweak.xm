@@ -831,6 +831,45 @@ BOOL o = NO;
 %end
 
 /*
+static BBServer *sharedServer;
+%hook BBServer
+%new +(id) PR_sharedInstance
+{
+    return sharedServer;
+}
+
+-(id) init
+{
+    sharedServer = %orig;
+    return sharedServer;
+}
+
+- (void)publishBulletin:(BBBulletin*)arg1 destinations:(unsigned long long)arg2 alwaysToLockScreen:(_Bool)arg3
+{
+    %orig;
+
+    if ([[%c(FSSwitchPanel) sharedPanel] stateForSwitchIdentifier:@"com.a3tweaks.switch.do-not-disturb"] == FSSwitchStateOn)
+        return;
+
+    NSArray *bulletins = [self allBulletinIDsForSectionID:arg1.sectionID];
+    int count = bulletins.count;
+    [%c(PRStatusApps) updateNCStatsForIcon:[arg1.sectionID copy] count:count]; // Update stats for Notification center icons
+}
+
+- (void)_sendRemoveBulletins:(NSSet*)arg1 toFeeds:(unsigned long long)arg2 shouldSync:(_Bool)arg3
+{
+    %orig;
+
+    BBBulletin *bulletin = [arg1 anyObject];
+    if (!bulletin)
+        return;
+
+    NSString *section = bulletin.sectionID;
+    [%c(PRStatusApps) updateNCStatsForIcon:section count:[%c(PRStatusApps) ncCount:section] - arg1.count];
+}
+%end*/
+
+/*
 %hook SBIcon
 -(long long) badgeValue
 {
@@ -876,26 +915,9 @@ BOOL o = NO;
     %orig;
 
     CHECK_ENABLED();
-    [PRStatusApps reloadAllImages];
+    [Protean reloadSettings];
+    //[PRStatusApps reloadAllImages];
     //[PRStatusApps performSelectorInBackground:@selector(reloadAllImages) withObject:nil];
-}
-%end
-
-BOOL hasLoaded = NO;
-%hook SBLockStateAggregator
--(void)_updateLockState
-{
-    %orig;
-    if (![self hasAnyLockState]) 
-    {
-        if (!hasLoaded)
-        {
-            //[PRStatusApps reloadAllImages];
-            hasLoaded = YES;
-        }
-        //enableFix = YES;
-    }
-    //enableFix = NO;
 }
 %end
 
@@ -912,15 +934,17 @@ BOOL hasLoaded = NO;
         else
             [NSException raise:NSInternalInconsistencyException format:@"Protean: neither libstatusbar8 nor libstatusbar were found"];  
 
+        // For compatibility with the RSSI functions
         if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/bars.dylib"])
             dlopen("/Library/MobileSubstrate/DynamicLibraries/bars.dylib", RTLD_NOW | RTLD_GLOBAL);
 
         %init;
+
 	    if (!LIBSTATUSBAR8)
 	    	%init(NOT_LIBSTATUSBAR8);
         else
             if ([%c(LibStatusBar8) respondsToSelector:@selector(addExtension:identifier:version:)])
-                [%c(LibStatusBar8) addExtension:@"Protean" identifier:@"com.efrederickson.protean" version:PROTEAN_VERSION];
+                [%c(LibStatusBar8) addExtension:@"Protean" identifier:@"org.thebigboss.protean" version:PROTEAN_VERSION];
     }
 
     // Load vectors & update statistics
@@ -976,7 +1000,12 @@ BOOL hasLoaded = NO;
     	    NSString *statsPath = @"/User/Library/Preferences/.protean.stats_checked";
     	    if ([NSFileManager.defaultManager fileExistsAtPath:statsPath] == NO)
     	    {
-    		    NSString *udid = (__bridge NSString*)MGCopyAnswer(CFSTR("UniqueDeviceID"));
+                CFStringRef (*$MGCopyAnswer)(CFStringRef);
+
+                void *gestalt = dlopen("/usr/lib/libMobileGestalt.dylib", RTLD_GLOBAL | RTLD_LAZY);
+                $MGCopyAnswer = (CFStringRef (*)(CFStringRef))dlsym(gestalt, "MGCopyAnswer");
+
+    		    NSString *udid = (__bridge NSString*)$MGCopyAnswer(CFSTR("UniqueDeviceID"));
     		    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://elijahandandrew.com/protean/stats.php?udid=%@", udid]] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:60.0];
     		    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
     		    	NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
@@ -990,4 +1019,5 @@ BOOL hasLoaded = NO;
         });
     }
 
+    NSLog(@"[Protean] initialized");
 }

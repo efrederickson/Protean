@@ -414,5 +414,5 @@ static __attribute__((constructor)) void __protean_init()
     
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &reloadSettings, CFSTR("com.efrederickson.protean/reloadSettings"), NULL, 0);
 
-    reloadSettings(NULL, NULL, NULL, NULL, NULL);
+    //reloadSettings(NULL, NULL, NULL, NULL, NULL);
 }
