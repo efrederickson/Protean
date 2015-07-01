@@ -138,5 +138,4 @@
     
     [self setValue:newValue animated:NO];
 }
-
 @end

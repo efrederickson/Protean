@@ -1,6 +1,6 @@
 ARCHS = armv7 armv7s arm64
 THEOS_PACKAGE_DIR_NAME = debs
-TARGET = iphone:7.1
+#TARGET = iphone:7.1
 CFLAGS = -fobjc-arc
 
 DEBUG=1

@@ -540,11 +540,12 @@ NSDictionary *settingsForItem(UIStatusBarItem *item)
 
     if ([Protean getOrLoadSettings][@"defaultPadding"] == nil)
     {
-        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME];
+        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME] ?: [NSMutableDictionary dictionary];
         prefs[@"defaultPadding"] = [NSNumber numberWithFloat:o];
         //@synchronized (lockObject)
         {
             [prefs writeToFile:PLIST_NAME atomically:YES];
+            [Protean reloadSettings];
         }
     }
 
@@ -666,7 +667,7 @@ BOOL o = NO;
 
     if ([Protean getOrLoadSettings][@"defaultPadding"] == nil)
     {
-        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME];
+        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_NAME] ?: [NSMutableDictionary dictionary];
         prefs[@"defaultPadding"] = [NSNumber numberWithFloat:o];
         //@synchronized (lockObject)
         {
