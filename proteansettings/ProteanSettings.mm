@@ -367,7 +367,7 @@ extern NSString *const PSControlMaximumKey;
  {
     NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/%@.plist",[specifier propertyForKey:@"defaults"]];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
-    return dict[[specifier propertyForKey:@"key"]]; 
+    return [dict objectForKey:[specifier propertyForKey:@"key"]] == nil ? [specifier propertyForKey:@"default"] : [dict objectForKey:[specifier propertyForKey:@"key"]];
  }
 
 -(void) viewWillAppear:(BOOL) animated
@@ -402,7 +402,7 @@ extern NSString *const PSControlMaximumKey;
                  },
                 @{
                  @"cell": @"PSSliderCell",
-                 //@"cellClass": @"PRDiscreteSliderCell2",
+                 //@"cellClass": @"PRDiscreteSliderCell2", < Crashes iOS 8.2+. TODO: FIXME
                  @"default": defaultPadding,
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"padding",
@@ -662,7 +662,7 @@ extern NSString *const PSControlMaximumKey;
  {
     NSString *plistName = [NSString stringWithFormat:@"/User/Library/Preferences/%@.plist",[specifier propertyForKey:@"defaults"]];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistName];
-    return dict[[specifier propertyForKey:@"key"]]; 
+    return [dict objectForKey:[specifier propertyForKey:@"key"]] == nil ? [specifier propertyForKey:@"default"] : [dict objectForKey:[specifier propertyForKey:@"key"]];
  }
 
 -(void)setPreferenceValue:(id)value specifier:(PSSpecifier*)specifier

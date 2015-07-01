@@ -389,7 +389,7 @@ NSDictionary *mapSettings()
     }
 
     NSMutableDictionary *prefs = [NSMutableDictionary
-                                  dictionaryWithContentsOfFile:PLIST_NAME];
+                                  dictionaryWithContentsOfFile:PLIST_NAME] ?: [NSMutableDictionary dictionary];
     
     prefs[dict[@"key"]][@"alignment"] = [NSNumber numberWithInt:destinationIndexPath.section];
         
