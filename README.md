@@ -3,4 +3,4 @@ Protean
 
 Your status bar, your way.
 
-[Website](http://proteantweak.com/)
+[Website](http://elijahandandrew.com/protean)
