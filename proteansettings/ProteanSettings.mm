@@ -402,7 +402,7 @@ extern NSString *const PSControlMaximumKey;
                  },
                 @{
                  @"cell": @"PSSliderCell",
-                 @"cellClass": @"PRDiscreteSliderCell2",
+                 //@"cellClass": @"PRDiscreteSliderCell2",
                  @"default": defaultPadding,
                  @"defaults": @"com.efrederickson.protean.settings",
                  @"key": @"padding",
@@ -412,7 +412,7 @@ extern NSString *const PSControlMaximumKey;
                  @"increment": @0.5,
                  @"showValue": @YES,
                  },
-
+                
                 @{ 
                  @"cell": @"PSGroupCell",
                  @"label": @"Number of Spacers",
