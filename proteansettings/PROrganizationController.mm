@@ -264,8 +264,11 @@ UIImage *iconForDescription(NSString *desc)
 
     desc = [map.allKeys containsObject:desc] ? map[desc] : desc;
 
-    cachedImages[desc] = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/icons/%@/Icon.png",BUNDLE_PATH,desc]] ?: [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/icons/unknown/Icon.png",BUNDLE_PATH]]; 
-    return cachedImages[desc];
+    UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/icons/%@/Icon.png",BUNDLE_PATH,desc]] ?: [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/icons/unknown/Icon.png",BUNDLE_PATH]];
+    if (!image) return nil;
+
+    cachedImages[desc] = image; 
+    return image;
 }
 
 NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];

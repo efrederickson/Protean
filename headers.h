@@ -27,6 +27,7 @@
 @interface SBApplicationController 
 + (id)sharedInstance;
 - (id)applicationWithBundleIdentifier:(id)arg1;
+- (id)applicationWithDisplayIdentifier:(id)arg1;
 @end
 
 @interface LSStatusBarItem (ugh_again_this_isnt_even_a_private_api)

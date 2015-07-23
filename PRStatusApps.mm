@@ -173,7 +173,12 @@ inline int bestCountForApp(NSString *ident, int otherCount = 0)
     // Status Apps
     NSArray *appIcons = [[[objc_getClass("SBIconViewMap") homescreenMap] iconModel] visibleIconIdentifiers];
     for (NSString *identifier in appIcons) {
-        SBApplication *app = [[objc_getClass("SBApplicationController") sharedInstance] applicationWithBundleIdentifier:identifier];
+        id cls = [objc_getClass("SBApplicationController") sharedInstance];
+        SBApplication *app = nil;
+        if ([cls respondsToSelector:@selector(applicationWithDisplayIdentifier:)])
+            app = [cls applicationWithDisplayIdentifier:identifier];
+        else
+            app = [cls applicationWithBundleIdentifier:identifier];
         [app setBadge:app.badgeNumberOrString];
     }
 
