@@ -573,7 +573,7 @@ BOOL o = NO;
         %orig;
 }
 
-- (id)initWithItem:(id)arg1 data:(id)arg2 actions:(int)arg3 style:(id)arg4
+- (id)initWithItem:(__unsafe_unretained id)arg1 data:(__unsafe_unretained id)arg2 actions:(int)arg3 style:(__unsafe_unretained id)arg4
 {
     id _self = %orig;
 
@@ -831,7 +831,6 @@ BOOL o = NO;
 }
 %end
 
-/*
 static BBServer *sharedServer;
 %hook BBServer
 %new +(id) PR_sharedInstance
@@ -845,19 +844,16 @@ static BBServer *sharedServer;
     return sharedServer;
 }
 
-- (void)publishBulletin:(BBBulletin*)arg1 destinations:(unsigned long long)arg2 alwaysToLockScreen:(_Bool)arg3
+- (void)publishBulletin:(__unsafe_unretained BBBulletin*)arg1 destinations:(unsigned long long)arg2 alwaysToLockScreen:(_Bool)arg3
 {
     %orig;
-
-    if ([[%c(FSSwitchPanel) sharedPanel] stateForSwitchIdentifier:@"com.a3tweaks.switch.do-not-disturb"] == FSSwitchStateOn)
-        return;
 
     NSArray *bulletins = [self allBulletinIDsForSectionID:arg1.sectionID];
     int count = bulletins.count;
     [%c(PRStatusApps) updateNCStatsForIcon:[arg1.sectionID copy] count:count]; // Update stats for Notification center icons
 }
 
-- (void)_sendRemoveBulletins:(NSSet*)arg1 toFeeds:(unsigned long long)arg2 shouldSync:(_Bool)arg3
+- (void)_sendRemoveBulletins:(__unsafe_unretained NSSet*)arg1 toFeeds:(unsigned long long)arg2 shouldSync:(_Bool)arg3
 {
     %orig;
 
@@ -868,7 +864,7 @@ static BBServer *sharedServer;
     NSString *section = bulletin.sectionID;
     [%c(PRStatusApps) updateNCStatsForIcon:section count:[%c(PRStatusApps) ncCount:section] - arg1.count];
 }
-%end*/
+%end
 
 /*
 %hook SBIcon

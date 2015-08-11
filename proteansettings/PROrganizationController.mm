@@ -91,6 +91,17 @@ NSString *nameForDescription(NSString *desc)
         return nameCache[desc];
     }
 
+    if ([desc hasPrefix:@"multiplexer-"])
+    {
+        NSString *name = [desc substringFromIndex:(@"multiplexer-").length];
+
+        ALApplicationList *al = [ALApplicationList sharedApplicationList];
+        name = ([nameCache objectForKey:desc] ? nameCache[desc] : [al.applications objectForKey:name]) ?: name;
+        nameCache[desc] = [NSString stringWithFormat:@"%@ (Multiplexer)", name];
+
+        return nameCache[desc];
+    }
+
     if ([desc hasPrefix:@"spacer-"])
     {
         NSString *num = [desc substringFromIndex:7];
@@ -238,6 +249,22 @@ UIImage *iconForDescription(NSString *desc)
             desc = @"total notification count";
     }
     
+    if ([desc hasPrefix:@"multiplexer-"])
+    {
+        NSString *name = [desc substringFromIndex:(@"multiplexer-").length];
+        if ([cachedImages objectForKey:name])
+            return cachedImages[name];
+        else
+        {
+            ALApplicationList *al = [ALApplicationList sharedApplicationList];
+            if ([al.applications.allKeys containsObject:name])
+            {
+                cachedImages[desc] = [al iconOfSize:ALApplicationIconSizeSmall forDisplayIdentifier:name];
+                return cachedImages[desc];
+            }
+        }
+    }
+
     if ([desc hasPrefix:@"spacer-"])
         desc = @"spacer";
 
